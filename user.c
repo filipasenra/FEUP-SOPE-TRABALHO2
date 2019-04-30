@@ -28,7 +28,7 @@ int requestMessageTLV(int argc, char *argv[], tlv_request_t *user_request)
     //password too long
     if (strlen(argv[2]) > MAX_PASSWORD_LEN + 1)
     {
-        printf("Password too long");
+        printf("Password too long\n");
         return RC_OTHER;
     }
 
@@ -76,7 +76,7 @@ int requestMessageTLV(int argc, char *argv[], tlv_request_t *user_request)
         break;
 
     default:
-        printf("Invalid Type");
+        printf("Invalid Type\n");
         return RC_OTHER;
     }
 
