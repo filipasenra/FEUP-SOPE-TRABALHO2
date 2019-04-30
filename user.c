@@ -25,6 +25,8 @@ int requestMessageTLV(int argc, char *argv[], tlv_request_t *user_request)
     user_request->value.header.op_delay_ms = strtoul(argv[3], NULL, 10);
     user_request->length += sizeof(user_request->value.header.op_delay_ms);
 
+    user_request->value.header.pid = getpid();
+
     //password too long
     if (strlen(argv[2]) > MAX_PASSWORD_LEN + 1)
     {
@@ -168,6 +170,7 @@ int main(int argc, char *argv[])
     printf("Password: %s\n", user_request.value.header.password);
     printf("Type: %d\n", user_request.type);
     printf("Lenght: %d\n", user_request.length);
+    printf("Pid: %d\n", user_request.value.header.pid);
 
     if (user_request.type == OP_CREATE_ACCOUNT)
     {
