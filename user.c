@@ -17,11 +17,13 @@ int requestMessageTLV(int argc, char *argv[], tlv_request_t *user_request)
         return 1;
     }
 
-    req_header_t red_header;
-    req_value_t req_value;
+    user_request->length = 0;
 
     user_request->value.header.account_id = strtoul(argv[1], NULL, 10);
+    user_request->length += sizeof(user_request->value.header.account_id);
+
     user_request->value.header.op_delay_ms = strtoul(argv[3], NULL, 10);
+    user_request->length += sizeof(user_request->value.header.op_delay_ms);
 
     //password too long
     if (strlen(argv[2]) > MAX_PASSWORD_LEN + 1)
@@ -31,11 +33,13 @@ int requestMessageTLV(int argc, char *argv[], tlv_request_t *user_request)
     }
 
     strcpy(user_request->value.header.password, argv[2]);
+    user_request->length += sizeof(user_request->value.header.password);
 
     //TYPE OF OPERATION
     //if type of is invalid
 
     int n_type = strtoul(argv[4], NULL, 10);
+    
 
     switch (n_type)
     {
@@ -45,6 +49,7 @@ int requestMessageTLV(int argc, char *argv[], tlv_request_t *user_request)
             return RC_OP_NALLOW;
 
         createAccount(&user_request->value.create, argv[5]);
+        user_request->length += sizeof(user_request->value.create);
 
         break;
 
@@ -60,6 +65,7 @@ int requestMessageTLV(int argc, char *argv[], tlv_request_t *user_request)
             return RC_OP_NALLOW;
 
         transferOperation(&user_request->value.transfer, argv[5]);
+        user_request->length += sizeof(user_request->value.transfer);
 
         break;
 
@@ -73,6 +79,8 @@ int requestMessageTLV(int argc, char *argv[], tlv_request_t *user_request)
         printf("Invalid Type");
         return RC_OTHER;
     }
+
+    user_request->length += sizeof(user_request->type);
 
     //==============================================
 
@@ -128,7 +136,6 @@ int transferOperation(req_transfer_t *transfer, char argv[])
         if (n == 0)
         {
             transfer->account_id = strtoul(token, NULL, 10);
-            printf("heelo%d\n", transfer->account_id);
         }
         else if (n == 1)
             transfer->amount = strtoul(token, NULL, 10);
@@ -155,12 +162,12 @@ int main(int argc, char *argv[])
 
     requestMessageTLV(argc, argv, &user_request);
 
-
     //Testing Area
     printf("Account_id: %d\n", user_request.value.header.account_id);
     printf("Op_delay_ms: %d\n", user_request.value.header.op_delay_ms);
     printf("Password: %s\n", user_request.value.header.password);
     printf("Type: %d\n", user_request.type);
+    printf("Lenght: %d\n", user_request.length);
 
     if (user_request.type == OP_CREATE_ACCOUNT)
     {
