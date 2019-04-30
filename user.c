@@ -4,6 +4,10 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "sope.h"
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 
 int createAccount(req_create_account_t *create, char argv[]);
 int transferOperation(req_transfer_t *transfer, char argv[]);
@@ -41,7 +45,6 @@ int requestMessageTLV(int argc, char *argv[], tlv_request_t *user_request)
     //if type of is invalid
 
     int n_type = strtoul(argv[4], NULL, 10);
-    
 
     switch (n_type)
     {
@@ -85,6 +88,14 @@ int requestMessageTLV(int argc, char *argv[], tlv_request_t *user_request)
     user_request->length += sizeof(user_request->type);
 
     //==============================================
+    //Writing Log
+
+    int fd = open("ulog.txt", O_WRONLY | O_APPEND | O_CREAT, 0777);
+    if (logRequest(fd, (int) getpid(), user_request))
+    {
+        printf("Failed to open and write into ulog.txt\n");
+        return 1;
+    }
 
     return 0;
 }
