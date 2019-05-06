@@ -27,7 +27,7 @@ int createAccount(req_create_account_t *create, char argv[]);
  * 
  * @returns zero upon sucess, non-zero otherwise
 */
-int transferOperation(req_transfer_t *transfer, char argv[]);
+int transferOperation(uint32_t idOrigin, req_transfer_t *transfer, char argv[]);
 
 /**
  * @brief Puts into the struct user_request the information of the request of the user

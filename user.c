@@ -6,7 +6,8 @@ int main(int argc, char *argv[]) {
     // Request to be sent to the fifo of the server
     tlv_request_t user_request;
 
-    requestMessageTLV(argc, argv, &user_request);
+    if (requestMessageTLV(argc, argv, &user_request))
+        return 1;
 
     // Testing Area
     printf("Account_id: %d\n", user_request.value.header.account_id);
