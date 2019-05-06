@@ -22,11 +22,13 @@ int main(int argc, char *argv[]) {
     sem_t* sem = sem_open(argv[2], O_CREAT, 0600, number_threads);
     if(sem == SEM_FAILED)   exit(2);
 
-    pthread_mutex_t *mutex_array[number_threads];
+    pthread_mutex_t mutex_array[number_threads];
 
     for(int i = 0; i < number_threads; i++){
         //criar mutex
         pthread_mutex_t m = PTHREAD_MUTEX_INITIALIZER;
+        mutex_array[i] = m;
+
         //criar thread
     }
 
