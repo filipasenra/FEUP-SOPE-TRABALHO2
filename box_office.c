@@ -11,7 +11,7 @@
 #include <pthread.h>
 #include <semaphore.h>
 
-int box_office(sem_t sem, pthread_mutex_t mut){
+void* box_office(void* arg){
     //LOOP TO SOLVE REQUESTS
     while(1){
         //WAIT

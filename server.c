@@ -1,15 +1,4 @@
-#include "type.h"
-#include "sope.h"
-#include "types.h"
-#include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include "sope.h"
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <pthread.h>
-#include <semaphore.h>
+#include "box_office.c"
 
 // Server Program
 
@@ -23,13 +12,15 @@ int main(int argc, char *argv[]) {
     if(sem == SEM_FAILED)   exit(2);
 
     pthread_mutex_t mutex_array[number_threads];
-
+    pthread_t thread_array[number_threads];
     for(int i = 0; i < number_threads; i++){
         //criar mutex
         pthread_mutex_t m = PTHREAD_MUTEX_INITIALIZER;
         mutex_array[i] = m;
-
+        
         //criar thread
+        struct thread_arg arg; arg.sem = sem; arg.mutex = m;
+        pthread_create(&thread_array[i], NULL, box_office,(void*)(&thread_arg) )
     }
 
 
