@@ -22,15 +22,13 @@ int main(int argc, char *argv[]) {
         printf("Create Balance: %d\n", user_request.value.create.balance);
         printf("Create password: %s\n", user_request.value.create.password);
     } else if (user_request.type == OP_TRANSFER) {
-        printf("Create Accound_id: %d\n",
-               user_request.value.transfer.account_id);
-        printf("Create Balance: %d\n", user_request.value.transfer.amount);
+        printf("Transfer Accound_id: %d\n", user_request.value.transfer.account_id);
+        printf("Transfer Balance: %d\n", user_request.value.transfer.amount);
     }
 
     /*
      * MISSING PUTTING THIS INFORMATION ON THE FIFO "secure_srv" AND
-     * RETRIVING THE RESPONSE OF THE SERVER IN THE FIFO
-     * "secure_<pid_of_this_process>"
+     * RETRIVING THE RESPONSE OF THE SERVER IN THE FIFO "secure_<pid_of_this_process>"
      * */
 
     return 0;
