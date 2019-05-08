@@ -33,8 +33,6 @@ int requestMessageTLV(int argc, char *argv[], tlv_request_t *user_request)
     user_request->value.header.account_id = account_id;
     user_request->value.header.op_delay_ms = delay;
     user_request->value.header.pid = getpid();
-    user_request->length = length;
-
 
     // TYPE OF OPERATION
     // if type of operation is invalid
@@ -49,7 +47,7 @@ int requestMessageTLV(int argc, char *argv[], tlv_request_t *user_request)
             return RC_OP_NALLOW;
         if (createAccount(&user_request->value.create, argv[5]) != 0)
             return RC_OTHER;
-        user_request->length += sizeof(user_request->value.create);
+        length += sizeof(user_request->value.create);
         break;
     case 1:
         user_request->type = OP_BALANCE;
@@ -63,7 +61,7 @@ int requestMessageTLV(int argc, char *argv[], tlv_request_t *user_request)
             int n;
         if ((n = transferOperation(user_request->value.header.account_id, &user_request->value.transfer, argv[5])) != 0)
             return n;
-        user_request->length += sizeof(user_request->value.transfer);
+        length += sizeof(user_request->value.transfer);
         break;
     case 3:
         user_request->type = OP_SHUTDOWN;
@@ -75,7 +73,9 @@ int requestMessageTLV(int argc, char *argv[], tlv_request_t *user_request)
         return RC_OTHER;
     }
 
-    user_request->length += sizeof(user_request->type);
+    length += sizeof(user_request->type);
+
+    user_request->length = length;
 
     //==============================================
     // Writing Log
