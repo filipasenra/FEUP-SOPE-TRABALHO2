@@ -28,7 +28,9 @@ void* box_office(void* arg) {
                 case 2:  // TRANSFER
                     ret_value = transfer();
                     break;
-
+                case 3:
+                    shutdown();
+                    break;
                 default:
                     break;
             }

@@ -23,3 +23,4 @@ int get_operation();
 int create_account();
 int check_balance();
 int transfer();
+void shutdown();
