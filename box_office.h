@@ -20,4 +20,6 @@ void* box_office(void* arg);
 
 int log_in();
 int get_operation();
-int do_stuff();
+int create_account();
+int check_balance();
+int transfer();
