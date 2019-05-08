@@ -1,6 +1,6 @@
 #include "dataBase.h"
 
-int initializeDataBase(dataBase *dataBase)
+int initializeDataBase(dataBase_t *dataBase)
 {
     dataBase->size = 20;
 
@@ -12,7 +12,7 @@ int initializeDataBase(dataBase *dataBase)
     return RC_OK;
 }
 
-int addElement(bank_account_t bank_account, dataBase *dataBase)
+int addAccount(bank_account_t bank_account, dataBase_t *dataBase)
 {
     dataBase->last_element++;
 
