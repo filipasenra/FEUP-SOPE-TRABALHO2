@@ -2,21 +2,23 @@
 
 int requestMessageTLV(int argc, char *argv[], tlv_request_t *user_request)
 {
+    //Checking the number of args
     if (argc != 6)
     {
         printf("Usage: ./user <count_id> \"<password>\" <delay_mils> <type_operation> \"<arguments_of_operations>\"\n");
         return 1;
     }
 
-    user_request->length = 0;
+    //Preparing values
+    uint32_t length = 0;
+    uint32_t account_id;
+    uint32_t delay;
 
-    user_request->value.header.account_id = strtoul(argv[1], NULL, 10);
-    user_request->length += sizeof(user_request->value.header.account_id);
+    account_id = strtoul(argv[1], NULL, 10);
+    length += sizeof(account_id);
 
-    user_request->value.header.op_delay_ms = strtoul(argv[3], NULL, 10);
-    user_request->length += sizeof(user_request->value.header.op_delay_ms);
-
-    user_request->value.header.pid = getpid();
+    delay = strtoul(argv[3], NULL, 10);
+    length += sizeof(delay);
 
     // password too long
     if (strlen(argv[2]) > MAX_PASSWORD_LEN + 1)
@@ -25,8 +27,14 @@ int requestMessageTLV(int argc, char *argv[], tlv_request_t *user_request)
         return RC_OTHER;
     }
 
+    //Passing to the struct
     strcpy(user_request->value.header.password, argv[2]);
-    user_request->length += sizeof(user_request->value.header.password);
+    length += sizeof(user_request->value.header.password);
+    user_request->value.header.account_id = account_id;
+    user_request->value.header.op_delay_ms = delay;
+    user_request->value.header.pid = getpid();
+    user_request->length = length;
+
 
     // TYPE OF OPERATION
     // if type of operation is invalid
@@ -73,7 +81,7 @@ int requestMessageTLV(int argc, char *argv[], tlv_request_t *user_request)
     // Writing Log
 
     int fd = open("ulog.txt", O_WRONLY | O_APPEND | O_CREAT, 0777);
-    if (logRequest(fd, (int)getpid(), user_request))
+    if (logRequest(fd, (int)getpid(), user_request) < 0)
     {
         printf("Failed to open and write into ulog.txt\n");
         return 1;

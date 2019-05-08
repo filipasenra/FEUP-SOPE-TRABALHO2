@@ -7,7 +7,7 @@ int main(int argc, char *argv[]) {
     tlv_request_t user_request;
 
     if (requestMessageTLV(argc, argv, &user_request))
-        return 1;
+        return RC_OTHER;
 
     // Testing Area
     printf("Account_id: %d\n", user_request.value.header.account_id);
@@ -31,5 +31,5 @@ int main(int argc, char *argv[]) {
      * RETRIVING THE RESPONSE OF THE SERVER IN THE FIFO "secure_<pid_of_this_process>"
      * */
 
-    return 0;
+    return RC_OK;
 }
