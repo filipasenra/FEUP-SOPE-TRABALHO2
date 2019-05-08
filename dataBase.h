@@ -1,12 +1,12 @@
 #include "types.h"
 #include <stdlib.h>
 
-typedef struct {
+typedef struct dataBase {
     bank_account_t * dataBaseArray;
     int size;
     int last_element;
-} dataBase;
+} dataBase_t;
 
-int initializeDataBase(dataBase *dataBase);
+int initializeDataBase(dataBase_t *dataBase);
 
-int addElement(bank_account_t bank_account, dataBase *dataBase);
+int addAccount(bank_account_t bank_account, dataBase_t *dataBase);
