@@ -40,3 +40,7 @@ int transferOperation(uint32_t idOrigin, req_transfer_t *transfer, char argv[]);
 */
 int requestMessageTLV(int argc, char *argv[], tlv_request_t *user_request);
 
+int prepareMainArgs(char *argv[], tlv_request_t *user_request);
+
+int prepareTypeOfOpArgs(char *argv[], tlv_request_t *user_request);
+

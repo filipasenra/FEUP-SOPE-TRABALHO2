@@ -51,7 +51,7 @@ int main(int argc, char *argv[])
 
     //OPEN FIFO TO READ
     int fd;
-    mkfifo(SERVER_FIFO_PATH, 0x666);
+    mkfifo(SERVER_FIFO_PATH, 0666);
     fd = open(SERVER_FIFO_PATH, O_RDONLY);
 
     //CRIAR CONTA ADMIN
