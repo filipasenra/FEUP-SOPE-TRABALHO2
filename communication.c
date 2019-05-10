@@ -99,7 +99,5 @@ void* get_reply(void* arg){
     unlink(fifo_reply);
     free(fifo_reply);
 
-    return RC_OK;
-
     return reply;
 }
