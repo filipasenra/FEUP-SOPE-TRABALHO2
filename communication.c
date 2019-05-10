@@ -5,7 +5,7 @@ int setCommunication(tlv_request_t *user_request, tlv_reply_t *user_reply) {
     char *fifo_receive = malloc(sizeof(USER_FIFO_PATH_PREFIX) + sizeof(getpid()));
     sprintf(fifo_receive, "%s%d", USER_FIFO_PATH_PREFIX, getpid());
     mkfifo(fifo_receive, 0444);
-    
+
     //Open FIFO to send request
     int fdr;
     if ((fdr = open(SERVER_FIFO_PATH, O_WRONLY)) < 0)
@@ -18,12 +18,10 @@ int setCommunication(tlv_request_t *user_request, tlv_reply_t *user_reply) {
     int fda;
     if ((fda = open(fifo_receive, O_RDONLY)) < 0)
         return RC_OTHER;
-
+    
     //Receiving answer
     clock_t initial = clock();
-    while(1) {
-        if (read(fda, &user_reply, sizeof(user_reply)) == 0) 
-            break;
+    while(read(fda, &user_reply, sizeof(user_reply))) {
         if (((clock()-initial)/CLOCKS_PER_SEC) == FIFO_TIMEOUT_SECS) {
             printf("Action took too long...\n");
             break;
