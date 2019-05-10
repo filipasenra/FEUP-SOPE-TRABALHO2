@@ -4,7 +4,7 @@
 #include "communication.h"
 
 int main(int argc, char *argv[]) {
-    // Request to be sent to the fifo of the server
+    //Request to be sent to the fifo of the server
     tlv_request_t user_request;
 
     if (requestMessageTLV(argc, argv, &user_request))
@@ -32,6 +32,11 @@ int main(int argc, char *argv[]) {
      * RETRIVING THE RESPONSE OF THE SERVER IN THE FIFO "secure_<pid_of_this_process>"
      * */
 
+    /*
+     * MISSING DOING SOMETHING WITH THE REPLY
+     * */
+
+    //Reply sent by the server
     tlv_reply_t user_reply;
     
     if (setCommunication(&user_request, &user_reply))
