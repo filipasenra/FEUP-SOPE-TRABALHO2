@@ -66,3 +66,40 @@ int setCommunication(tlv_request_t *user_request, tlv_reply_t *user_reply) {
 
     return RC_OK;
 }
+
+void* get_reply(void* arg){
+    tlv_reply_t* reply = (tlv_reply_t*)arg;
+
+    //Create FIFO
+    char *fifo_reply = malloc(sizeof(USER_FIFO_PATH_PREFIX) + sizeof(getpid()));
+    sprintf(fifo_reply, "%s%d", USER_FIFO_PATH_PREFIX, getpid());
+    if(mkfifo(fifo_reply, 0666))    return NULL;
+
+    //Open FIFO
+    int fda;
+    if ((fda = open(fifo_reply, O_RDONLY)) < 0)
+        return RC_OTHER;
+    
+    //Receiving reply
+    clock_t initial = clock();
+    while(read(fda, &user_reply, sizeof(user_reply))) {
+        if (((clock()-initial)/CLOCKS_PER_SEC) == FIFO_TIMEOUT_SECS) {
+            printf("Action took too long...\n");
+            close(fda);
+            close(fdr);
+            return RC_SRV_TIMEOUT;
+        }
+    }
+
+    //Closing FIFOS
+    if (close(fdr) || close(fda))
+        return RC_OTHER;
+
+    //Free memory
+    unlink(fifo_reply);
+    free(fifo_reply);
+
+    return RC_OK;
+
+    return reply;
+}
