@@ -1,19 +1,4 @@
-#include "types.h"
-#include "sope.h"
-#include "types.h"
-#include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include "sope.h"
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <pthread.h>
-#include <semaphore.h>
-#include <fcntl.h>
-#include "dataBase.h"
-#include "box_office.h"
-#include "creatAccount.h"
+#include "serverMessage.h"
 
 // Server Program
 
@@ -26,7 +11,7 @@ int main(int argc, char *argv[])
         return RC_OTHER;
     }
 
-    //Number of box offices ??????
+    //Number of box offices
     int number_threads = strtol(argv[1], NULL, 10);
     if (number_threads <= 0 || number_threads > MAX_BANK_OFFICES)
         exit(1);
@@ -70,5 +55,5 @@ int main(int argc, char *argv[])
 
     //ESCREVER NO LOG
 
-    return 0;
+    return RC_OK;
 }

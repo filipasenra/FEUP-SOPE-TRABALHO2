@@ -1,4 +1,5 @@
 #include "communication.h"
+#include "serverMessage.h"
 
 int sendReply(tlv_request_t *user_request, tlv_reply_t *user_reply) {
     //Create FIFO to receive request
@@ -10,10 +11,19 @@ int sendReply(tlv_request_t *user_request, tlv_reply_t *user_reply) {
         return RC_OTHER;
 
     //Receiving request
-    read(fdr, &user_request, sizeof(user_reply));
+    read(fdr, user_request, sizeof(user_reply));
+
+    //Make operation requested
+    //TODO
+
+
+
+
+    
 
     //Preparing reply
-
+    if (replyMessageTLV(user_request, user_reply))
+        return RC_USR_DOWN;
 
     //Open FIFO to send reply
     int fda;
@@ -22,8 +32,12 @@ int sendReply(tlv_request_t *user_request, tlv_reply_t *user_reply) {
         return RC_OTHER;
 
     //Sending reply
-    
+    write(fda, user_reply, sizeof(user_reply));
 
+    //Free memory
+    free(fifo_send);
+
+    return RC_OK;
 }
 
 int setCommunication(tlv_request_t *user_request, tlv_reply_t *user_reply) {
@@ -38,7 +52,7 @@ int setCommunication(tlv_request_t *user_request, tlv_reply_t *user_reply) {
         return RC_OTHER;
 
     //Sending request
-    write(fdr, &user_request, sizeof(user_request));
+    write(fdr, user_request, sizeof(user_request));
 
     //Open FIFO to receive answer
     int fda;
@@ -47,7 +61,7 @@ int setCommunication(tlv_request_t *user_request, tlv_reply_t *user_reply) {
     
     //Receiving reply
     clock_t initial = clock();
-    while(read(fda, &user_reply, sizeof(user_reply))) {
+    while(read(fda, user_reply, sizeof(user_reply))) {
         if (((clock()-initial)/CLOCKS_PER_SEC) == FIFO_TIMEOUT_SECS) {
             printf("Action took too long...\n");
             close(fda);
@@ -67,7 +81,7 @@ int setCommunication(tlv_request_t *user_request, tlv_reply_t *user_reply) {
     return RC_OK;
 }
 
-void* get_reply(void* arg){
+/*void* get_reply(void* arg){
     tlv_reply_t* reply = (tlv_reply_t*)arg;
 
     //Create FIFO
@@ -102,4 +116,4 @@ void* get_reply(void* arg){
     return RC_OK;
 
     return reply;
-}
+}*/
