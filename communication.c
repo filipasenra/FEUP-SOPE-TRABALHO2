@@ -2,12 +2,10 @@
 
 int setCommunication(tlv_request_t *user_request, tlv_reply_t *user_reply) {
     //Create FIFO to receive answer
-    char *fifo_receive = USER_FIFO_PATH_PREFIX;
-    char *pid;
-    sprintf(pid, "%d", getpid());
-    strcat(fifo_receive, pid);
+    char *fifo_receive = malloc(sizeof(USER_FIFO_PATH_PREFIX) + sizeof(getpid()));
+    sprintf(fifo_receive, "%s%d", USER_FIFO_PATH_PREFIX, getpid());
     mkfifo(fifo_receive, 0444);
-
+    
     //Open FIFO to send request
     int fdr;
     if ((fdr = open(SERVER_FIFO_PATH, O_WRONLY)) < 0)

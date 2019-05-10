@@ -33,7 +33,7 @@ int main(int argc, char *argv[]) {
      * */
 
     tlv_reply_t user_reply;
-
+    
     if (setCommunication(&user_request, &user_reply))
         return RC_OTHER;
 
