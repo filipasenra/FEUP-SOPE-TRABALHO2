@@ -8,6 +8,8 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <pthread>
+#include "communication.h"
+#include "serverMessage.h"
 #include "sope.h"
 
 /**
