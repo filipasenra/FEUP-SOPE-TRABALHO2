@@ -1,21 +1,6 @@
 #include "serverMessage.h"
 
 // Server Program
-int log_in(dataBase_t *db, uint32_t account_id, char password[MAX_PASSWORD_LEN + 1]){
-    bank_account_t acc;
-    char hash[HASH_LEN + 1];
-
-    for(int i = 0; i < db->last_element; i++){
-        acc = db->dataBaseArray[i];
-        if(acc.account_id == account_id){
-            getHash(acc.salt, password, hash);
-            if(acc.hash == hash)
-                return 1;
-        }
-    }
-    return 0;
-}
-
 int main(int argc, char *argv[]) {
     // Server <box offices> <password>
     if (argc != 3) {
@@ -47,7 +32,8 @@ int main(int argc, char *argv[]) {
         arg.q_mutex = &q_mutex;
         arg.db = &dataBase
 
-        pthread_create(&thread_array[i], NULL, box_office, (void *)(&arg));
+                     pthread_create(&thread_array[i], NULL, box_office,
+                                    (void *)(&arg));
         logBankOfficeOpen(STDERR_FILENO, i, thread_array[i]);
     }
 
@@ -63,12 +49,10 @@ int main(int argc, char *argv[]) {
     tlv_request_t request;
     while (1) {
         if (get_request(&request)) return RC_OTHER;
-        if (log_in()) {
-            pthread_mutex_lock(&q_mutex);
-            last = (last + 1) % QUEUE_MAX;
-            queue[last] = request;
-            pthread_mutex_unlock(&q_mutex);
-        }else return RC_LOGIN_FAIL;
+        pthread_mutex_lock(&q_mutex);
+        last = (last + 1) % QUEUE_MAX;
+        queue[last] = request;
+        pthread_mutex_unlock(&q_mutex);
     }
 
     // ESCREVER NO LOG

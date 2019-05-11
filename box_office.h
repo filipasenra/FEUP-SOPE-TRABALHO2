@@ -25,3 +25,4 @@ int create_account();
 int check_balance();
 int transfer();
 void shutdown();
+int log_in(dataBase_t *db, uint32_t account_id, char password[MAX_PASSWORD_LEN + 1]);

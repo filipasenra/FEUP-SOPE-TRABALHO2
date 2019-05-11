@@ -1,10 +1,10 @@
 #include "box_office.h"
 
-void* box_office(void* arg) {
+void *box_office(void *arg) {
     // LOOP TO SOLVE REQUESTS
-    struct thread_arg ta = *(struct thread_arg*)arg;
+    struct thread_arg ta = *(struct thread_arg *)arg;
     pthread_mutex_t mutex = ta.mutex;
-    sem_t* sem = ta.sem;
+    sem_t *sem = ta.sem;
 
     pthread_mutex_t q_mutex = ta.q_mutex;
     int *first = ta.first;
@@ -14,49 +14,57 @@ void* box_office(void* arg) {
     while (1) {
         pthread_mutex_lock(&q_mutex);
         tlv_request_t request = ta.queue[*first];
+        tlv_reply_t reply;
         *first = (*first + 1) % QUEUE_MAX;
         pthread_mutex_unlock(&q_mutex);
 
-        int op = get_operation();
-        int ret_value = 0;
+        if (log_in(db, request.value.header.account_id, request.value.header.password)) {
+            int op = get_operation();
+            int ret_value = 0;
 
-        switch (op) {
-            case 0:  // CREATE
-                ret_value = create_account();
-                break;
-            case 1:  // CHECK BALANCE
-                ret_value = create_account();
-                break;
-            case 2:  // TRANSFER
-                ret_value = transfer();
-                break;
-            case 3:
-                shutdown();
-                break;
-            default:
-                break;
+            switch (op) {
+                case 0:  // CREATE
+                    ret_value = create_account();
+                    break;
+                case 1:  // CHECK BALANCE
+                    ret_value = create_account();
+                    break;
+                case 2:  // TRANSFER
+                    ret_value = transfer();
+                    break;
+                case 3:
+                    shutdown();
+                    break;
+                default:
+                    break;
+            }
+
+            if (send_reply()) return RC_OTHER;
         }
-
-        if(send_reply())    return RC_OTHER;
     }
 }
 
-int get_operation(){
+int get_operation() {}
 
-}
+int create_account() {}
 
-int create_account(){
+int check_balance() {}
 
-}
+int transfer() {}
 
-int check_balance(){
+void shutdown() { pthread_exit(NULL); }
 
-}
+int log_in(dataBase_t *db, uint32_t account_id,
+           char password[MAX_PASSWORD_LEN + 1]) {
+    bank_account_t acc;
+    char hash[HASH_LEN + 1];
 
-int transfer(){
-
-}
-
-void shutdown(){
-    
+    for (int i = 0; i < db->last_element; i++) {
+        acc = db->dataBaseArray[i];
+        if (acc.account_id == account_id) {
+            getHash(acc.salt, password, hash);
+            if (acc.hash == hash) return 1;
+        }
+    }
+    return 0;
 }
