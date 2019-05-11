@@ -4,7 +4,7 @@
 int log_in(dataBase_t *db, uint32_t account_id, char password[MAX_PASSWORD_LEN + 1]){
     bank_account_t acc;
     char hash[HASH_LEN + 1];
-    
+
     for(int i = 0; i < db->last_element; i++){
         acc = db->dataBaseArray[i];
         if(acc.account_id == account_id){
@@ -68,7 +68,7 @@ int main(int argc, char *argv[]) {
             last = (last + 1) % QUEUE_MAX;
             queue[last] = request;
             pthread_mutex_unlock(&q_mutex);
-        }
+        }else return RC_LOGIN_FAIL;
     }
 
     // ESCREVER NO LOG
