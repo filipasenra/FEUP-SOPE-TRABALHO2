@@ -40,3 +40,23 @@ void* box_office(void* arg) {
         if(send_reply())    return RC_OTHER;
     }
 }
+
+int get_operation(){
+
+}
+
+int create_account(){
+
+}
+
+int check_balance(){
+
+}
+
+int transfer(){
+
+}
+
+void shutdown(){
+    
+}

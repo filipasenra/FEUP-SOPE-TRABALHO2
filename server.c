@@ -1,6 +1,20 @@
 #include "serverMessage.h"
 
 // Server Program
+int log_in(dataBase_t *db, uint32_t account_id, char password[MAX_PASSWORD_LEN + 1]){
+    bank_account_t acc;
+    char hash[HASH_LEN + 1];
+    
+    for(int i = 0; i < db->last_element; i++){
+        acc = db->dataBaseArray[i];
+        if(acc.account_id == account_id){
+            getHash(acc.salt, password, hash);
+            if(acc.hash == hash)
+                return 1;
+        }
+    }
+    return 0;
+}
 
 int main(int argc, char *argv[]) {
     // Server <box offices> <password>
@@ -20,7 +34,7 @@ int main(int argc, char *argv[]) {
     tlv_request_t queue[QUEUE_MAX];
     int first = 0;
     int last = -1;
-    
+
     // CREATE DATABASE
     dataBase_t dataBase;
     if (initializeDataBase(&dataBase)) return RC_OTHER;
