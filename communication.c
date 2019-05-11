@@ -1,41 +1,17 @@
 #include "communication.h"
 #include "serverMessage.h"
 
-int sendReply(tlv_request_t *user_request, tlv_reply_t *user_reply, dataBase_t *dataBase) {
-    //Create FIFO to receive request
-
+int get_request(tlv_request_t *request) {
     int fdr;
-    mkfifo(SERVER_FIFO_PATH, 0666);
 
-    // Open FIFO to receive request
-    if ((fdr = open(SERVER_FIFO_PATH, O_RDONLY)) < 0) return RC_OTHER;
+    // Open FIFO
+    if ((fdr = open(SERVER_FIFO_PATH, O_WRONLY)) < 0) return RC_OTHER;
 
-    // Receiving request
-    read(fdr, user_request, sizeof(user_reply));
+    // Send request
+    read(fdr, &request, sizeof(request));
 
-    //Make operation requested
-    //TODO
-
-
-    
-
-    //Preparing reply
-    if (replyMessageTLV(user_request, user_reply, dataBase))
-        return RC_USR_DOWN;
-
-
-    // Open FIFO to send reply
-    int fda;
-    char *fifo_send = malloc(sizeof(USER_FIFO_PATH_PREFIX) +
-                             sizeof(user_request->value.header.pid));
-    if ((fda = open(user_request->value.header.pid, O_WRONLY)) < 0)
-        return RC_OTHER;
-
-    // Sending reply
-    write(fda, user_reply, sizeof(user_reply));
-
-    // Free memory
-    free(fifo_send);
+    // Closing FIFOS
+    if (close(fdr)) return RC_OTHER;
 
     return RC_OK;
 }
@@ -47,7 +23,7 @@ int get_reply(tlv_reply_t reply) {
     // Create FIFO
     char *fifo_reply = malloc(sizeof(USER_FIFO_PATH_PREFIX) + sizeof(getpid()));
     sprintf(fifo_reply, "%s%d", USER_FIFO_PATH_PREFIX, getpid());
-    if (mkfifo(fifo_reply, 0666)) return NULL;
+    if (mkfifo(fifo_reply, 0666)) return RC_OTHER;
 
     // Open FIFO
     if ((fda = open(fifo_reply, O_RDONLY)) < 0) return RC_OTHER;
@@ -73,7 +49,6 @@ int get_reply(tlv_reply_t reply) {
 
 int send_request(tlv_request_t request) {
     int fdr;
-    clock_t initial = clock();
 
     // Open FIFO
     if ((fdr = open(SERVER_FIFO_PATH, O_WRONLY)) < 0) return RC_OTHER;

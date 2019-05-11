@@ -13,7 +13,11 @@
 
 struct thread_arg{
     sem_t *sem;
-    pthread_mutex_t mutex;
+    pthread_mutex_t *mutex;
+    pthread_mutex_t *q_mutex;
+    tlv_reply_t queue[20];
+    int *first;
+    int *last;
 };
 
 void* box_office(void* arg);
