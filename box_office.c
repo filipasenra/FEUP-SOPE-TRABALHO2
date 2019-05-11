@@ -19,7 +19,7 @@ void* box_office(void* arg) {
 
         pthread_mutex_lock(&q_mutex);
         tlv_request_t request = ta.queue[*first];
-        *first = (*first + 1) % 20;
+        *first = (*first + 1) % QUEUE_MAX;
         pthread_mutex_unlock(&q_mutex);
 
         int op = get_operation();

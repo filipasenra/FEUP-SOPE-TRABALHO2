@@ -21,7 +21,7 @@ int main(int argc, char *argv[]) {
     pthread_t thread_array[number_threads];
 
     pthread_mutex_t q_mutex = PTHREAD_MUTEX_INITIALIZER;
-    tlv_request_t queue[20];
+    tlv_request_t queue[QUEUE_MAX];
     int first = 0;
     int last = -1;
 
@@ -64,7 +64,7 @@ int main(int argc, char *argv[]) {
         if (get_request(&request)) return RC_OTHER;
         if (log_in()) {
             pthread_mutex_lock(&q_mutex);
-            last = (last + 1) % 20;
+            last = (last + 1) % QUEUE_MAX;
             queue[last] = request;
             pthread_mutex_unlock(&q_mutex);
         }

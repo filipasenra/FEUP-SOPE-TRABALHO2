@@ -15,7 +15,7 @@ struct thread_arg{
     sem_t *sem;
     pthread_mutex_t *mutex;
     pthread_mutex_t *q_mutex;
-    tlv_reply_t queue[20];
+    tlv_reply_t queue[QUEUE_MAX];
     int *first;
     int *last;
 };
