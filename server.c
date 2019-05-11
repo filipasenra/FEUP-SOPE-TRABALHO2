@@ -20,21 +20,22 @@ int main(int argc, char *argv[]) {
     tlv_request_t queue[QUEUE_MAX];
     int first = 0;
     int last = -1;
+    
+    // CREATE DATABASE
+    dataBase_t dataBase;
+    if (initializeDataBase(&dataBase)) return RC_OTHER;
 
     for (int i = 0; i < number_threads; i++) {
-        struct thread_arg arg;
+        box_office_t arg;
         arg.first = &first;
         arg.last = &last;
         arg.queue = queue;
         arg.q_mutex = &q_mutex;
+        arg.db = &dataBase
 
         pthread_create(&thread_array[i], NULL, box_office, (void *)(&arg));
         logBankOfficeOpen(STDERR_FILENO, i, thread_array[i]);
     }
-
-    // CREATE DATABASE
-    dataBase_t dataBase;
-    if (initializeDataBase(&dataBase)) return RC_OTHER;
 
     // CREATE ADMIN
     bank_account_t account;
@@ -44,11 +45,8 @@ int main(int argc, char *argv[]) {
     // OPEN FIFO
     if (mkfifo(SERVER_FIFO_PATH, 0666)) return RC_OTHER;
     if ((ff = open(SERVER_FIFO_PATH, O_WRONLY)) < 0) return RC_OTHER;
-    if (close(ff)) return RC_OTHER;
 
     tlv_request_t request;
-    tlv_reply_t reply;
-
     while (1) {
         if (get_request(&request)) return RC_OTHER;
         if (log_in()) {

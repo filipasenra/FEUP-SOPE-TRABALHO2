@@ -9,6 +9,7 @@ void* box_office(void* arg) {
     pthread_mutex_t q_mutex = ta.q_mutex;
     int *first = ta.first;
     int *last = ta.last;
+    dataBase_t *db = ta.db;
 
     while (1) {
         pthread_mutex_lock(&q_mutex);
@@ -35,5 +36,7 @@ void* box_office(void* arg) {
             default:
                 break;
         }
+
+        if(send_reply())    return RC_OTHER;
     }
 }

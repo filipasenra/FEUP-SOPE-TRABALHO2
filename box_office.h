@@ -11,12 +11,13 @@
 #include <pthread.h>
 #include <semaphore.h>
 
-struct thread_arg{
+typedef struct box_office{
     pthread_mutex_t *q_mutex;
     tlv_reply_t queue[QUEUE_MAX];
     int *first;
     int *last;
-};
+    dataBase_t *db;
+} __attribute__((packed)) box_office_t;
 
 void* box_office(void* arg);
 
