@@ -1,7 +1,7 @@
 #include "communication.h"
 #include "serverMessage.h"
 
-int sendReply(tlv_request_t *user_request, tlv_reply_t *user_reply) {
+int sendReply(tlv_request_t *user_request, tlv_reply_t *user_reply, dataBase_t *dataBase) {
     //Create FIFO to receive request
     int fdr;
     mkfifo(SERVER_FIFO_PATH, 0666);
@@ -17,12 +17,10 @@ int sendReply(tlv_request_t *user_request, tlv_reply_t *user_reply) {
     //TODO
 
 
-
-
     
 
     //Preparing reply
-    if (replyMessageTLV(user_request, user_reply))
+    if (replyMessageTLV(user_request, user_reply, dataBase))
         return RC_USR_DOWN;
 
     //Open FIFO to send reply

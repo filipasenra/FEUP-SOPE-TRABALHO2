@@ -16,4 +16,6 @@
 #include "creatAccount.h"
 #include "communication.h"
 
-int replyMessageTLV(tlv_request_t *user_request, tlv_reply_t *user_reply);
+int replyMessageTLV(tlv_request_t *user_request, tlv_reply_t *user_reply, dataBase_t *dataBase);
+
+int findAccount(int id, bank_account_t *account, dataBase_t *dataBase);

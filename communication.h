@@ -11,4 +11,4 @@
 
 int setCommunication(tlv_request_t *user_request, tlv_reply_t *user_reply);
 
-int sendReply(tlv_request_t *user_request, tlv_reply_t *user_reply);
+int sendReply(tlv_request_t *user_request, tlv_reply_t *user_reply, dataBase_t *dataBase);

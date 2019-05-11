@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
     //Receive request and send answer to user
     tlv_request_t user_request;
     tlv_reply_t user_reply;
-    if (sendReply(&user_request, &user_reply))
+    if (sendReply(&user_request, &user_reply, &dataBase))
         return RC_USR_DOWN;
 
     //ESCREVER NO LOG
