@@ -11,12 +11,6 @@ void* box_office(void* arg) {
     int *last = ta.last;
 
     while (1) {
-        // WAIT
-        sem_wait(sem);
-
-        // LOCK
-        pthread_mutex_lock(&mutex);
-
         pthread_mutex_lock(&q_mutex);
         tlv_request_t request = ta.queue[*first];
         *first = (*first + 1) % QUEUE_MAX;
@@ -41,11 +35,5 @@ void* box_office(void* arg) {
             default:
                 break;
         }
-
-        // UNLOCK
-        pthread_mutex_unlock(&mutex);
-
-        // SIGNAL
-        sem_post(sem);
     }
 }

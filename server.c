@@ -14,10 +14,6 @@ int main(int argc, char *argv[]) {
     if (number_threads <= 0 || number_threads > MAX_BANK_OFFICES)
         return RC_OTHER;
 
-    sem_t *sem = sem_open(argv[2], O_CREAT, 0600, number_threads);
-    if (sem == SEM_FAILED) return RC_OTHER;
-
-    pthread_mutex_t mutex_array[number_threads];
     pthread_t thread_array[number_threads];
 
     pthread_mutex_t q_mutex = PTHREAD_MUTEX_INITIALIZER;
@@ -26,14 +22,7 @@ int main(int argc, char *argv[]) {
     int last = -1;
 
     for (int i = 0; i < number_threads; i++) {
-        // create mutex
-        pthread_mutex_t m = PTHREAD_MUTEX_INITIALIZER;
-        mutex_array[i] = m;
-
-        // create thread
         struct thread_arg arg;
-        arg.sem = sem;
-        arg.mutex = &m;
         arg.first = &first;
         arg.last = &last;
         arg.queue = queue;
@@ -43,11 +32,11 @@ int main(int argc, char *argv[]) {
         logBankOfficeOpen(STDERR_FILENO, i, thread_array[i]);
     }
 
-    // Create accounts database
+    // CREATE DATABASE
     dataBase_t dataBase;
     if (initializeDataBase(&dataBase)) return RC_OTHER;
 
-    // Create admin account
+    // CREATE ADMIN
     bank_account_t account;
     creatAccount(&account, argv[2], 0, 0);
     addAccount(account, &dataBase);
