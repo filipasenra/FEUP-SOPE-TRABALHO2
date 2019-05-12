@@ -17,10 +17,6 @@ int send_request(tlv_request_t *user_request) {
 }
 
 int get_request(tlv_request_t *user_request) {
-    // Create FIFO to receive request
-    int fdr;
-    mkfifo(SERVER_FIFO_PATH, 0666);
-
     // Open FIFO to receive request
     if ((fdr = open(SERVER_FIFO_PATH, O_RDONLY)) < 0) return RC_OTHER;
 
