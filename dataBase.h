@@ -1,8 +1,8 @@
-#include "types.h"
 #include <stdlib.h>
+#include "types.h"
 
 typedef struct dataBase {
-    bank_account_t * dataBaseArray;
+    bank_account_t *dataBaseArray;
     int size;
     int last_element;
 } dataBase_t;
