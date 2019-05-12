@@ -14,31 +14,32 @@ int main(int argc, char *argv[])
     // Number of box offices
     int number_threads = strtol(argv[1], NULL, 10);
     if (number_threads <= 0 || number_threads > MAX_BANK_OFFICES)
-        exit(1);
+        return RC_OTHER;
 
-    sem_t *sem = sem_open(argv[2], O_CREAT, 0600, number_threads);
-    if (sem == SEM_FAILED)
-        exit(2);
-
-    pthread_mutex_t mutex_array[number_threads];
     pthread_t thread_array[number_threads];
-    for (int i = 0; i < number_threads; i++)
-    {
-        //create mutex
-        pthread_mutex_t m = PTHREAD_MUTEX_INITIALIZER;
-        mutex_array[i] = m;
 
-        //create thread
-        struct thread_arg arg;
-        arg.sem = sem;
-        arg.mutex = m;
-        pthread_create(&thread_array[i], NULL, box_office, (void *)(&arg));
-    }
+    pthread_mutex_t q_mutex = PTHREAD_MUTEX_INITIALIZER;
+    tlv_request_t queue[QUEUE_MAX];
+    int first = 0;
+    int last = -1;
 
-    // Create accounts database
+    // CREATE DATABASE
     dataBase_t dataBase;
     if (initializeDataBase(&dataBase))
         return RC_OTHER;
+
+    for (int i = 0; i < number_threads; i++)
+    {
+        box_office_t arg;
+        arg.first = &first;
+        arg.last = &last;
+        arg.queue = queue;
+        arg.q_mutex = &q_mutex;
+        arg.db = &dataBase;
+
+        pthread_create(&thread_array[i], NULL, box_office, (void *)(&arg));
+        logBankOfficeOpen(STDERR_FILENO, i, thread_array[i]);
+    }
 
     // Create admin account
     bank_account_t account;
@@ -47,9 +48,6 @@ int main(int argc, char *argv[])
 
     //CRIAR BOX OFFICES
     //TODO
-
-
-
 
     // Set Communication
     tlv_request_t user_request;
@@ -62,9 +60,6 @@ int main(int argc, char *argv[])
     // Make operation requested
     //TODO
 
-
-
-
     // Preparing reply
     if (replyMessageTLV(&user_request, &user_reply, &dataBase))
         return RC_USR_DOWN;
@@ -73,11 +68,25 @@ int main(int argc, char *argv[])
     if (send_reply(&user_request, &user_reply))
         return RC_USR_DOWN;
 
-    //ESCREVER NO LOG
-    //TODO
-
-
     
+    /*// OPEN FIFO
+    if (mkfifo(SERVER_FIFO_PATH, 0666))
+        return RC_OTHER;
+    if ((ff = open(SERVER_FIFO_PATH, O_WRONLY)) < 0)
+        return RC_OTHER;
+
+    tlv_request_t request;
+    while (1)
+    {
+        if (get_request(&request))
+            return RC_OTHER;
+        pthread_mutex_lock(&q_mutex);
+        last = (last + 1) % QUEUE_MAX;
+        queue[last] = request;
+        pthread_mutex_unlock(&q_mutex);
+    }*/
+
+    // ESCREVER NO LOG
 
     return RC_OK;
 }
