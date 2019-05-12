@@ -1,4 +1,5 @@
 #include "serverMessage.h"
+#include "box_office.h"
 
 // Server Program
 
@@ -43,7 +44,7 @@ int main(int argc, char *argv[])
 
     // Create admin account
     bank_account_t account;
-    creatAccount(&account, argv[2], 0, 0);
+    create_account(&account, argv[2], 0, 0);
     addAccount(account, &dataBase);
 
     //CRIAR BOX OFFICES
@@ -69,7 +70,6 @@ int main(int argc, char *argv[])
 
 
 
-
     // Preparing reply
     if (replyMessageTLV(&user_request, &user_reply, &dataBase))
         return RC_USR_DOWN;
@@ -80,5 +80,5 @@ int main(int argc, char *argv[])
 
     // ESCREVER NO LOG
 
-    return RC_OK;
+    return 0;
 }

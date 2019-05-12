@@ -1,3 +1,5 @@
+#pragma once
+
 #include <fcntl.h>
 #include <pthread.h>
 #include <semaphore.h>
@@ -13,13 +15,13 @@
 
 typedef struct box_office {
     pthread_mutex_t *q_mutex;
-    tlv_reply_t queue[QUEUE_MAX];
+    tlv_request_t (* queue)[QUEUE_MAX];
     int *first;
     int *last;
     dataBase_t *db;
 } __attribute__((packed)) box_office_t;
 
-void *box_office(void *arg);
+void * box_office(void *arg);
 
 int get_operation();
 int check_balance();
