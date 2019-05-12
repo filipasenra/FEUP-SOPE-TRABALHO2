@@ -3,6 +3,8 @@
 
 // Server Program
 
+pthread_mutex_t q_mutex = PTHREAD_MUTEX_INITIALIZER;
+
 int main(int argc, char *argv[])
 {
     // Server <box offices> <password>
@@ -18,8 +20,6 @@ int main(int argc, char *argv[])
         return RC_OTHER;
 
     pthread_t thread_array[number_threads];
-
-    pthread_mutex_t q_mutex = PTHREAD_MUTEX_INITIALIZER;
     pthread_mutex_lock(&q_mutex);
     tlv_request_t queue[QUEUE_MAX];
     int first = 0;
@@ -59,7 +59,6 @@ int main(int argc, char *argv[])
     tlv_request_t user_request;
     tlv_reply_t user_reply;
 
-
     //Create FIFO to receive request
     int fdr;
     mkfifo(SERVER_FIFO_PATH, 0666);
@@ -67,16 +66,17 @@ int main(int argc, char *argv[])
     // Receiving request
     while (1)
     {
-        pthread_mutex_unlock(&q_mutex);
-        
         if (get_request(&user_request, fdr))
             return RC_OTHER;
 
-        printf("after unlock\n");
-
+        pthread_mutex_unlock(&q_mutex);
+    
         pthread_mutex_lock(&q_mutex);
         last = (last + 1) % QUEUE_MAX;
         queue[last] = user_request;
+
+        pthread_mutex_unlock(&q_mutex);
+
     }
 
     // Make operation requested

@@ -2,15 +2,11 @@
 
 #include "communication.h"
 
+extern pthread_mutex_t q_mutex;
 void *box_office(void *arg)
 {
     // LOOP TO SOLVE REQUESTS
     box_office_t ta = *(box_office_t *)arg;
-
-    pthread_mutex_t mutex = *ta.q_mutex;
-    int *first = ta.first;
-    int *last = ta.last;
-    dataBase_t *db = ta.db;
 
     tlv_request_t request;
     tlv_reply_t reply;
@@ -19,10 +15,17 @@ void *box_office(void *arg)
 
     while (1)
     {
-        pthread_mutex_lock(&mutex);
+        pthread_mutex_lock(&q_mutex);
+
+        int *first = ta.first;
+        int *last = ta.last;
+        dataBase_t *db = ta.db;
+
         request = *ta.queue[*first];
         *first = (*first + 1) % QUEUE_MAX;
-        pthread_mutex_unlock(&mutex);
+        pthread_mutex_unlock(&q_mutex);
+
+        printf("After unlock thread\n");
 
         if (log_in(db, request.value.header.account_id,
                    request.value.header.password) != 0)

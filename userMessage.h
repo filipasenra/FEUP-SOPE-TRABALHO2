@@ -4,7 +4,6 @@
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
-#pragma once
 
 #include <string.h>
 #include <sys/stat.h>
