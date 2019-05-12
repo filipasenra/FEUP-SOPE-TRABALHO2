@@ -4,14 +4,14 @@
 
 int main(int argc, char *argv[])
 {
-    //Server <box offices> <password>
+    // Server <box offices> <password>
     if (argc != 3)
     {
         printf("./server <box offices> <password>\n");
         return RC_OTHER;
     }
 
-    //Number of box offices
+    // Number of box offices
     int number_threads = strtol(argv[1], NULL, 10);
     if (number_threads <= 0 || number_threads > MAX_BANK_OFFICES)
         exit(1);
@@ -35,25 +35,49 @@ int main(int argc, char *argv[])
         pthread_create(&thread_array[i], NULL, box_office, (void *)(&arg));
     }
 
-    //Create accounts database
+    // Create accounts database
     dataBase_t dataBase;
     if (initializeDataBase(&dataBase))
         return RC_OTHER;
 
-    //Create admin account
+    // Create admin account
     bank_account_t account;
     creatAccount(&account, argv[2], 0, 0);
     addAccount(account, &dataBase);
 
     //CRIAR BOX OFFICES
+    //TODO
 
-    //Receive request and send answer to user
+
+
+
+    // Set Communication
     tlv_request_t user_request;
     tlv_reply_t user_reply;
-    if (sendReply(&user_request, &user_reply, &dataBase))
+
+    // Receiving request
+    if (get_request(&user_request))
+        return RC_OTHER;
+
+    // Make operation requested
+    //TODO
+
+
+
+
+    // Preparing reply
+    if (replyMessageTLV(&user_request, &user_reply, &dataBase))
+        return RC_USR_DOWN;
+
+    // Sending reply
+    if (send_reply(&user_request, &user_reply))
         return RC_USR_DOWN;
 
     //ESCREVER NO LOG
+    //TODO
+
+
+    
 
     return RC_OK;
 }

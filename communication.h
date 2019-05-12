@@ -9,6 +9,10 @@
 #include "sope.h"
 #include "types.h"
 
-int setCommunication(tlv_request_t *user_request, tlv_reply_t *user_reply);
+int send_request(tlv_request_t *request);
 
-int sendReply(tlv_request_t *user_request, tlv_reply_t *user_reply, dataBase_t *dataBase);
+int get_request(tlv_request_t *user_request);
+
+int send_reply(tlv_request_t *user_request, tlv_reply_t *user_reply);
+
+int get_reply(tlv_reply_t *reply);
