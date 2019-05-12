@@ -11,10 +11,10 @@ int send_request(tlv_request_t *user_request) {
     return RC_OK;
 }
 
-int get_request(tlv_request_t *user_request, int fdr)
-{
-    if ((fdr = open(SERVER_FIFO_PATH, O_RDONLY)) < 0)
-        return RC_OTHER;
+int get_request(tlv_request_t *user_request) {
+    int fdr;
+    if ((fdr = open(SERVER_FIFO_PATH, O_RDONLY)) < 0) return RC_OTHER;
+
     read(fdr, user_request, sizeof(user_request));
 
     if (close(fdr)) return RC_OTHER;
