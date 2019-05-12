@@ -1,93 +1,47 @@
 #include "box_office.h"
-
 #include "communication.h"
 
-extern pthread_mutex_t q_mutex;
-void *box_office(void *arg)
-{
-    // LOOP TO SOLVE REQUESTS
-    box_office_t ta = *(box_office_t *)arg;
-
+void *box_office(void *arg) {
     tlv_request_t request;
     tlv_reply_t reply;
 
-    int *return_value = malloc(sizeof(int));
-
-    while (1)
-    {
+    while (1) {
         pthread_mutex_lock(&q_mutex);
-
-        int *first = ta.first;
-        int *last = ta.last;
-        dataBase_t *db = ta.db;
-
-        request = *ta.queue[*first];
-        *first = (*first + 1) % QUEUE_MAX;
+        request = queue[first];
+        if (request.length == 0) {
+            pthread_mutex_unlock(&q_mutex);
+            continue;
+        }
+        first = (first + 1) % QUEUE_MAX;
+        request.length = 0;
         pthread_mutex_unlock(&q_mutex);
 
-        printf("After unlock thread\n");
+        pthread_mutex_lock(&db_mutex);
+        if (log_in(db, request.value.header.account_id, request.value.header.password)) {
+            int op = (int)request.type;
+            bank_account_t acc;
 
-        if (log_in(db, request.value.header.account_id,
-                   request.value.header.password) != 0)
-        {
-            reply.type = request.type;
-            reply.value.header.account_id = request.value.header.account_id;
-            reply.value.header.ret_code = RC_LOGIN_FAIL;
-
-            *return_value = RC_LOGIN_FAIL;
-            return return_value;
-        }
-
-        int op = (int)request.type;
-        bank_account_t acc;
-
-        switch (op)
-        {
-        case 0: // CREATE
-
-            if (create_account(&acc, request.value.create.password,
-                               request.value.create.account_id,
-                               request.value.create.balance))
-            {
-
-                *return_value = RC_OTHER;
-                return return_value;
+            switch (op) {
+                case 0:  // CREATE
+                    if (create_account(&acc, request.value.create.password, request.value.create.account_id, request.value.create.balance)) return return_value;
+                    if (addAccount(acc, db)) return return_value;
+                    break;
+                case 1:  // CHECK BALANCE
+                    check_balance();
+                    break;
+                case 2:  // TRANSFER
+                    transfer();
+                    break;
+                case 3:
+                    shutdown();
+                    break;
+                default:
+                    break;
             }
-
-            if (addAccount(acc, db))
-            {
-                *return_value = RC_OTHER;
-                return return_value;
-            }
-
-            break;
-
-        case 1: // CHECK BALANCE
-
-            acc = *accountExist(request.value.header.account_id, db);
-            check_balance(acc, &reply);
-
-            break;
-
-        case 2: // TRANSFER
-
-            transfer(request, &reply, db);
-
-            break;
-
-        case 3:
-            shutdown();
-            break;
-
-        default:
-            break;
-        }
-
-        if (send_reply(&request, &reply))
-        {
-            *return_value = RC_OTHER;
-            return return_value;
-        }
+            pthread_mutex_unlock(&db_mutex);
+            if (send_reply(&request, &reply)) return RC_OTHER;
+        } else
+            pthread_mutex_unlock(&db_mutex);
     }
 
     return NULL;
@@ -167,20 +121,17 @@ int transfer(tlv_request_t user_request, tlv_reply_t *user_reply, dataBase_t *db
 
 void shutdown() { pthread_exit(NULL); }
 
-int log_in(dataBase_t *db, uint32_t account_id, char password[MAX_PASSWORD_LEN + 1])
-{
-    bank_account_t *acc = accountExist(account_id, db);
-
-    if (acc == NULL)
-        return 1;
-
+int log_in(dataBase_t *db, uint32_t account_id,
+           char password[MAX_PASSWORD_LEN + 1]) {
+    bank_account_t acc;
     char hash[HASH_LEN + 1];
 
-    if (acc->account_id == account_id)
-    {
-        getHash(acc->salt, password, hash);
-        if (acc->hash == hash)
-            return 0;
+    for (int i = 0; i < db->size; i++) {
+        acc = db->dataBaseArray[i];
+        if (acc.account_id == account_id) {
+            getHash(acc.salt, password, hash);
+            if (acc.hash == hash) return 1;
+        }
     }
 
     return 1;

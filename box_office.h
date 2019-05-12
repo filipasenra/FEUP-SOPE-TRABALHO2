@@ -15,9 +15,9 @@
 
 typedef struct box_office {
     pthread_mutex_t *q_mutex;
-    tlv_request_t (* queue)[QUEUE_MAX];
-    int *first;
-    int *last;
+    tlv_request_t* queue[QUEUE_MAX];
+    int first;
+    int last;
     dataBase_t *db;
 } __attribute__((packed)) box_office_t;
 
