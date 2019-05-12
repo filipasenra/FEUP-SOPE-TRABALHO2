@@ -57,16 +57,10 @@ int send_reply(tlv_request_t *user_request, tlv_reply_t *user_reply)
     return RC_OK;
 }
 
-int get_reply(tlv_reply_t *user_reply)
+int get_reply(tlv_reply_t *user_reply, const char *fifo_reply)
 {
     int fda;
     clock_t initial = clock();
-
-    // Create FIFO to receive reply
-    char *fifo_reply = malloc(sizeof(USER_FIFO_PATH_PREFIX) + sizeof(getpid()));
-    sprintf(fifo_reply, "%s%d", USER_FIFO_PATH_PREFIX, getpid());
-    if (mkfifo(fifo_reply, 0666))
-        return RC_OTHER;
 
     // Open FIFO to receive reply
     if ((fda = open(fifo_reply, O_RDONLY)) < 0)

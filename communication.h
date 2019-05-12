@@ -15,4 +15,4 @@ int get_request(tlv_request_t *user_request);
 
 int send_reply(tlv_request_t *user_request, tlv_reply_t *user_reply);
 
-int get_reply(tlv_reply_t *reply);
+int get_reply(tlv_reply_t *reply, const char *fifo_reply);
