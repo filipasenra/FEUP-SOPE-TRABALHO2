@@ -7,6 +7,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include "creatAccount.h"
+#include "dataBase.h"
 #include "sope.h"
 #include "types.h"
 
@@ -21,8 +22,8 @@ typedef struct box_office {
 void *box_office(void *arg);
 
 int get_operation();
-int create_account();
 int check_balance();
 int transfer();
 void shutdown();
-int log_in(dataBase_t *db, uint32_t account_id, char password[MAX_PASSWORD_LEN + 1]);
+int log_in(dataBase_t *db, uint32_t account_id,
+           char password[MAX_PASSWORD_LEN + 1]);
