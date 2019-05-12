@@ -24,7 +24,7 @@ typedef struct box_office {
 void * box_office(void *arg);
 
 int get_operation();
-int check_balance();
+int check_balance(bank_account_t bank_account, tlv_reply_t *user_reply);
 int transfer();
 void shutdown();
 int log_in(dataBase_t *db, uint32_t account_id,

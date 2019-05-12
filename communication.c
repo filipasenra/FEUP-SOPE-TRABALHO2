@@ -18,12 +18,8 @@ int send_request(tlv_request_t *user_request)
     return RC_OK;
 }
 
-int get_request(tlv_request_t *user_request)
+int get_request(tlv_request_t *user_request, int fdr)
 {
-    //Create FIFO to receive request
-    int fdr;
-    mkfifo(SERVER_FIFO_PATH, 0666);
-
     // Open FIFO to receive request
     if ((fdr = open(SERVER_FIFO_PATH, O_RDONLY)) < 0)
         return RC_OTHER;
@@ -43,8 +39,13 @@ int send_reply(tlv_request_t *user_request, tlv_reply_t *user_reply)
     // Open FIFO to send reply
     int fda;
     char *fifo_send = malloc(sizeof(USER_FIFO_PATH_PREFIX) + sizeof(user_request->value.header.pid));
+
+    printf("Before opening fifo\n");
     if ((fda = open(fifo_send, O_WRONLY)) < 0)
         return RC_OTHER;
+
+
+    printf("Before after fifo\n");
 
     // Send reply
     write(fda, user_reply, sizeof(user_reply));
@@ -60,6 +61,7 @@ int get_reply(tlv_reply_t *user_reply, char *fifo_reply, int fda)
 {
     clock_t initial = clock();
 
+    printf("hl\n");
     // Receiving reply
     while (read(fda, &user_reply, sizeof(user_reply)))
     {
@@ -70,6 +72,9 @@ int get_reply(tlv_reply_t *user_reply, char *fifo_reply, int fda)
             return RC_SRV_TIMEOUT;
         }
     }
+
+
+    printf("hl\n");
 
     // Closing FIFOS
     if (close(fda))

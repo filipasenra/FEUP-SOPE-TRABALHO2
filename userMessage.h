@@ -4,10 +4,11 @@
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
+#pragma once
+
 #include <string.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <pthread>
 #include "communication.h"
 #include "serverMessage.h"
 #include "sope.h"
