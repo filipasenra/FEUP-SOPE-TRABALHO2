@@ -47,7 +47,6 @@ int main(int argc, char *argv[]) {
 
     // OPEN FIFO
     if (mkfifo(SERVER_FIFO_PATH, 0666)) return RC_OTHER;
-    if ((ff = open(SERVER_FIFO_PATH, O_WRONLY)) < 0) return RC_OTHER;
 
     // WAIT FOR REQUEST LOOP
     tlv_request_t request;
