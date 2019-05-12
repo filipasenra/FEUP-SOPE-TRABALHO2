@@ -7,7 +7,7 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <pthread>
+#include <pthread.h>
 #include "communication.h"
 #include "serverMessage.h"
 #include "sope.h"
