@@ -75,6 +75,6 @@ int findAccount(int id, bank_account_t *account, dataBase_t *dataBase)
             *account = dataBase->dataBaseArray[i];
             return RC_OTHER;
         }
-
-    RC_OK;
+        
+    return RC_OK;
 }
