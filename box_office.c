@@ -11,6 +11,10 @@ void *box_office(void *arg) {
             pthread_mutex_unlock(&q_mutex);
             continue;
         }
+
+        pthread_mutex_unlock(&q_mutex);
+        pthread_mutex_lock(&q_mutex);
+
         first = (first + 1) % QUEUE_MAX;
         request.length = 0;
 
