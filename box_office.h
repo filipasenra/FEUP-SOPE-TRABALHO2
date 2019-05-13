@@ -21,11 +21,16 @@ typedef struct box_office {
     dataBase_t *db;
 } __attribute__((packed)) box_office_t;
 
-void * box_office(void *arg);
+extern pthread_mutex_t q_mutex;
+extern pthread_mutex_t db_mutex;
+extern tlv_request_t queue[QUEUE_MAX];
+extern int first;
+extern int last;
+extern dataBase_t db;
 
+void * box_office(void *arg);
 int get_operation();
 int check_balance(bank_account_t bank_account, tlv_reply_t *user_reply);
 int transfer();
 void shutdown();
-int log_in(dataBase_t *db, uint32_t account_id,
-           char password[MAX_PASSWORD_LEN + 1]);
+int log_in(dataBase_t *db, uint32_t account_id, char password[MAX_PASSWORD_LEN + 1]);
