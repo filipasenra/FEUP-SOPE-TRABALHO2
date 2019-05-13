@@ -59,22 +59,13 @@ int send_reply(tlv_request_t *user_request, tlv_reply_t *user_reply)
 
 int get_reply(tlv_reply_t *user_reply, char *fifo_reply, int fda)
 {
-    clock_t initial = clock();
+    int n;
+    while ((n = read(fda, user_reply, sizeof(tlv_reply_t))) == 0);
 
-    if (read(fda, user_reply, sizeof(tlv_reply_t)) > 0)
-    {
-
-        if (((clock() - initial) / CLOCKS_PER_SEC) == FIFO_TIMEOUT_SECS)
-        {
-            printf("Action took too long...\n");
-            close(fda);
-            return RC_SRV_TIMEOUT;
-        }
-    }
-    else
+    if (n < 0)
     {
         perror("get_reply");
-        return RC_OTHER;
+        return -1;
     }
 
     // Closing FIFOS

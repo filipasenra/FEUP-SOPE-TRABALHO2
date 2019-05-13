@@ -51,6 +51,8 @@ void *box_office(void *arg)
             }
             pthread_mutex_unlock(&db_mutex);
 
+            sleep(30);
+            
             if (send_reply(&request, &reply))
                 return (void *)RC_OTHER;
         }
