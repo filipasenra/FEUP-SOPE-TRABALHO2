@@ -51,3 +51,6 @@ E - 11011 - [ 62 bytes] 11011 (0000, "hello")                [   10 ms] CREATE  
 E - 11106 - [ 62 bytes] 11106 (0000, "hello")                [   10 ms] CREATE   0001         25€ "top_secret"
 E - 11379 - [ 62 bytes] 11379 (0000, "hello")                [   10 ms] CREATE   0001         25€ "top_secret"
 E - 11455 - [ 62 bytes] 11455 (0000, "hello")                [   10 ms] CREATE   0001         25€ "top_secret"
+E - 04094 - [ 62 bytes] 04094 (0000, "hello")                [   10 ms] CREATE   0001         25€ "top_secret"
+E - 04127 - [ 62 bytes] 04127 (0000, "hello")                [   10 ms] CREATE   0001         25€ "top_secret"
+E - 04277 - [ 62 bytes] 04277 (0000, "hello")                [   10 ms] CREATE   0001         25€ "top_secret"
