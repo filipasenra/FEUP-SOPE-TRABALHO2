@@ -14,3 +14,12 @@ int send_request(tlv_request_t *request);
 int get_request(tlv_request_t *user_request);
 int send_reply(tlv_request_t *user_request, tlv_reply_t *user_reply);
 int get_reply(tlv_reply_t *reply, char *fifo_reply, int fda);
+
+typedef struct thread_arg{
+    pid_t pid;
+    tlv_reply_t *reply;
+    int *completed;
+} thread_arg_t;
+
+
+void *get_reply_thread(void *arg);
