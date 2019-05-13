@@ -12,6 +12,7 @@
 #include "dataBase.h"
 #include "sope.h"
 #include "types.h"
+#include "communication.h"
 
 typedef struct box_office {
     pthread_mutex_t *q_mutex;

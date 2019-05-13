@@ -1,4 +1,3 @@
-#include "box_office.h"
 #include "serverMessage.h"
 
 pthread_mutex_t q_mutex = PTHREAD_MUTEX_INITIALIZER;

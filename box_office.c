@@ -1,5 +1,4 @@
 #include "box_office.h"
-#include "communication.h"
 
 void *box_office(void *arg) {
     tlv_request_t request;
@@ -17,29 +16,30 @@ void *box_office(void *arg) {
         pthread_mutex_unlock(&q_mutex);
 
         pthread_mutex_lock(&db_mutex);
-        if (log_in(db, request.value.header.account_id, request.value.header.password)) {
+        if (log_in(&db, request.value.header.account_id, request.value.header.password)) {
             int op = (int)request.type;
             bank_account_t acc;
 
             switch (op) {
                 case 0:  // CREATE
-                    if (create_account(&acc, request.value.create.password, request.value.create.account_id, request.value.create.balance)) return return_value;
-                    if (addAccount(acc, db)) return return_value;
+                    create_account(&acc, request.value.create.password, request.value.create.account_id, request.value.create.balance);
+                    if (addAccount(acc, &db)) 
+                        return (void *)RC_OTHER;
                     break;
                 case 1:  // CHECK BALANCE
-                    check_balance();
+                    check_balance(acc, &reply);
                     break;
                 case 2:  // TRANSFER
-                    transfer();
+                    transfer(request, &reply, &db);
                     break;
-                case 3:
+                case 3:  // SHUTDOWN
                     shutdown();
                     break;
                 default:
                     break;
             }
             pthread_mutex_unlock(&db_mutex);
-            if (send_reply(&request, &reply)) return RC_OTHER;
+            if (send_reply(&request, &reply)) return (void *)RC_OTHER;
         } else
             pthread_mutex_unlock(&db_mutex);
     }
@@ -121,8 +121,8 @@ int transfer(tlv_request_t user_request, tlv_reply_t *user_reply, dataBase_t *db
 
 void shutdown() { pthread_exit(NULL); }
 
-int log_in(dataBase_t *db, uint32_t account_id,
-           char password[MAX_PASSWORD_LEN + 1]) {
+int log_in(dataBase_t *db, uint32_t account_id, char password[MAX_PASSWORD_LEN + 1]) 
+{
     bank_account_t acc;
     char hash[HASH_LEN + 1];
 

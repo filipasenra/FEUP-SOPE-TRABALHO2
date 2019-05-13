@@ -19,8 +19,7 @@ int addAccount(bank_account_t bank_account, dataBase_t *dataBase)
 
     if (dataBase->size <= dataBase->last_element)
     {
-        if ((dataBase->dataBaseArray =
-                 realloc(dataBase->dataBaseArray, dataBase->size + 20)) == NULL)
+        if ((dataBase->dataBaseArray = realloc(dataBase->dataBaseArray, dataBase->size + 20)) == NULL)
             return RC_OTHER;
     }
 
