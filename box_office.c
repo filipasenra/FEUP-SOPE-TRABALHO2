@@ -13,9 +13,7 @@ void *box_office(void *arg) {
         }
         first = (first + 1) % QUEUE_MAX;
         request.length = 0;
-        pthread_mutex_unlock(&q_mutex);
 
-        pthread_mutex_lock(&db_mutex);
         if (log_in(&db, request.value.header.account_id, request.value.header.password)) {
             int op = (int)request.type;
             bank_account_t acc;
@@ -39,7 +37,9 @@ void *box_office(void *arg) {
                     break;
             }
             pthread_mutex_unlock(&db_mutex);
+
             if (send_reply(&request, &reply)) return (void *)RC_OTHER;
+
         } else
             pthread_mutex_unlock(&db_mutex);
     }

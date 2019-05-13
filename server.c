@@ -39,6 +39,7 @@ int main(int argc, char* argv[]) {
     mkfifo(SERVER_FIFO_PATH, 0666);
     while (1) {
         if (get_request(&request)) return RC_OTHER;
+        
         pthread_mutex_lock(&q_mutex);
         queue[last] = request;
         last = (last + 1) % QUEUE_MAX;

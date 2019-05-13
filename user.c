@@ -18,13 +18,15 @@ int main(int argc, char *argv[]){
     // SEND REQUEST
     if (send_request(&user_request)) return RC_OTHER;
 
+    fda = open(fifo_reply, O_RDONLY);
+
     // RECEIVE REPLY
     if (get_reply(&user_reply, fifo_reply, fda)) return RC_OTHER;
 
     // TODO: get_reply on separate thread and count time on main thread
 
     // READ REPLY
-    printf("%d\n", user_reply.length);
+    printf("%d\n", user_reply.value.header.account_id);
 
     return RC_OK;
 }
