@@ -72,28 +72,28 @@ void *get_reply_thread(void *arg) {
     thread_arg_t *thread_arg = (thread_arg_t *)arg;
 
     char *fifo_reply = malloc(sizeof(USER_FIFO_PATH_PREFIX) + sizeof(pid_t));
-    sprintf(fifo_reply, "%s%d", USER_FIFO_PATH_PREFIX, reply->pid);
+    sprintf(fifo_reply, "%s%d", USER_FIFO_PATH_PREFIX, thread_arg->pid);
 
-    if ((fda = open())) {
+    if ((fda = open(fifo_reply, O_RDONLY))) {
         *(thread_arg->completed) = 1;
-        return RC_SRV_DOWN;
+        return (void*)RC_SRV_DOWN;
     }
 
     if (read(fda, thread_arg->reply, sizeof(tlv_reply_t))) {
         perror("get_reply");
         *(thread_arg->completed) = 1;
-        return RC_OTHER;
+        return (void*)RC_OTHER;
     }
 
     // Closing FIFOS
     if (close(fda) != 0) {
         *(thread_arg->completed) = 1;
-        return RC_OTHER;
+        return (void*)RC_OTHER;
     }
 
     unlink(fifo_reply);
     free(fifo_reply);
 
     *(thread_arg->completed) = 1;
-    return RC_OK;
+    return (void*)RC_OK;
 }
