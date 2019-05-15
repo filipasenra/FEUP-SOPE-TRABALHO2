@@ -10,6 +10,7 @@ void *box_office(void *arg)
     {
         //Locks the mutex
         pthread_mutex_lock(&q_mutex);
+       
 
         //Gets the request that arrived first
         request = queue[first];
@@ -37,6 +38,7 @@ void *box_office(void *arg)
             switch (op)
             {
             case 0: // CREATE
+                usleep(request.value.header.op_delay_ms);
                 create_account(&acc, request.value.create.password,
                                request.value.create.account_id,
                                request.value.create.balance, &reply);
@@ -45,13 +47,16 @@ void *box_office(void *arg)
                 printf("CREATE - ACCOUNT - %d\n", request.value.create.account_id);
                 break;
             case 1: // CHECK BALANCE
+                usleep(request.value.header.op_delay_ms);
                 acc = *accountExist(request.value.transfer.account_id, &db);
                 check_balance(&acc, &reply);
                 break;
             case 2: // TRANSFER
+                usleep(request.value.header.op_delay_ms);
                 transfer(request, &reply);
                 break;
             case 3: // SHUTDOWN
+                usleep(request.value.header.op_delay_ms);
                 shutdown();
                 break;
             default:
@@ -171,11 +176,14 @@ int transfer(tlv_request_t user_request, tlv_reply_t *user_reply)
 
     user_reply->value.transfer.balance = bank_account_origin->balance;
     user_reply->length += sizeof(user_reply->value.transfer);
+    user_reply->value.header.ret_code = RC_OK;
 
     return 0;
 }
 
-void shutdown() { pthread_exit(NULL); }
+void shutdown() { 
+    pthread_exit(NULL); 
+}
 
 int log_in(dataBase_t *db, uint32_t account_id,
            char password[MAX_PASSWORD_LEN + 1])

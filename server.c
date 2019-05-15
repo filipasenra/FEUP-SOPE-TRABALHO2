@@ -59,6 +59,7 @@ int main(int argc, char* argv[]) {
         pthread_mutex_unlock(&q_mutex);
 
     }
+    unlink(SERVER_FIFO_PATH);
 
     return 0;
 }
