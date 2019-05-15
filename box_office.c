@@ -32,12 +32,11 @@ void *box_office(void *arg)
                 create_account(&acc, request.value.create.password,
                                request.value.create.account_id,
                                request.value.create.balance);
-                if (addAccount(acc, &db))
+                if (addAccount(acc, &db)) 
                     return (void *)RC_OTHER;
-                printf("CREATE - ACCOUNT - %d", request.value.create.account_id);
+                printf("CREATE - ACCOUNT - %d\n", request.value.create.account_id);
                 break;
             case 1: // CHECK BALANCE
-
                 acc = *accountExist(request.value.transfer.account_id, &db);
                 check_balance(&acc, &reply);
                 break;
@@ -50,6 +49,7 @@ void *box_office(void *arg)
             default:
                 break;
             }
+
             pthread_mutex_unlock(&db_mutex);
             
             if (send_reply(&request, &reply))
