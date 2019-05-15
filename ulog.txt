@@ -190,3 +190,9 @@ E - 04119 - [ 62 bytes] 04119 (0000, "hello")                [   10 ms] CREATE  
 E - 04178 - [ 62 bytes] 04178 (0000, "hello")                [   10 ms] CREATE   0002         25€ "top_secret"
 E - 04263 - [ 62 bytes] 04263 (0000, "hello")                [   10 ms] CREATE   0002         25€ "top_secret"
 >>>>>>> 4471bfc82744e267c999622ebb4cd4fa85549db0
+E - 10524 - [ 58 bytes] 10524 (0000, "ola")                  [   10 ms] CREATE   0001         20€ "oito"
+E - 10931 - [ 58 bytes] 10931 (0000, "ola")                  [   10 ms] CREATE   0001         20€ "oito"
+E - 11091 - [ 58 bytes] 11091 (0000, "ola")                  [   10 ms] CREATE   0001         20€ "oito"
+E - 11252 - [ 58 bytes] 11252 (0000, "ola")                  [   10 ms] CREATE   0001         20€ "oito"
+E - 11378 - [ 58 bytes] 11378 (0000, "ola")                  [   10 ms] CREATE   0001         20€ "oito"
+E - 12527 - [ 58 bytes] 12527 (0000, "ola")                  [   10 ms] CREATE   0001         20€ "oito"

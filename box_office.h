@@ -31,6 +31,7 @@ extern dataBase_t db;
 
 void * box_office(void *arg);
 int get_operation();
+int create_account(bank_account_t *account, char password[], int accound_id, int balance, tlv_reply_t *reply);
 int check_balance(bank_account_t *bank_account, tlv_reply_t *user_reply);
 int transfer(tlv_request_t user_request, tlv_reply_t *user_reply);
 void shutdown();
