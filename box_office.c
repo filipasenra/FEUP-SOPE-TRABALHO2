@@ -1,61 +1,57 @@
 #include "box_office.h"
 
-void *box_office(void *arg)
-{
+void *box_office(void *arg) {
     tlv_request_t request;
     tlv_reply_t reply;
     int index;
 
-    while (1)
-    {
-        //Locks the mutex
+    while (1) {
+        // Locks the mutex
         pthread_mutex_lock(&q_mutex);
 
-        //Gets the request that arrived first
+        // Gets the request that arrived first
         request = queue[first];
 
-        if (request.length == 0)
-        {
+        if (request.length == 0) {
             pthread_mutex_unlock(&q_mutex);
             continue;
         }
         index = first;
-        
-        //Updates the queue and 'frees' the space ocupided by the request picked up by this thread
+
+        // Updates the queue and 'frees' the space ocupided by the request
+        // picked up by this thread
         first = (first + 1) % QUEUE_MAX;
         pthread_mutex_unlock(&q_mutex);
 
         pthread_mutex_lock(&db_mutex);
 
-        //Handles the request
+        // Handles the request
         if (log_in(&db, request.value.header.account_id,
-                   request.value.header.password))
-        {
+                   request.value.header.password)) {
             int op = (int)request.type;
             bank_account_t acc;
 
-            switch (op)
-            {
-            case 0: // CREATE
-                create_account(&acc, request.value.create.password,
-                               request.value.create.account_id,
-                               request.value.create.balance, &reply);
-                if (addAccount(acc, &db))
-                    return (void *)RC_OTHER;
-                printf("CREATE - ACCOUNT - %d\n", request.value.create.account_id);
-                break;
-            case 1: // CHECK BALANCE
-                acc = *accountExist(request.value.transfer.account_id, &db);
-                check_balance(&acc, &reply);
-                break;
-            case 2: // TRANSFER
-                transfer(request, &reply);
-                break;
-            case 3: // SHUTDOWN
-                shutdown();
-                break;
-            default:
-                break;
+            switch (op) {
+                case 0:  // CREATE
+                    create_account(&acc, request.value.create.password,
+                                   request.value.create.account_id,
+                                   request.value.create.balance, &reply);
+                    if (addAccount(acc, &db)) return (void *)RC_OTHER;
+                    printf("CREATE - ACCOUNT - %d\n",
+                           request.value.create.account_id);
+                    break;
+                case 1:  // CHECK BALANCE
+                    acc = *accountExist(request.value.transfer.account_id, &db);
+                    check_balance(&acc, &reply);
+                    break;
+                case 2:  // TRANSFER
+                    transfer(request, &reply);
+                    break;
+                case 3:  // SHUTDOWN
+                    shutdown((int*)arg);
+                    break;
+                default:
+                    break;
             }
 
             pthread_mutex_unlock(&db_mutex);
@@ -65,17 +61,17 @@ void *box_office(void *arg)
             pthread_mutex_lock(&q_mutex);
             queue[index].length = 0;
             pthread_mutex_unlock(&q_mutex);
-        }
-        else
+        } else
             pthread_mutex_unlock(&db_mutex);
     }
 
     return NULL;
 }
 
-int create_account(bank_account_t *account, char password[], int accound_id, int balance, tlv_reply_t *user_reply){
-    //echo -n “<senha><sal>” | sha256sum
-    //echo -n $salt | sha256sum
+int create_account(bank_account_t *account, char password[], int accound_id,
+                   int balance, tlv_reply_t *user_reply) {
+    // echo -n “<senha><sal>” | sha256sum
+    // echo -n $salt | sha256sum
     user_reply->length = 0;
     user_reply->type = OP_CREATE_ACCOUNT;
 
@@ -84,7 +80,6 @@ int create_account(bank_account_t *account, char password[], int accound_id, int
     user_reply->length += sizeof(uint32_t);
 
     account->balance = balance;
-
 
     creatSalt(account->salt);
 
@@ -95,15 +90,13 @@ int create_account(bank_account_t *account, char password[], int accound_id, int
     return 0;
 }
 
-int check_balance(bank_account_t *bank_account, tlv_reply_t *user_reply)
-{
+int check_balance(bank_account_t *bank_account, tlv_reply_t *user_reply) {
     user_reply->length = 0;
 
     user_reply->type = OP_BALANCE;
     user_reply->length += sizeof(user_reply->type);
 
-    if (bank_account == NULL)
-    {
+    if (bank_account == NULL) {
         user_reply->value.header.ret_code = RC_ID_NOT_FOUND;
         user_reply->length += sizeof(user_reply->value.header);
 
@@ -119,8 +112,7 @@ int check_balance(bank_account_t *bank_account, tlv_reply_t *user_reply)
     return 0;
 }
 
-int transfer(tlv_request_t user_request, tlv_reply_t *user_reply)
-{
+int transfer(tlv_request_t user_request, tlv_reply_t *user_reply) {
     user_reply->length = 0;
 
     user_reply->type = OP_TRANSFER;
@@ -132,8 +124,7 @@ int transfer(tlv_request_t user_request, tlv_reply_t *user_reply)
     bank_account_t *bank_account_destination =
         accountExist(user_request.value.transfer.account_id, &db);
 
-    if (bank_account_destination == NULL)
-    {
+    if (bank_account_destination == NULL) {
         user_reply->value.header.ret_code = RC_ID_NOT_FOUND;
         user_reply->length += sizeof(user_reply->value.header);
 
@@ -148,16 +139,14 @@ int transfer(tlv_request_t user_request, tlv_reply_t *user_reply)
     int amount = user_request.value.transfer.amount;
 
     // ARE THE FINAL BALANCES WITHIN THE LIMITES?
-    if ((bank_account_origin->balance - amount) < MIN_BALANCE)
-    {
+    if ((bank_account_origin->balance - amount) < MIN_BALANCE) {
         user_reply->value.header.ret_code = RC_NO_FUNDS;
         user_reply->length += sizeof(user_reply->value.header);
 
         return RC_NO_FUNDS;
     }
 
-    if ((bank_account_destination->balance + amount) > MAX_BALANCE)
-    {
+    if ((bank_account_destination->balance + amount) > MAX_BALANCE) {
         user_reply->value.header.ret_code = RC_TOO_HIGH;
         user_reply->length += sizeof(user_reply->value.header);
 
@@ -175,22 +164,23 @@ int transfer(tlv_request_t user_request, tlv_reply_t *user_reply)
     return 0;
 }
 
-void shutdown() { pthread_exit(NULL); }
+void shutdown(int* closing) {
+    int fd = open(SERVER_FIFO_PATH, O_RDONLY);
+    fchmod(fd, 0444);
+    close(fd);
+    *closing = 1;
+}
 
 int log_in(dataBase_t *db, uint32_t account_id,
-           char password[MAX_PASSWORD_LEN + 1])
-{
+           char password[MAX_PASSWORD_LEN + 1]) {
     bank_account_t acc;
     char hash[HASH_LEN + 1];
 
-    for (int i = 0; i < db->size; i++)
-    {
+    for (int i = 0; i < db->size; i++) {
         acc = db->dataBaseArray[i];
-        if (acc.account_id == account_id)
-        {
+        if (acc.account_id == account_id) {
             getHash(acc.salt, password, hash);
-            if (acc.hash == hash)
-                return 1;
+            if (acc.hash == hash) return 1;
         }
     }
 
