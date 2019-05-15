@@ -82,6 +82,7 @@ E - 03804 - [ 62 bytes] 03804 (0000, "ola")                  [   10 ms] CREATE  
 E - 03825 - [ 62 bytes] 03825 (0000, "ola")                  [   10 ms] CREATE   0001         20€ "oito"
 E - 03950 - [ 62 bytes] 03950 (0000, "ola")                  [   10 ms] CREATE   0001         20€ "oito"
 E - 03986 - [ 62 bytes] 03986 (0000, "ola")                  [   10 ms] CREATE   0001         20€ "oito"
+<<<<<<< HEAD
 E - 02590 - [ 58 bytes] 02590 (0000, "ola")                  [   10 ms] CREATE   0001         20€ "oito"
 E - 02685 - [ 58 bytes] 02685 (0000, "ola")                  [   10 ms] CREATE   0001         20€ "oito"
 E - 02719 - [ 58 bytes] 02719 (0000, "ola")                  [   10 ms] CREATE   0001         20€ "oito"
@@ -174,3 +175,18 @@ E - 09509 - [ 58 bytes] 09509 (0000, "ola")                  [   10 ms] CREATE  
 E - 09623 - [ 58 bytes] 09623 (0000, "ola")                  [   10 ms] CREATE   0001         20€ "oito"
 E - 10002 - [ 58 bytes] 10002 (0000, "ola")                  [   10 ms] CREATE   0001         20€ "oito"
 E - 10097 - [ 58 bytes] 10097 (0000, "ola")                  [   10 ms] CREATE   0001         20€ "oito"
+=======
+E - 02895 - [ 62 bytes] 02895 (0000, "hello")                [   10 ms] CREATE   0001         25€ "top_secret"
+E - 02944 - [ 62 bytes] 02944 (0000, "hello")                [   10 ms] CREATE   0001         25€ "top_secret"
+E - 03005 - [ 62 bytes] 03005 (0000, "hello")                [   10 ms] CREATE   0001         25€ "top_secret"
+E - 03072 - [ 62 bytes] 03072 (0000, "hello")                [   10 ms] CREATE   0002         25€ "top_secret"
+E - 03242 - [ 62 bytes] 03242 (0000, "hello")                [   10 ms] CREATE   0002         25€ "top_secret"
+E - 03545 - [ 62 bytes] 03545 (0000, "hello")                [   10 ms] CREATE   0002         25€ "top_secret"
+E - 03641 - [ 62 bytes] 03641 (0000, "hello")                [   10 ms] CREATE   0002         25€ "top_secret"
+E - 03726 - [ 62 bytes] 03726 (0000, "hello")                [   10 ms] CREATE   0002         25€ "top_secret"
+E - 03888 - [ 62 bytes] 03888 (0000, "hello")                [   10 ms] CREATE   0002         25€ "top_secret"
+E - 03937 - [ 62 bytes] 03937 (0000, "hello")                [   10 ms] CREATE   0002         25€ "top_secret"
+E - 04119 - [ 62 bytes] 04119 (0000, "hello")                [   10 ms] CREATE   0002         25€ "top_secret"
+E - 04178 - [ 62 bytes] 04178 (0000, "hello")                [   10 ms] CREATE   0002         25€ "top_secret"
+E - 04263 - [ 62 bytes] 04263 (0000, "hello")                [   10 ms] CREATE   0002         25€ "top_secret"
+>>>>>>> 4471bfc82744e267c999622ebb4cd4fa85549db0
