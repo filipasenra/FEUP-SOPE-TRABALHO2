@@ -67,7 +67,6 @@ int prepareTypeOfOpArgs(char *argv[], tlv_request_t *user_request) {
             return RC_OTHER;
     }
 
-    length += sizeof(user_request->type);
     user_request->length += length;
 
     return RC_OK;
