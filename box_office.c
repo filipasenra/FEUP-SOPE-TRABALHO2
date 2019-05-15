@@ -56,7 +56,7 @@ void *box_office(void *arg) {
                 break;
             default:
                 break;
-            }
+            }printf("pila\n");
 
             pthread_mutex_unlock(&db_mutex);
 
