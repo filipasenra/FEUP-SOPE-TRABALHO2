@@ -13,7 +13,7 @@ int replyMessageTLV(tlv_request_t *user_request, tlv_reply_t *user_reply, dataBa
 
     //Type of operation
     user_reply->type = user_request->type;
-    length += sizeof(user_reply->type);
+   
     //Passing values
     switch (user_reply->type)
     {
