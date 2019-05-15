@@ -59,19 +59,12 @@ void *box_office(void *arg)
             }
 
             pthread_mutex_unlock(&db_mutex);
-<<<<<<< HEAD
 
             if (send_reply(&request, &reply)) return (void *)RC_OTHER;
 
             pthread_mutex_lock(&q_mutex);
             queue[index].length = 0;
             pthread_mutex_unlock(&q_mutex);
-=======
-            
-            //Sends the reply to the user
-            if (send_reply(&request, &reply))
-                return (void *)RC_OTHER;
->>>>>>> 03c22e4f4eafed382d93229ab5ab421f4398c324
         }
         else
             pthread_mutex_unlock(&db_mutex);
