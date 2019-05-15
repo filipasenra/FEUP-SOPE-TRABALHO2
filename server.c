@@ -41,6 +41,7 @@ int main(int argc, char* argv[]) {
         if (get_request(&request)) return RC_OTHER;
         
         pthread_mutex_lock(&q_mutex);
+        printf("last: %d first: %d\n", last, first);
         queue[last] = request;
         last = (last + 1) % QUEUE_MAX;
         pthread_mutex_unlock(&q_mutex);
