@@ -14,6 +14,7 @@ int send_request(tlv_request_t *user_request) {
 }
 
 int get_request(tlv_request_t *user_request) {
+
     int fdr;
     printf("WAITING NEW REQUEST\n");
     if ((fdr = open(SERVER_FIFO_PATH, O_RDONLY)) < 0) 
@@ -33,6 +34,16 @@ int get_request(tlv_request_t *user_request) {
         perror("get_request");
         return RC_OTHER;
     }
+
+
+    // Opening LogFile
+    int fd = open(SERVER_LOGFILE, O_WRONLY | O_APPEND | O_CREAT, 0777);
+    if (logRequest(fd, (int)getpid(), user_request) < 0) {
+        printf("Failed to open and write into %s\n", SERVER_LOGFILE);
+        return RC_OTHER;
+    }
+
+    close(fd);
 
     if (close(fdr) != 0) return RC_OTHER;
     return RC_OK;

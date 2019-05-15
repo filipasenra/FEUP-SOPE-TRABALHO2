@@ -5,26 +5,36 @@ void *box_office(void *arg) {
     tlv_reply_t reply;
     int index;
 
-    while (1) {
-        // Locks the mutex
+    int fd = open(SERVER_LOGFILE, O_WRONLY | O_APPEND | O_CREAT, 0777);
+
+    logBankOfficeOpen(fd, getpid(), pthread_self());
+
+    while (1)
+    {
+        //Locks the mutex
+
         pthread_mutex_lock(&q_mutex);
         usleep(request.value.header.op_delay_ms*1000);
 
         // Gets the request that arrived first
         request = queue[first];
 
-        if (request.length == 0) {
+        logSyncMech(fd, getpid(), SYNC_OP_MUTEX_LOCK, SYNC_ROLE_CONSUMER, request.value.header.account_id);
+
+        if (request.length == 0)
+        {
             pthread_mutex_unlock(&q_mutex);
+            logSyncMech(fd, getpid(), SYNC_OP_MUTEX_UNLOCK, SYNC_ROLE_CONSUMER, request.value.header.account_id);
+        
             continue;
         }
         index = first;
 
-        // Updates the queue and 'frees' the space ocupided by the request
-        // picked up by this thread
+        //Updates the queue and 'frees' the space ocupided by the request picked up by this thread
         first = (first + 1) % QUEUE_MAX;
-        pthread_mutex_unlock(&q_mutex);
+        //pthread_mutex_unlock(&q_mutex);
 
-        pthread_mutex_lock(&db_mutex);
+        //pthread_mutex_lock(&db_mutex);
 
         // Handles the request
         if (log_in(&db, request.value.header.account_id,
@@ -40,7 +50,7 @@ void *box_office(void *arg) {
                                request.value.create.balance, &reply);
                 if (addAccount(acc, &db))
                     return (void *)RC_OTHER;
-                printf("CREATE - ACCOUNT - %d\n", request.value.create.account_id);
+
                 break;
             case 1: // CHECK BALANCE
                 acc = *accountExist(request.value.transfer.account_id, &db);
@@ -58,24 +68,35 @@ void *box_office(void *arg) {
                 break;
             }printf("pila\n");
 
-            pthread_mutex_unlock(&db_mutex);
+            //pthread_mutex_unlock(&db_mutex);
 
-            if (send_reply(&request, &reply)) return (void *)RC_OTHER;
+            if (send_reply(&request, &reply))
+                return (void *)RC_OTHER;
 
-            pthread_mutex_lock(&q_mutex);
+            //pthread_mutex_lock(&q_mutex);
             queue[index].length = 0;
+
             pthread_mutex_unlock(&q_mutex);
-        } else
+            logSyncMech(fd, getpid(), SYNC_OP_MUTEX_UNLOCK, SYNC_ROLE_CONSUMER, request.value.header.account_id);
+        }
+        else
+        {
             pthread_mutex_unlock(&db_mutex);
+            logSyncMech(fd, getpid(), SYNC_OP_MUTEX_UNLOCK, SYNC_ROLE_CONSUMER, request.value.header.account_id);
+        }
     }
+
+    logBankOfficeClose(fd, getpid(), pthread_self());
+
+    close(fd);
 
     return NULL;
 }
 
-int create_account(bank_account_t *account, char password[], int accound_id,
-                   int balance, tlv_reply_t *user_reply) {
-    // echo -n “<senha><sal>” | sha256sum
-    // echo -n $salt | sha256sum
+int create_account(bank_account_t *account, char password[], int accound_id, int balance, tlv_reply_t *user_reply)
+{
+    //echo -n “<senha><sal>” | sha256sum
+    //echo -n $salt | sha256sum
     user_reply->length = 0;
     user_reply->type = OP_CREATE_ACCOUNT;
 

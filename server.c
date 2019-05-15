@@ -38,9 +38,7 @@ int main(int argc, char* argv[]) {
 
     pthread_t thread_array[number_threads];
     for (int i = 0; i < number_threads; i++) {
-        pthread_create(&thread_array[i], NULL, box_office,
-                       (void*)(&closing_server));
-        logBankOfficeOpen(STDERR_FILENO, i, thread_array[i]);
+        pthread_create(&thread_array[i], NULL, box_office, NULL);
     }
 
     // ADMIN ACC
@@ -50,15 +48,22 @@ int main(int argc, char* argv[]) {
 
     tlv_request_t request;
 
+    //OPENING LOG
+    int fd = open(SERVER_LOGFILE, O_WRONLY | O_APPEND | O_CREAT, 0777);
+
     // REQUEST LOOP
     mkfifo(SERVER_FIFO_PATH, 0666);
     while (1) {
         if (get_request(&request)) return RC_OTHER;
 
         pthread_mutex_lock(&q_mutex);
+        logSyncMech(fd, getpid(), SYNC_OP_MUTEX_LOCK, SYNC_ROLE_ACCOUNT, request.value.header.account_id);
+
         queue[last] = request;
         last = (last + 1) % QUEUE_MAX;
+        
         pthread_mutex_unlock(&q_mutex);
+        logSyncMech(fd, getpid(), SYNC_OP_MUTEX_UNLOCK, SYNC_ROLE_ACCOUNT, request.value.header.account_id);
 
         if (closing_server) break;
     }
@@ -69,6 +74,8 @@ int main(int argc, char* argv[]) {
         pthread_kill(thread_array[i], SIGTERM);
     }
     unlink(SERVER_FIFO_PATH);
+
+    close(fd);
 
     return 0;
 }
