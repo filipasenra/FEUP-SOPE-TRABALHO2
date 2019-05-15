@@ -8,7 +8,7 @@ C_FILES := $(wildcard $(SRCDIR)/*.c)
 
 #build options
 BUILDDIR = build
-OBJS_SERVER := server.c dataBase.c creatAccount.c communication.c serverMessage.c log.c box_office.c 
+OBJS_SERVER := server.c dataBase.c creatAccount.c communication.c log.c box_office.c 
 OBJS_USER := user.c userMessage.c log.c communication.c
 
 #compiler options

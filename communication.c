@@ -72,6 +72,7 @@ void *get_reply_thread(void *arg) {
     read(fda, &(thread_arg->reply->type), sizeof(enum op_type));
 
     read(fda, &(thread_arg->reply->length), sizeof(uint32_t));
+    printf("\nlength = %d\n", thread_arg->reply->length);
 
     read(fda, &(thread_arg->reply->value), thread_arg->reply->length);
 

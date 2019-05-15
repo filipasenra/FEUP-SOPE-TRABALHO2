@@ -41,7 +41,7 @@ int prepareTypeOfOpArgs(char *argv[], tlv_request_t *user_request) {
         case 0:
             user_request->type = OP_CREATE_ACCOUNT;
             if (account_id != 0) return RC_OP_NALLOW;
-            if (createAccount(&user_request->value.create, argv[5]) != 0)
+            if (createAccountUser(&user_request->value.create, argv[5]) != 0)
                 return RC_OTHER;
             length += sizeof(user_request->value.create);
             break;
@@ -97,7 +97,7 @@ int requestMessageTLV(int argc, char *argv[], tlv_request_t *user_request) {
     return RC_OK;
 }
 
-int createAccount(req_create_account_t *create, char argv[]) {
+int createAccountUser(req_create_account_t *create, char argv[]) {
     char *token;
     int n = 0;
 

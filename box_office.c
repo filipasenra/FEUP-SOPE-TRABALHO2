@@ -4,6 +4,7 @@ void *box_office(void *arg)
 {
     tlv_request_t request;
     tlv_reply_t reply;
+    int index;
 
     while (1)
     {
@@ -14,8 +15,8 @@ void *box_office(void *arg)
             pthread_mutex_unlock(&q_mutex);
             continue;
         }
+        index = first;
         first = (first + 1) % QUEUE_MAX;
-        request.length = 0;
         pthread_mutex_unlock(&q_mutex);
 
         pthread_mutex_lock(&db_mutex);
@@ -31,8 +32,8 @@ void *box_office(void *arg)
             case 0: // CREATE
                 create_account(&acc, request.value.create.password,
                                request.value.create.account_id,
-                               request.value.create.balance);
-                if (addAccount(acc, &db)) 
+                               request.value.create.balance, &reply);
+                if (addAccount(acc, &db))
                     return (void *)RC_OTHER;
                 printf("CREATE - ACCOUNT - %d\n", request.value.create.account_id);
                 break;
@@ -51,15 +52,40 @@ void *box_office(void *arg)
             }
 
             pthread_mutex_unlock(&db_mutex);
-            
-            if (send_reply(&request, &reply))
-                return (void *)RC_OTHER;
+
+            if (send_reply(&request, &reply)) return (void *)RC_OTHER;
+
+            pthread_mutex_lock(&q_mutex);
+            queue[index].length = 0;
+            pthread_mutex_unlock(&q_mutex);
         }
         else
             pthread_mutex_unlock(&db_mutex);
     }
 
     return NULL;
+}
+
+int create_account(bank_account_t *account, char password[], int accound_id, int balance, tlv_reply_t *user_reply){
+    //echo -n “<senha><sal>” | sha256sum
+    //echo -n $salt | sha256sum
+    user_reply->length = 0;
+    user_reply->type = OP_CREATE_ACCOUNT;
+
+    account->account_id = accound_id;
+    user_reply->value.header.account_id = accound_id;
+    user_reply->length += sizeof(uint32_t);
+
+    account->balance = balance;
+
+
+    creatSalt(account->salt);
+
+    getHash(account->salt, password, account->hash);
+
+    user_reply->value.header.ret_code = RC_OK;
+
+    return 0;
 }
 
 int check_balance(bank_account_t *bank_account, tlv_reply_t *user_reply)

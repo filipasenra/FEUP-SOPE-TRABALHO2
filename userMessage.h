@@ -23,7 +23,7 @@
  *
  * @returns zero upon sucess, non-zero otherwise
  */
-int createAccount(req_create_account_t *create, char argv[]);
+int createAccountUser(req_create_account_t *create, char argv[]);
 
 /**
  * @brief Puts into the struct transfer the information of the transfer

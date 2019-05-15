@@ -30,7 +30,7 @@ int main(int argc, char* argv[]) {
 
     // ADMIN ACC
     bank_account_t account;
-    create_account(&account, argv[2], 0, 0);
+    createAccount(&account, argv[2], 0, 0);
     addAccount(account, &db);
 
     tlv_request_t request;
