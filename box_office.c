@@ -8,7 +8,7 @@ void *box_office(void *arg) {
     while (1) {
         // Locks the mutex
         pthread_mutex_lock(&q_mutex);
-       
+        usleep(request.value.header.op_delay_ms*1000);
 
         // Gets the request that arrived first
         request = queue[first];
@@ -35,7 +35,6 @@ void *box_office(void *arg) {
             switch (op)
             {
             case 0: // CREATE
-                usleep(request.value.header.op_delay_ms);
                 create_account(&acc, request.value.create.password,
                                request.value.create.account_id,
                                request.value.create.balance, &reply);
@@ -44,16 +43,15 @@ void *box_office(void *arg) {
                 printf("CREATE - ACCOUNT - %d\n", request.value.create.account_id);
                 break;
             case 1: // CHECK BALANCE
-                usleep(request.value.header.op_delay_ms);
                 acc = *accountExist(request.value.transfer.account_id, &db);
                 check_balance(&acc, &reply);
                 break;
             case 2: // TRANSFER
-                usleep(request.value.header.op_delay_ms);
+                usleep(request.value.header.op_delay_ms*1000);
                 transfer(request, &reply);
                 break;
             case 3: // SHUTDOWN
-                usleep(request.value.header.op_delay_ms);
+                usleep(request.value.header.op_delay_ms*1000);
                 shutdown((int*)arg);
                 break;
             default:
