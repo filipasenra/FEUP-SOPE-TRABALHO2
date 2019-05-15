@@ -58,7 +58,6 @@ int send_reply(tlv_request_t *user_request, tlv_reply_t *user_reply) {
 }
 
 void *get_reply_thread(void *arg) {
-
     int fda;
     thread_arg_t *thread_arg = (thread_arg_t *)arg;
 
@@ -72,7 +71,7 @@ void *get_reply_thread(void *arg) {
     read(fda, &(thread_arg->reply->length), sizeof(uint32_t));
 
     read(fda, &(thread_arg->reply->value), thread_arg->reply->length);
-
+   
     // Closing FIFOS
     if (close(fda) != 0) {
         *(thread_arg->completed) = 1;
