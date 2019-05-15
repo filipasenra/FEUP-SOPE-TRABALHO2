@@ -34,6 +34,7 @@ void *box_office(void *arg)
                                request.value.create.balance);
                 if (addAccount(acc, &db))
                     return (void *)RC_OTHER;
+                printf("CREATE - ACCOUNT - %d", request.value.create.account_id);
                 break;
             case 1: // CHECK BALANCE
 
@@ -50,8 +51,6 @@ void *box_office(void *arg)
                 break;
             }
             pthread_mutex_unlock(&db_mutex);
-
-            sleep(30);
             
             if (send_reply(&request, &reply))
                 return (void *)RC_OTHER;

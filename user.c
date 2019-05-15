@@ -10,11 +10,13 @@ int main(int argc, char *argv[]) {
     int comp = 0;
 
     // CREATE FIFO REPLY
+    char *fifo_reply = malloc(sizeof(USER_FIFO_PATH_PREFIX) + sizeof(pid_t));
+    sprintf(fifo_reply, "%s%d", USER_FIFO_PATH_PREFIX, getpid());
     if (mkfifo(fifo_reply, 0666)) return RC_OTHER;
 
     // MAKE REQUEST
     if (requestMessageTLV(argc, argv, &user_request)) return RC_OTHER;
-
+    
     // SEND REQUEST
     if (send_request(&user_request)) return RC_OTHER;
 
@@ -27,7 +29,7 @@ int main(int argc, char *argv[]) {
     thread_arg.reply = &user_reply;
     thread_arg.completed = &comp;
 
-    pthread_create(t, NULL, get_reply_thread, (void *)(&thread_arg));
+    pthread_create(&t, NULL, get_reply_thread, (void *)(&thread_arg));
 
     while (1) {
         if (((clock() - initial) / CLOCKS_PER_SEC) == FIFO_TIMEOUT_SECS) {

@@ -8,7 +8,6 @@ int send_request(tlv_request_t *user_request) {
         perror("send_request\n");
         return RC_OTHER;
     }
-
     if (close(fdr) != 0) return RC_OTHER;
 
     return RC_OK;
@@ -16,6 +15,7 @@ int send_request(tlv_request_t *user_request) {
 
 int get_request(tlv_request_t *user_request) {
     int fdr;
+    printf("WAITING NEW REQUEST\n");
     if ((fdr = open(SERVER_FIFO_PATH, O_RDONLY)) < 0) return RC_OTHER;
 
     if (read(fdr, user_request, sizeof(tlv_request_t)) <= 0) {
@@ -24,7 +24,6 @@ int get_request(tlv_request_t *user_request) {
     }
 
     if (close(fdr) != 0) return RC_OTHER;
-
     return RC_OK;
 }
 
