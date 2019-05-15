@@ -40,7 +40,7 @@ int main(int argc, char *argv[]) {
     }
 
     // READ REPLY
-    printf("user%d\n", thread_arg.reply->value.header.account_id);
+    printf("account id %d\n", thread_arg.reply->value.header.account_id);
 
     return RC_OK;
 }
