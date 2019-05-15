@@ -47,6 +47,7 @@ int send_reply(tlv_request_t *user_request, tlv_reply_t *user_reply) {
 }
 
 int get_reply(tlv_reply_t *user_reply, char *fifo_reply, int fda) {
+
     int n;
     while ((n = read(fda, user_reply, sizeof(tlv_reply_t))) == 0)
         ;
@@ -67,18 +68,19 @@ int get_reply(tlv_reply_t *user_reply, char *fifo_reply, int fda) {
 }
 
 void *get_reply_thread(void *arg) {
+
     int fda;
     thread_arg_t *thread_arg = (thread_arg_t *)arg;
 
     char *fifo_reply = malloc(sizeof(USER_FIFO_PATH_PREFIX) + sizeof(pid_t));
     sprintf(fifo_reply, "%s%d", USER_FIFO_PATH_PREFIX, thread_arg->pid);
 
-    if ((fda = open(fifo_reply, O_RDONLY))) {
+    if ((fda = open(fifo_reply, O_RDONLY)) <= 0) {
         *(thread_arg->completed) = 1;
         return (void*)RC_SRV_DOWN;
     }
 
-    if (read(fda, thread_arg->reply, sizeof(tlv_reply_t))) {
+    if (read(fda, thread_arg->reply, sizeof(tlv_reply_t)) <= 0) {
         perror("get_reply");
         *(thread_arg->completed) = 1;
         return (void*)RC_OTHER;
