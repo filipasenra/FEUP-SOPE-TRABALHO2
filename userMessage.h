@@ -10,7 +10,6 @@
 #include <sys/types.h>
 #include <pthread.h>
 #include "communication.h"
-#include "serverMessage.h"
 #include "sope.h"
 #include "types.h"
 

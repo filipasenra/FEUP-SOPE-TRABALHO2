@@ -52,8 +52,6 @@ int send_reply(tlv_request_t *user_request, tlv_reply_t *user_reply) {
         return RC_OTHER;
     }
 
-    printf("\nsend_reply%d\n", user_reply->value.header.account_id);
-
     if (close(fda) != 0) return RC_OTHER;
 
     return RC_OK;
@@ -72,11 +70,8 @@ void *get_reply_thread(void *arg) {
     read(fda, &(thread_arg->reply->type), sizeof(enum op_type));
 
     read(fda, &(thread_arg->reply->length), sizeof(uint32_t));
-    printf("\nlength = %d\n", thread_arg->reply->length);
 
     read(fda, &(thread_arg->reply->value), thread_arg->reply->length);
-
-    printf("\nget_reply%d\n", thread_arg->reply->value.header.account_id);
 
     // Closing FIFOS
     if (close(fda) != 0) {
