@@ -7,19 +7,28 @@ void *box_office(void *arg)
 
     while (1)
     {
+        //Locks the mutex
         pthread_mutex_lock(&q_mutex);
+
+        //Gets the request that arrived first
         request = queue[first];
+
         if (request.length == 0)
         {
             pthread_mutex_unlock(&q_mutex);
             continue;
         }
+
+        //Updates the queue and 'frees' the space ocupided by the request picked up by this thread
         first = (first + 1) % QUEUE_MAX;
+
+        //The length of the request is zero, signaling that it has been treated
         request.length = 0;
         pthread_mutex_unlock(&q_mutex);
 
         pthread_mutex_lock(&db_mutex);
 
+        //Handles the request
         if (log_in(&db, request.value.header.account_id,
                    request.value.header.password))
         {
@@ -52,6 +61,7 @@ void *box_office(void *arg)
             }
             pthread_mutex_unlock(&db_mutex);
             
+            //Sends the reply to the user
             if (send_reply(&request, &reply))
                 return (void *)RC_OTHER;
         }
