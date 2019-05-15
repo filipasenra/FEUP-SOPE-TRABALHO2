@@ -60,6 +60,7 @@ int send_reply(tlv_request_t *user_request, tlv_reply_t *user_reply) {
 }
 
 void *get_reply_thread(void *arg) {
+
     int fda;
     thread_arg_t *thread_arg = (thread_arg_t *)arg;
 
