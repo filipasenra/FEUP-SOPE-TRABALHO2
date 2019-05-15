@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "servermessage.h": "c",
+        "types.h": "c",
+        "box_office.h": "c"
+    }
+}
