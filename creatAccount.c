@@ -1,4 +1,6 @@
 #include "creatAccount.h"
+#include <fcntl.h>
+#include "sope.h"
 
 int creatSalt(char salt[SALT_LEN + 1])
 {
@@ -74,6 +76,11 @@ int createAccount(bank_account_t *account, char password[], int accound_id, int 
     creatSalt(account->salt);
 
     getHash(account->salt, password, account->hash);
+
+    int fd = open(SERVER_LOGFILE, O_WRONLY | O_APPEND | O_CREAT, 0777);
+    logAccountCreation(fd, getpid(), account);
+
+    close(fd);
 
     return 0;
 }
