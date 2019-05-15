@@ -1,5 +1,6 @@
 # Project properties
-PROGRAM = server
+PROGRAM_SERVER = server
+PROGRAM_USER = user
 
 #source options
 SRCDIR =
@@ -7,17 +8,21 @@ C_FILES := $(wildcard $(SRCDIR)/*.c)
 
 #build options
 BUILDDIR = build
-OBJS := server.c dataBase.c creatAccount.c communication.c serverMessage.c log.c box_office.c
+OBJS_SERVER := server.c dataBase.c creatAccount.c communication.c serverMessage.c log.c box_office.c 
+OBJS_USER := user.c userMessage.c log.c communication.c
 
 #compiler options
 CFLAGS = -Wall -pedantic
 LDFLAGS = -lpthread
 LDLIBS = -D_REENTRANT
 
-all: $(PROGRAM)
+all: $(PROGRAM_SERVER) $(PROGRAM_USER)
 
-$(PROGRAM): .depend $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) $(LDFLAGS) -o $(PROGRAM) $(LDLIBS)
+$(PROGRAM_SERVER): .depend $(OBJS_SERVER)
+	$(CC) $(CFLAGS) $(OBJS_SERVER) $(LDFLAGS) -o $(PROGRAM_SERVER) $(LDLIBS)
+
+$(PROGRAM_USER): .depend $(OBJS_USER)
+	$(CC) $(CFLAGS) $(OBJS_USER) $(LDFLAGS) -o $(PROGRAM_USER) $(LDLIBS)
 
 # Dependency management
 
@@ -39,7 +44,8 @@ $(BUILDDIR)/%.o: $(SRCDIR)/%.c $(BUILDDIR)
 
 
 clean:
-	rm -f .depend $(PROGRAM)
+	rm -f .depend $(PROGRAM_SERVER)
+	rm -f .depend $(PROGRAM_USER)
 	rm -rf $(BUILDDIR)
 
 $(BUILDDIR):

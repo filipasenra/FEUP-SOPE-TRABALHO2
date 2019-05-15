@@ -6,7 +6,6 @@ int main(int argc, char *argv[]) {
     tlv_request_t user_request;
     tlv_reply_t user_reply;
     pthread_t t;
-    int fda;
     int comp = 0;
 
     // CREATE FIFO REPLY
