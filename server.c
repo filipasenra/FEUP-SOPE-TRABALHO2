@@ -22,6 +22,9 @@ pthread_mutex_t db_mutex = PTHREAD_MUTEX_INITIALIZER;
 queue_t queue;
 dataBase_t db;
 
+void server_init(char *password, int number_threads, pthread_t thread_array[], bank_account_t *acc, int *fd_log, int *fd_srv);
+void server_main_loop(int *fd);
+
 // Server Program
 int main(int argc, char *argv[]) {
     // ./server <box offices> <password>
@@ -69,43 +72,43 @@ void server_init(char* password, int number_threads, pthread_t thread_array[], b
 
     queueInitialize(&queue);
 
-    if (initializeDataBase(&db)) return RC_OTHER;
-    createAccount(account, password, 0, 0);
-    addAccount(account, &db);
+    if (initializeDataBase(&db)) return;
+    createAccount(acc, password, 0, 0);
+    addAccount(acc, &db);
 
     for (int i = 0; i < number_threads; i++)    pthread_create(&thread_array[i], NULL, box_office, NULL);
 
     mkfifo(SERVER_FIFO_PATH, 0666);
 }
 
-void server_main_loop(int *fd) {
+void server_main_loop(int *fd_log, int* fd_srv) {
     tlv_request_t request;
     int value = 0;
 
     while (1) {
-        if (get_request(fd, &request)) return RC_OTHER;
+        if (get_request(&request, fd_log, fd_srv)) return;
 
         if (request.length) {
             pthread_mutex_lock(&q_mutex);
-            logSyncMech(fd, getpid(), SYNC_OP_MUTEX_LOCK, SYNC_ROLE_PRODUCER, request.value.header.account_id);
+            logSyncMech(*fd_log, getpid(), SYNC_OP_MUTEX_LOCK, SYNC_ROLE_PRODUCER, request.value.header.account_id);
 
             sem_wait(&b_off);
             sem_getvalue(&b_off, &value);
-            logSyncMechSem(fd, getpid(), SYNC_OP_SEM_WAIT, SYNC_ROLE_PRODUCER, request.value.header.account_id, value);
+            logSyncMechSem(*fd_log, getpid(), SYNC_OP_SEM_WAIT, SYNC_ROLE_PRODUCER, request.value.header.account_id, value);
 
             push(&queue, request);
 
             sem_post(&n_req);
             sem_getvalue(&n_req, &value);
-            logSyncMechSem(fd, getpid(), SYNC_OP_SEM_POST, SYNC_ROLE_PRODUCER, request.value.header.account_id, value);
+            logSyncMechSem(*fd_log, getpid(), SYNC_OP_SEM_POST, SYNC_ROLE_PRODUCER, request.value.header.account_id, value);
 
             pthread_mutex_unlock(&q_mutex);
-            logSyncMech(fd, getpid(), SYNC_OP_MUTEX_UNLOCK, SYNC_ROLE_PRODUCER, request.value.header.account_id);
+            logSyncMech(*fd_log, getpid(), SYNC_OP_MUTEX_UNLOCK, SYNC_ROLE_PRODUCER, request.value.header.account_id);
 
             request.length = 0;
 
             if (request.type == OP_SHUTDOWN){
-                fchmod(fd, 0444);
+                fchmod(*fd_srv, 0444);
                 break;
             }
         }

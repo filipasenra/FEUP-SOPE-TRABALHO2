@@ -10,7 +10,7 @@
 #include "types.h"
 
 int send_request(tlv_request_t *request);
-int get_request(tlv_request_t *user_request);
+int get_request(tlv_request_t *user_request, int *fd_log, int *fd_srv);
 int send_reply(tlv_request_t *user_request, tlv_reply_t *user_reply);
 
 typedef struct thread_arg{
