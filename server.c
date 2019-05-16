@@ -61,7 +61,7 @@ int main(int argc, char* argv[]) {
     addAccount(account, &db);
 
     // INCIALIZING QUEUE
-    queueInicialize(&queue);
+    queueInitialize(&queue);
 
     tlv_request_t request;
 

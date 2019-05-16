@@ -9,7 +9,7 @@ typedef struct queue {
     int size;
 } __attribute__((packed)) queue_t;
 
-void queueInicialize(queue_t * queue);
+void queueInitialize(queue_t * queue);
 
 tlv_request_t front(queue_t queue);
 

@@ -3,15 +3,12 @@
 int prepareMainArgs(char *argv[], tlv_request_t *user_request)
 {
     // Preparing values
-    uint32_t length = 0;
     uint32_t account_id;
     uint32_t delay;
 
     account_id = strtoul(argv[1], NULL, 10);
-    length += sizeof(account_id);
 
     delay = strtoul(argv[3], NULL, 10);
-    length += sizeof(delay);
 
     // password too long
     if (strlen(argv[2]) > MAX_PASSWORD_LEN + 1)
@@ -22,11 +19,10 @@ int prepareMainArgs(char *argv[], tlv_request_t *user_request)
 
     // Passing to the struct
     strcpy(user_request->value.header.password, argv[2]);
-    length += sizeof(user_request->value.header.password);
     user_request->value.header.account_id = account_id;
     user_request->value.header.op_delay_ms = delay;
     user_request->value.header.pid = getpid();
-    user_request->length = length;
+    user_request->length = sizeof(req_header_t);
 
     return RC_OK;
 }
@@ -34,7 +30,6 @@ int prepareMainArgs(char *argv[], tlv_request_t *user_request)
 int prepareTypeOfOpArgs(char *argv[], tlv_request_t *user_request)
 {
     // Preparing values
-    uint32_t length = 0;
     uint32_t account_id = user_request->value.header.account_id;
 
     // TYPE OF OPERATION
@@ -51,7 +46,7 @@ int prepareTypeOfOpArgs(char *argv[], tlv_request_t *user_request)
         if (createAccountUser(&user_request->value.create, argv[5]) != 0)
             return RC_OTHER;
 
-        length += sizeof(user_request->value.create);
+        user_request->length += sizeof(req_create_account_t);
 
         break;
     case 1:
@@ -73,7 +68,7 @@ int prepareTypeOfOpArgs(char *argv[], tlv_request_t *user_request)
                  account_id, &user_request->value.transfer, argv[5])) != 0)
             return n;
 
-        length += sizeof(user_request->value.transfer);
+        user_request->length += sizeof(req_transfer_t);
 
         break;
     case 3:
@@ -89,8 +84,6 @@ int prepareTypeOfOpArgs(char *argv[], tlv_request_t *user_request)
         printf("Invalid Type\n");
         return RC_OTHER;
     }
-
-    user_request->length += length;
 
     return RC_OK;
 }

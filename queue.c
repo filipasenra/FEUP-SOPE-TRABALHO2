@@ -1,6 +1,6 @@
 #include "queue.h"
 
-void queueInicialize(queue_t *queue)
+void queueInitialize(queue_t *queue)
 {
     queue->first = 0;
     queue->last = 0;

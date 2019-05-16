@@ -1,0 +1,19 @@
+E - 14717 - [ 58 bytes] 14717 (0000, "ola")                  [    0 ms] CREATE   0001         20€ "oito"
+E - 14753 - [ 58 bytes] 14753 (0000, "ola")                  [    0 ms] CREATE   0002         20€ "oito"
+E - 14788 - [ 37 bytes] 14788 (0001, "oito")                 [    0 ms] TRANSFER 0002         20€
+E - 14805 - [ 37 bytes] 14805 (0002, "oito")                 [    0 ms] TRANSFER 0001         10€
+E - 14920 - [ 37 bytes] 14920 (0002, "oito")                 [    0 ms] TRANSFER 0001         10€
+E - 14935 - [ 58 bytes] 14935 (0000, "ola")                  [    0 ms] CREATE   0001         20€ "oito"
+E - 14970 - [ 58 bytes] 14970 (0000, "ola")                  [    0 ms] CREATE   0002         20€ "oito"
+E - 15005 - [ 37 bytes] 15005 (0002, "oito")                 [    0 ms] TRANSFER 0001         10€
+E - 15293 - [ 58 bytes] 15293 (0000, "ola")                  [    0 ms] CREATE   0002         20€ "oito"
+E - 15531 - [ 33 bytes] 15531 (0000, "ola")                  [    0 ms] CREATE   0002         20€ "oito"
+E - 15627 - [ 62 bytes] 15627 (0000, "ola")                  [    0 ms] CREATE   0002         20€ "oito"
+E - 15757 - [ 62 bytes] 15757 (0000, "ola")                  [    0 ms] CREATE   0002         20€ "oito"
+E - 15852 - [ 62 bytes] 15852 (0000, "ola")                  [    0 ms] CREATE   0002         20€ "oito"
+E - 15991 - [ 62 bytes] 15991 (0000, "ola")                  [    0 ms] CREATE   0002         20€ "oito"
+E - 16082 - [ 62 bytes] 16082 (0000, "ola")                  [    0 ms] CREATE   0002         20€ "oito"
+E - 16189 - [ 62 bytes] 16189 (0000, "ola")                  [    0 ms] CREATE   0002         20€ "oito"
+E - 16305 - [ 62 bytes] 16305 (0000, "ola")                  [    0 ms] CREATE   0002         20€ "oito"
+E - 16405 - [ 62 bytes] 16405 (0000, "ola")                  [    0 ms] CREATE   0002         20€ "oito"
+E - 16599 - [ 62 bytes] 16599 (0000, "ola")                  [    0 ms] CREATE   0002         20€ "oito"

@@ -13,7 +13,7 @@ int main(int argc, char *argv[]) {
 
     // MAKE REQUEST
     if (requestMessageTLV(argc, argv, &user_request)) return RC_OTHER;
-    
+
     // SEND REQUEST
     if (send_request(&user_request)) return RC_OTHER;
 
