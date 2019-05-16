@@ -68,6 +68,7 @@ int main(int argc, char* argv[]) {
     // REQUEST LOOP
     mkfifo(SERVER_FIFO_PATH, 0666);
     while (1) {
+        if (closing_server) break;
         if (get_request(&request)) return RC_OTHER;
 
         if (request.length) {
@@ -92,7 +93,6 @@ int main(int argc, char* argv[]) {
             request.length = 0;
         }
 
-        if (closing_server) break;
     }
 
     while (queue.first != queue.last)

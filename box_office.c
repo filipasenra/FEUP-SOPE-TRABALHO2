@@ -186,9 +186,9 @@ int transfer(tlv_request_t user_request, tlv_reply_t *user_reply)
 
 void shutdown(int *closing)
 {
-    /*int fd = open(SERVER_FIFO_PATH, O_RDONLY);
+    int fd = open(SERVER_FIFO_PATH, O_RDONLY | O_NONBLOCK);
     fchmod(fd, 0444);
-    close(fd);*/
+    close(fd);
     *closing = 1;
 }
 
