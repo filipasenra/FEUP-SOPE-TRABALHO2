@@ -8,79 +8,64 @@ void *box_office(void *arg) {
 
     logBankOfficeOpen(fd, getpid(), pthread_self());
 
-    while (1)
-    {
-        //Locks the mutex
-
-        pthread_mutex_lock(&q_mutex);
-        usleep(request.value.header.op_delay_ms*1000);
-
+    while (1) {
+        // Locks the mutex
+        sem_wait(&n_req);
         logSyncMech(fd, getpid(), SYNC_OP_MUTEX_LOCK, SYNC_ROLE_CONSUMER, request.value.header.account_id);
 
-        if (isEmpty(queue))
-        {
-            pthread_mutex_unlock(&q_mutex);
-            logSyncMech(fd, getpid(), SYNC_OP_MUTEX_UNLOCK, SYNC_ROLE_CONSUMER, request.value.header.account_id);
+        pthread_mutex_lock(&q_mutex);
+        usleep(request.value.header.op_delay_ms * 1000);
+
+        request = front(queue);      // Gets the request that arrived first
+
+        pop(&queue);                 // Updates the queue and 'frees' the space ocupided by the request picked up by this thread
         
-            continue;
-        }
-
-        // Gets the request that arrived first
-        request = front(queue);
-
-        //Updates the queue and 'frees' the space ocupided by the request picked up by this thread
-        pop(&queue);
         pthread_mutex_unlock(&q_mutex);
 
         pthread_mutex_lock(&db_mutex);
 
         // Handles the request
         if (log_in(&db, request.value.header.account_id, request.value.header.password)) {
-
             int op = (int)request.type;
             bank_account_t acc;
 
-            switch (op)
-            {
-            case 0: // CREATE
-                create_account(&acc, request.value.create.password,
-                               request.value.create.account_id,
-                               request.value.create.balance, &reply);
-                if (addAccount(acc, &db))
-                    return (void *)RC_OTHER;
+            switch (op) {
+                case 0:  // CREATE
+                    create_account(&acc, request.value.create.password, request.value.create.account_id, request.value.create.balance, &reply);
+                    if (addAccount(acc, &db)) return (void *)RC_OTHER;
 
-                break;
-            case 1: // CHECK BALANCE
-                acc = *accountExist(request.value.transfer.account_id, &db);
-                check_balance(&acc, &reply);
-                break;
-            case 2: // TRANSFER
-                usleep(request.value.header.op_delay_ms*1000);
-                transfer(request, &reply);
-                break;
-            case 3: // SHUTDOWN
-                usleep(request.value.header.op_delay_ms*1000);
-                shutdown((int*)arg);
-                break;
-            default:
-                break;
+                    break;
+                case 1:  // CHECK BALANCE
+                    acc = *accountExist(request.value.transfer.account_id, &db);
+                    check_balance(&acc, &reply);
+                    break;
+                case 2:  // TRANSFER
+                    usleep(request.value.header.op_delay_ms * 1000);
+                    transfer(request, &reply);
+                    break;
+                case 3:  // SHUTDOWN
+                    usleep(request.value.header.op_delay_ms * 1000);
+                    shutdown((int *)arg);
+                    break;
+                default:
+                    break;
             }
 
             pthread_mutex_unlock(&db_mutex);
 
-            if (send_reply(&request, &reply))
-                return (void *)RC_OTHER;
+            if (send_reply(&request, &reply)) return (void *)RC_OTHER;
 
             pthread_mutex_lock(&q_mutex);
 
             pthread_mutex_unlock(&q_mutex);
             logSyncMech(fd, getpid(), SYNC_OP_MUTEX_UNLOCK, SYNC_ROLE_CONSUMER, request.value.header.account_id);
-        }
-        else
-        {
+        } else {
             pthread_mutex_unlock(&db_mutex);
             logSyncMech(fd, getpid(), SYNC_OP_MUTEX_UNLOCK, SYNC_ROLE_CONSUMER, request.value.header.account_id);
         }
+
+        sem_post(&b_off);
+        logSyncMech(fd, getpid(), SYNC_OP_MUTEX_UNLOCK, SYNC_ROLE_CONSUMER, request.value.header.account_id);
     }
 
     logBankOfficeClose(fd, getpid(), pthread_self());
@@ -90,10 +75,9 @@ void *box_office(void *arg) {
     return NULL;
 }
 
-int create_account(bank_account_t *account, char password[], int accound_id, int balance, tlv_reply_t *user_reply)
-{
-    //echo -n “<senha><sal>” | sha256sum
-    //echo -n $salt | sha256sum
+int create_account(bank_account_t *account, char password[], int accound_id, int balance, tlv_reply_t *user_reply) {
+    // echo -n “<senha><sal>” | sha256sum
+    // echo -n $salt | sha256sum
     user_reply->length = 0;
     user_reply->type = OP_CREATE_ACCOUNT;
 
@@ -188,7 +172,7 @@ int transfer(tlv_request_t user_request, tlv_reply_t *user_reply) {
     return 0;
 }
 
-void shutdown(int* closing) {
+void shutdown(int *closing) {
     int fd = open(SERVER_FIFO_PATH, O_RDONLY);
     fchmod(fd, 0444);
     close(fd);

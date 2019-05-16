@@ -11,11 +11,12 @@
 #include "communication.h"
 #include "creatAccount.h"
 #include "dataBase.h"
+#include "queue.h"
 #include "sope.h"
 #include "types.h"
 
-#include "queue.h"
-
+sem_t n_req;
+sem_t b_off;
 pthread_mutex_t q_mutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t db_mutex = PTHREAD_MUTEX_INITIALIZER;
 queue_t queue;
@@ -28,10 +29,14 @@ int main(int argc, char* argv[]) {
         printf("./server <box offices> <password>\n");
         return RC_OTHER;
     }
-    int closing_server = 0;
+
     int number_threads = strtol(argv[1], NULL, 10);
     if (number_threads <= 0 || number_threads > MAX_BANK_OFFICES)
         return RC_OTHER;
+
+    int closing_server = 0;
+    sem_init(&n_req, 0, 0);
+    sem_init(&b_off, 0, number_threads);
 
     // CREATE DATABASE
     if (initializeDataBase(&db)) return RC_OTHER;
@@ -63,7 +68,10 @@ int main(int argc, char* argv[]) {
             pthread_mutex_lock(&q_mutex);
             logSyncMech(fd, getpid(), SYNC_OP_MUTEX_LOCK, SYNC_ROLE_ACCOUNT, request.value.header.account_id);
 
+            sem_wait(&b_off);
             push(&queue, request);
+            sem_post(&n_req);
+            
 
             pthread_mutex_unlock(&q_mutex);
             logSyncMech(fd, getpid(), SYNC_OP_MUTEX_UNLOCK, SYNC_ROLE_ACCOUNT, request.value.header.account_id);
@@ -80,7 +88,7 @@ int main(int argc, char* argv[]) {
     for (int i = 0; i < number_threads; i++) {
         pthread_kill(thread_array[i], SIGTERM);
     }
-    
+
     unlink(SERVER_FIFO_PATH);
     freeDataBase(&db);
 
