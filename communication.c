@@ -20,21 +20,10 @@ int get_request(tlv_request_t *user_request) {
     if ((fdr = open(SERVER_FIFO_PATH, O_RDONLY)) < 0) 
         return RC_OTHER;
 
-    if (read(fdr, &(user_request->type), sizeof(enum op_type)) <= 0) {
+    if (read(fdr, user_request, sizeof(tlv_request_t)) <= 0) {
         perror("get_request");
         return RC_OTHER;
     }
-
-    if (read(fdr, &(user_request->length), sizeof(uint32_t)) <= 0) {
-        perror("get_request");
-        return RC_OTHER;
-    }
-
-    if (read(fdr, &(user_request->value), user_request->length) <= 0) {
-        perror("get_request");
-        return RC_OTHER;
-    }
-
 
     // Opening LogFile
     int fd = open(SERVER_LOGFILE, O_WRONLY | O_APPEND | O_CREAT, 0777);
