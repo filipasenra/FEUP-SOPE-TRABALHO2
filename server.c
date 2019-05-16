@@ -14,11 +14,11 @@
 #include "sope.h"
 #include "types.h"
 
+#include "queue.h"
+
 pthread_mutex_t q_mutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t db_mutex = PTHREAD_MUTEX_INITIALIZER;
-tlv_request_t queue[QUEUE_MAX];
-int first = 0;
-int last = 0;
+queue_t queue;
 dataBase_t db;
 
 // Server Program
@@ -46,6 +46,9 @@ int main(int argc, char* argv[]) {
     createAccount(&account, argv[2], 0, 0);
     addAccount(account, &db);
 
+    //INCIALIZING QUEUE
+    queueInicialize(&queue);
+
     tlv_request_t request;
 
     //OPENING LOG
@@ -59,8 +62,7 @@ int main(int argc, char* argv[]) {
         pthread_mutex_lock(&q_mutex);
         logSyncMech(fd, getpid(), SYNC_OP_MUTEX_LOCK, SYNC_ROLE_ACCOUNT, request.value.header.account_id);
 
-        queue[last] = request;
-        last = (last + 1) % QUEUE_MAX;
+        push(&queue, request);
         
         pthread_mutex_unlock(&q_mutex);
         logSyncMech(fd, getpid(), SYNC_OP_MUTEX_UNLOCK, SYNC_ROLE_ACCOUNT, request.value.header.account_id);
@@ -68,7 +70,7 @@ int main(int argc, char* argv[]) {
         if (closing_server) break;
     }
 
-    while (first != last);
+    while (queue.first != queue.last);
 
     for(int i = 0; i < number_threads; i++){
         pthread_kill(thread_array[i], SIGTERM);
