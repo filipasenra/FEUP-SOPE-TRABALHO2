@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 E - 20010 - [ 58 bytes] 20010 (0000, "ola")                  [40000 ms] CREATE   0001         10€ "cenas"
 E - 02089 - [ 58 bytes] 02089 (0000, "ola")                  [40000 ms] CREATE   0001         20€ "oito"
 E - 02179 - [ 58 bytes] 02179 (0000, "ola")                  [400000 ms] CREATE   0001         20€ "oito"
@@ -84,3 +85,30 @@ E - 10650 - [ 58 bytes] 10650 (0000, "ola")                  [    0 ms] CREATE  
 E - 10672 - [ 58 bytes] 10672 (0000, "ola")                  [    0 ms] CREATE   0004         20€ "oito"
 E - 10693 - [ 58 bytes] 10693 (0000, "ola")                  [    0 ms] CREATE   0004         20€ "oito"
 E - 10713 - [ 58 bytes] 10713 (0000, "ola")                  [    0 ms] CREATE   0004         20€ "oito"
+=======
+E - 05498 - [ 58 bytes] 05498 (0000, "ultra_top_secret")     [   10 ms] CREATE   0001         25€ "top_secret"
+E - 05529 - [ 29 bytes] 05529 (0001, "top_secret")           [    1 ms] BALANCE 
+E - 06172 - [ 58 bytes] 06172 (0000, "ultra_top_secret")     [   10 ms] CREATE   0001         25€ "top_secret"
+E - 06226 - [ 29 bytes] 06226 (0001, "top_secret")           [    1 ms] BALANCE 
+E - 06369 - [ 29 bytes] 06369 (0001, "top_secret")           [    1 ms] BALANCE 
+E - 06396 - [ 29 bytes] 06396 (0001, "top_secret")           [    1 ms] BALANCE 
+E - 06501 - [ 58 bytes] 06501 (0000, "ultra_top_secret")     [   10 ms] CREATE   0001         25€ "top_secret"
+E - 06533 - [ 29 bytes] 06533 (0001, "top_secret")           [    1 ms] BALANCE 
+E - 10262 - [ 58 bytes] 10262 (0000, "ultra_top_secret")     [  100 ms] CREATE   0001         25€ "top_secret"
+E - 10293 - [ 58 bytes] 10293 (0000, "ultra_top_secret")     [  100 ms] CREATE   0002         25€ "top_secret"
+E - 10315 - [ 37 bytes] 10315 (0001, "top_secret")           [    0 ms] TRANSFER 0002         10€
+E - 10416 - [ 58 bytes] 10416 (0000, "ultra_top_secret")     [  100 ms] CREATE   0001         25€ "top_secret"
+E - 10440 - [ 37 bytes] 10440 (0001, "top_secret")           [    0 ms] TRANSFER 0002         10€
+E - 10450 - [ 58 bytes] 10450 (0000, "ultra_top_secret")     [  100 ms] CREATE   0002         25€ "top_secret"
+E - 10480 - [ 37 bytes] 10480 (0001, "top_secret")           [    0 ms] TRANSFER 0002         10€
+E - 10574 - [ 58 bytes] 10574 (0000, "ultra_top_secret")     [  100 ms] CREATE   0001         25€ "top_secret"
+E - 10605 - [ 58 bytes] 10605 (0000, "ultra_top_secret")     [  100 ms] CREATE   0002         25€ "top_secret"
+E - 10627 - [ 37 bytes] 10627 (0001, "top_secret")           [    0 ms] TRANSFER 0002         10€
+E - 10640 - [ 29 bytes] 10640 (0001, "top_secret")           [    0 ms] BALANCE 
+E - 10651 - [ 29 bytes] 10651 (0002, "top_secret")           [    0 ms] BALANCE 
+E - 10662 - [ 37 bytes] 10662 (0002, "top_secret")           [    0 ms] TRANSFER 0001         10€
+>>>>>>> ca59785113df5e3f456a4f9da3be1ebf2c1d211b
+E - 11596 - [ 58 bytes] 11596 (0000, "ola")                  [    0 ms] CREATE   0004         20€ "oito"
+E - 11623 - [ 58 bytes] 11623 (0000, "ola")                  [    0 ms] CREATE   0004         20€ "oito"
+E - 11645 - [ 58 bytes] 11645 (0000, "ola")                  [    0 ms] CREATE   0004         20€ "oito"
+E - 11666 - [ 58 bytes] 11666 (0000, "ola")                  [    0 ms] CREATE   0004         20€ "oito"

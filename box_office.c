@@ -99,7 +99,7 @@ int create_account(bank_account_t *account, char password[], int accound_id, int
 
     account->account_id = accound_id;
     user_reply->value.header.account_id = accound_id;
-    user_reply->length += sizeof(uint32_t);
+    user_reply->length += sizeof(rep_header_t);
 
     account->balance = balance;
 
@@ -116,18 +116,17 @@ int check_balance(bank_account_t *bank_account, tlv_reply_t *user_reply) {
     user_reply->length = 0;
 
     user_reply->type = OP_BALANCE;
-    user_reply->length += sizeof(user_reply->type);
 
     if (bank_account == NULL) {
         user_reply->value.header.ret_code = RC_ID_NOT_FOUND;
-        user_reply->length += sizeof(user_reply->value.header);
+        user_reply->length += sizeof(rep_header_t);
 
         return RC_ID_NOT_FOUND;
     }
 
     user_reply->value.balance.balance = bank_account->balance;
 
-    user_reply->length += sizeof(user_reply->value.balance);
+    user_reply->length += sizeof(rep_balance_t);
 
     user_reply->value.header.account_id = bank_account->account_id;
     user_reply->value.header.ret_code = RC_OK;
@@ -139,7 +138,6 @@ int transfer(tlv_request_t user_request, tlv_reply_t *user_reply) {
     user_reply->length = 0;
 
     user_reply->type = OP_TRANSFER;
-    user_reply->length += sizeof(user_reply->type);
 
     user_reply->value.header.account_id = user_request.value.header.account_id;
 
@@ -149,7 +147,7 @@ int transfer(tlv_request_t user_request, tlv_reply_t *user_reply) {
 
     if (bank_account_destination == NULL) {
         user_reply->value.header.ret_code = RC_ID_NOT_FOUND;
-        user_reply->length += sizeof(user_reply->value.header);
+        user_reply->length += sizeof(rep_header_t);
 
         return RC_ID_NOT_FOUND;
     }
@@ -164,14 +162,14 @@ int transfer(tlv_request_t user_request, tlv_reply_t *user_reply) {
     // ARE THE FINAL BALANCES WITHIN THE LIMITES?
     if ((bank_account_origin->balance - amount) < MIN_BALANCE) {
         user_reply->value.header.ret_code = RC_NO_FUNDS;
-        user_reply->length += sizeof(user_reply->value.header);
+        user_reply->length += sizeof(rep_header_t);
 
         return RC_NO_FUNDS;
     }
 
     if ((bank_account_destination->balance + amount) > MAX_BALANCE) {
         user_reply->value.header.ret_code = RC_TOO_HIGH;
-        user_reply->length += sizeof(user_reply->value.header);
+        user_reply->length += sizeof(rep_header_t);
 
         return RC_TOO_HIGH;
     }
@@ -182,7 +180,8 @@ int transfer(tlv_request_t user_request, tlv_reply_t *user_reply) {
     bank_account_destination->balance += amount;
 
     user_reply->value.transfer.balance = bank_account_origin->balance;
-    user_reply->length += sizeof(user_reply->value.transfer);
+    user_reply->length += sizeof(rep_header_t);
+    user_reply->length += sizeof(rep_transfer_t);
     user_reply->value.header.ret_code = RC_OK;
 
     return 0;
