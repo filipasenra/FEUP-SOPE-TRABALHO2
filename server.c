@@ -23,7 +23,7 @@ queue_t queue;
 dataBase_t db;
 
 void server_init(char *password, int number_threads, pthread_t thread_array[], bank_account_t *acc, int *fd_log, int *fd_srv);
-void server_main_loop(int *fd);
+void server_main_loop(int *fd_log, int *fd_srv);
 
 // Server Program
 int main(int argc, char *argv[]) {
