@@ -77,21 +77,17 @@ void *get_reply_thread(void *arg) {
 
     fda = open(fifo_reply, O_RDONLY);
 
-    read(fda, &(thread_arg->reply->type), sizeof(enum op_type));
-
-    read(fda, &(thread_arg->reply->length), sizeof(uint32_t));
-
-    read(fda, &(thread_arg->reply->value), thread_arg->reply->length);
+    read(fda, &thread_arg->reply, sizeof(tlv_reply_t));
    
     // Closing FIFOS
     if (close(fda) != 0) {
-        *(thread_arg->completed) = 1;
+        thread_arg->completed = 1;
         return (void*)RC_OTHER;
     }
 
     unlink(fifo_reply);
     free(fifo_reply);
 
-    *(thread_arg->completed) = 1;
+    thread_arg->completed = 1;
     return (void*)RC_OK;
 }

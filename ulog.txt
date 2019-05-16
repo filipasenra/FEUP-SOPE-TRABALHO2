@@ -1,4 +1,0 @@
-E - 03948 - [ 58 bytes] 03948 (0000, "wrong_password")       [   10 ms] CREATE   0001         25€ "top_secret"
-E - 04076 - [ 58 bytes] 04076 (0000, "wrong_password")       [   10 ms] CREATE   0001         25€ "top_secret"
-E - 04183 - [ 58 bytes] 04183 (0000, "wrong_password")       [   10 ms] CREATE   0002         25€ "top_secret"
-E - 04388 - [ 58 bytes] 04388 (0000, "wrong_password")       [   10 ms] CREATE   0002         25€ "top_secret"
