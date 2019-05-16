@@ -61,16 +61,16 @@ int main(int argc, char* argv[]) {
 
         if (request.length) {
             pthread_mutex_lock(&q_mutex);
-            logSyncMech(fd, getpid(), SYNC_OP_MUTEX_LOCK, SYNC_ROLE_ACCOUNT,
-                        request.value.header.account_id);
+            logSyncMech(fd, getpid(), SYNC_OP_MUTEX_LOCK, SYNC_ROLE_ACCOUNT, request.value.header.account_id);
 
             push(&queue, request);
 
             pthread_mutex_unlock(&q_mutex);
-            logSyncMech(fd, getpid(), SYNC_OP_MUTEX_UNLOCK, SYNC_ROLE_ACCOUNT,
-                        request.value.header.account_id);
+            logSyncMech(fd, getpid(), SYNC_OP_MUTEX_UNLOCK, SYNC_ROLE_ACCOUNT, request.value.header.account_id);
+
+            request.length = 0;
         }
-        
+
         if (closing_server) break;
     }
 
