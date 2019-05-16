@@ -80,7 +80,9 @@ int main(int argc, char* argv[]) {
     for (int i = 0; i < number_threads; i++) {
         pthread_kill(thread_array[i], SIGTERM);
     }
+    
     unlink(SERVER_FIFO_PATH);
+    freeDataBase(&db);
 
     close(fd);
 
