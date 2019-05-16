@@ -102,7 +102,7 @@ void server_main_loop() {
             request.length = 0;
 
             if (request.type == OP_SHUTDOWN){
-                fchmode(fd, 0444);
+                fchmod(fd, 0444);
                 break;
             }
         }
