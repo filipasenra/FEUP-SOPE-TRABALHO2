@@ -39,7 +39,7 @@ int main(int argc, char *argv[]) {
 
     server_init(number_threads, thread_array, &account, &fd);
 
-    server_main_loop();
+    server_main_loop(&fd);
 
     while (isEmpty(queue))
         ;
@@ -75,7 +75,7 @@ void server_init(int number_threads, pthread_t thread_array[], bank_account_t *a
     mkfifo(SERVER_FIFO_PATH, 0666);
 }
 
-void server_main_loop() {
+void server_main_loop(int *fd) {
     tlv_request_t request;
     int value = 0;
 
