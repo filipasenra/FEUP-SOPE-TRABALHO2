@@ -41,3 +41,9 @@ bank_account_t * accountExist(int account_id, dataBase_t *dataBase)
 
     return NULL;
 }
+
+
+int freeDataBase(dataBase_t *dataBase){
+
+    free(dataBase->dataBaseArray);
+}
