@@ -77,11 +77,7 @@ void *get_reply_thread(void *arg) {
 
     fda = open(fifo_reply, O_RDONLY);
 
-    read(fda, &(thread_arg->reply.type), sizeof(enum op_type));
-
-    read(fda, &(thread_arg->reply.length), sizeof(uint32_t));
-
-    read(fda, &(thread_arg->reply.value), thread_arg->reply.length);
+    read(fda, &(thread_arg->reply), sizeof(thread_arg_t));
    
     // Closing FIFOS
     if (close(fda) != 0) {
