@@ -18,7 +18,7 @@ bool pop(queue_t *queue)
         return false;
 
     queue->first = (queue->first + 1) % QUEUE_MAX;
-    queue->size++;
+    queue->size--;
 
     return true;
 }
@@ -30,7 +30,7 @@ bool push(queue_t *queue, tlv_request_t request)
 
     queue->array[queue->last] = request;
     queue->last = (queue->last + 1) % QUEUE_MAX;
-    queue->size--;
+    queue->size++;
 
     return true;
 }

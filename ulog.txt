@@ -43,3 +43,10 @@ E - 04922 - [ 33 bytes] 04922 (0000, "ultra_top_secret")     [    0 ms] SHUTDOWN
 E - 04946 - [ 62 bytes] 04946 (0000, "ultra_top_secret")     [  100 ms] CREATE   0002         25€ "top_secret"
 E - 05021 - [ 33 bytes] 05021 (0000, "ultra_top_secret")     [    0 ms] SHUTDOWN
 E - 05101 - [ 33 bytes] 05101 (0000, "ultra_top_secret")     [    0 ms] SHUTDOWN
+E - 02629 - [ 33 bytes] 02629 (0000, "ultra_top_secret")     [    0 ms] SHUTDOWN
+E - 02697 - [ 33 bytes] 02697 (0000, "ultra_top_secret")     [    0 ms] SHUTDOWN
+E - 02762 - [ 33 bytes] 02762 (0000, "ultra_top_secret")     [    0 ms] SHUTDOWN
+E - 02841 - [ 33 bytes] 02841 (0000, "ultra_top_secret")     [    0 ms] SHUTDOWN
+E - 02941 - [ 33 bytes] 02941 (0000, "ultra_top_secret")     [    0 ms] SHUTDOWN
+E - 03154 - [ 33 bytes] 03154 (0000, "ultra_top_secret")     [    0 ms] SHUTDOWN
+E - 03227 - [ 33 bytes] 03227 (0000, "ultra_top_secret")     [    0 ms] SHUTDOWN
