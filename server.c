@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
 
     // REQUEST LOOP
     mkfifo(SERVER_FIFO_PATH, 0666);
-    
+
     while (1)
     {
         if (get_request(&request))
@@ -98,7 +98,10 @@ int main(int argc, char *argv[])
             request.length = 0;
 
             if (request.type == OP_SHUTDOWN)
-                break;
+                {
+                    fchmod(fd, 0444);
+                    break;
+                }
         }
     }
 
