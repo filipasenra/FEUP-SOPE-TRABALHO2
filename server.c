@@ -52,7 +52,7 @@ int main(int argc, char* argv[]) {
     //Creating the threads
     pthread_t thread_array[number_threads];
     for (int i = 0; i < number_threads; i++) {
-        pthread_create(&thread_array[i], NULL, box_office, NULL);
+        pthread_create(&thread_array[i], NULL, box_office, &closing_server);
     }
 
     // ADMIN ACC
