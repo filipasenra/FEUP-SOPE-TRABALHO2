@@ -74,7 +74,7 @@ void server_init(char* password, int number_threads, pthread_t thread_array[], b
 
     if (initializeDataBase(&db)) return;
     createAccount(account, password, 0, 0);
-    addAccount(account, &db);
+    addAccount(*account, &db);
 
     for (int i = 0; i < number_threads; i++)    pthread_create(&thread_array[i], NULL, box_office, NULL);
 
