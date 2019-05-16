@@ -21,19 +21,19 @@ void *box_office(void *arg) {
         {
             pthread_mutex_unlock(&q_mutex);
             logSyncMech(fd, getpid(), SYNC_OP_MUTEX_UNLOCK, SYNC_ROLE_CONSUMER, request.value.header.account_id);
-        
+            
             continue;
         }
-
+        
         // Gets the request that arrived first
         request = front(queue);
-
+    
         //Updates the queue and 'frees' the space ocupided by the request picked up by this thread
         pop(&queue);
         pthread_mutex_unlock(&q_mutex);
 
         pthread_mutex_lock(&db_mutex);
-
+        
         // Handles the request
         if (log_in(&db, request.value.header.account_id, request.value.header.password)) {
 
