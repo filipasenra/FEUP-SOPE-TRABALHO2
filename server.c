@@ -63,7 +63,7 @@ int main(int argc, char *argv[]) {
     return 0;
 }
 
-void server_init(char* password, int number_threads, pthread_t thread_array[], bank_account_t *acc, int *fd_log, int *fd_srv){
+void server_init(char* password, int number_threads, pthread_t thread_array[], bank_account_t *account, int *fd_log, int *fd_srv){
     *fd_log = open(SERVER_LOGFILE, O_WRONLY | O_APPEND | O_CREAT, 0777);
     *fd_srv = open(SERVER_FIFO_PATH, O_RDONLY);
 
@@ -73,8 +73,8 @@ void server_init(char* password, int number_threads, pthread_t thread_array[], b
     queueInitialize(&queue);
 
     if (initializeDataBase(&db)) return;
-    createAccount(*acc, password, 0, 0);
-    addAccount(*acc, &db);
+    createAccount(account, password, 0, 0);
+    addAccount(account, &db);
 
     for (int i = 0; i < number_threads; i++)    pthread_create(&thread_array[i], NULL, box_office, NULL);
 
