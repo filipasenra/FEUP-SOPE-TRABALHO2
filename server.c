@@ -73,8 +73,8 @@ void server_init(char* password, int number_threads, pthread_t thread_array[], b
     queueInitialize(&queue);
 
     if (initializeDataBase(&db)) return;
-    createAccount(acc, password, 0, 0);
-    addAccount(acc, &db);
+    createAccount(*acc, password, 0, 0);
+    addAccount(*acc, &db);
 
     for (int i = 0; i < number_threads; i++)    pthread_create(&thread_array[i], NULL, box_office, NULL);
 
