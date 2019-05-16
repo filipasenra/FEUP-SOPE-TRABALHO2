@@ -35,6 +35,8 @@ void *box_office(void *arg)
             int op = (int)request.type;
             bank_account_t acc;
 
+            reply.value.header.account_id = request.value.header.account_id;
+
             switch (op)
             {
             case 0: // CREATE
@@ -53,7 +55,7 @@ void *box_office(void *arg)
                 break;
             case 3: // SHUTDOWN
                 usleep(request.value.header.op_delay_ms * 1000);
-                shutdown((int *)arg);
+                shutdown(&reply);
                 break;
             default:
                 break;
@@ -89,7 +91,6 @@ int create_account(bank_account_t *account, char password[], int accound_id, int
     user_reply->type = OP_CREATE_ACCOUNT;
 
     account->account_id = accound_id;
-    user_reply->value.header.account_id = accound_id;
     user_reply->length += sizeof(rep_header_t);
 
     account->balance = balance;
@@ -121,7 +122,6 @@ int check_balance(bank_account_t *bank_account, tlv_reply_t *user_reply)
 
     user_reply->length += sizeof(rep_balance_t);
 
-    user_reply->value.header.account_id = bank_account->account_id;
     user_reply->value.header.ret_code = RC_OK;
 
     return 0;
@@ -133,7 +133,6 @@ int transfer(tlv_request_t user_request, tlv_reply_t *user_reply)
 
     user_reply->type = OP_TRANSFER;
 
-    user_reply->value.header.account_id = user_request.value.header.account_id;
 
     // DOES DESTINATION ACCOUNT EXIST?
     bank_account_t *bank_account_destination =
@@ -184,12 +183,19 @@ int transfer(tlv_request_t user_request, tlv_reply_t *user_reply)
     return 0;
 }
 
-void shutdown(int *closing)
+void shutdown(tlv_reply_t *user_reply)
 {
-    int fd = open(SERVER_FIFO_PATH, O_RDONLY | O_NONBLOCK);
-    fchmod(fd, 0444);
-    close(fd);
-    *closing = 1;
+
+    user_reply->length = 0;
+
+    user_reply->type = OP_SHUTDOWN;
+
+    int value = 1;
+    sem_getvalue(&b_off, &value);
+
+    user_reply->value.shutdown.active_offices = value;
+
+    user_reply->value.header.ret_code = RC_OK;
 }
 
 int log_in(dataBase_t *db, uint32_t account_id, char password[MAX_PASSWORD_LEN + 1])
