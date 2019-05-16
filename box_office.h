@@ -28,6 +28,8 @@ extern pthread_mutex_t q_mutex;
 extern pthread_mutex_t db_mutex;
 extern queue_t queue;
 extern dataBase_t db;
+extern sem_t n_req;
+extern sem_t b_off;
 
 void * box_office(void *arg);
 int get_operation();
