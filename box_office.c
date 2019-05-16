@@ -35,8 +35,8 @@ void *box_office(void *arg) {
         pthread_mutex_lock(&db_mutex);
 
         // Handles the request
-        if (log_in(&db, request.value.header.account_id,
-                   request.value.header.password)) {
+        if (log_in(&db, request.value.header.account_id, request.value.header.password)) {
+
             int op = (int)request.type;
             bank_account_t acc;
 
@@ -126,6 +126,7 @@ int check_balance(bank_account_t *bank_account, tlv_reply_t *user_reply) {
     }
 
     user_reply->value.balance.balance = bank_account->balance;
+
     user_reply->length += sizeof(user_reply->value.balance);
 
     user_reply->value.header.account_id = bank_account->account_id;

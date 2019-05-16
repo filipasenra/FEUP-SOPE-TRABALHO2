@@ -4,9 +4,7 @@
 
 int main(int argc, char *argv[]) {
     tlv_request_t user_request;
-    tlv_reply_t user_reply;
     pthread_t t;
-    int comp = 0;
 
     // CREATE FIFO REPLY
     char *fifo_reply = malloc(sizeof(USER_FIFO_PATH_PREFIX) + sizeof(pid_t));
@@ -25,8 +23,7 @@ int main(int argc, char *argv[]) {
     // RECEIVE REPLY
     thread_arg_t thread_arg;
     thread_arg.pid = getpid();
-    thread_arg.reply = &user_reply;
-    thread_arg.completed = &comp;
+    thread_arg.completed = 0;
 
     pthread_create(&t, NULL, get_reply_thread, (void *)(&thread_arg));
 
@@ -36,11 +33,12 @@ int main(int argc, char *argv[]) {
             pthread_kill(t, SIGTERM);
             return RC_SRV_TIMEOUT;
         }
-        if (comp) break;
+        if (thread_arg.completed ) break;
     }
 
     // READ REPLY
-    printf("account id %d\n", thread_arg.reply->value.header.account_id);
+    printf("account id %d\n", thread_arg.reply.value.header.account_id);
+    printf("balance %d\n", thread_arg.reply.value.balance.balance);
 
     return RC_OK;
 }

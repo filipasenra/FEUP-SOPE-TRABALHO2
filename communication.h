@@ -15,8 +15,8 @@ int send_reply(tlv_request_t *user_request, tlv_reply_t *user_reply);
 
 typedef struct thread_arg{
     pid_t pid;
-    tlv_reply_t *reply;
-    int *completed;
+    tlv_reply_t reply;
+    int completed;
 } thread_arg_t;
 
 
