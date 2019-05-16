@@ -9,3 +9,12 @@ E - 02318 - [ 58 bytes] 02318 (0000, "ola")                  [400000 ms] CREATE 
 E - 02349 - [ 58 bytes] 02349 (0000, "ola")                  [400000 ms] CREATE   0001         20€ "oito"
 E - 02363 - [ 58 bytes] 02363 (0000, "ola")                  [400000 ms] CREATE   0001         20€ "oito"
 E - 02378 - [ 58 bytes] 02378 (0000, "ola")                  [ 4000 ms] CREATE   0001         20€ "oito"
+E - 03864 - [ 58 bytes] 03864 (0000, "ultra_top_secret")     [   10 ms] CREATE   0001         25€ "top_secret"
+E - 03947 - [ 58 bytes] 03947 (0000, "ultra_top_secret")     [   10 ms] CREATE   0004         25€ "top_secret"
+E - 03969 - [ 58 bytes] 03969 (0000, "ultra_top_secret")     [   10 ms] CREATE   0006         25€ "top_secret"
+E - 03993 - [ 29 bytes] 03993 (0001, "top_secret")           [    1 ms] BALANCE 
+E - 03996 - [ 29 bytes] 03996 (0002, "top_secret")           [    1 ms] BALANCE 
+E - 04015 - [ 58 bytes] 04015 (0000, "ultra_top_secret")     [   10 ms] CREATE   0001         25€ "top_secret"
+E - 04038 - [ 29 bytes] 04038 (0001, "top_secret")           [    1 ms] BALANCE 
+E - 04157 - [ 58 bytes] 04157 (0000, "ultra_top_secret")     [   10 ms] CREATE   0001         25€ "top_secret"
+E - 04180 - [ 29 bytes] 04180 (0001, "top_secret")           [    1 ms] BALANCE 
