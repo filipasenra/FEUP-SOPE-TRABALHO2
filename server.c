@@ -24,6 +24,7 @@ dataBase_t db;
 
 // Server Program
 int main(int argc, char* argv[]) {
+
     // Server <box offices> <password>
     if (argc != 3) {
         printf("./server <box offices> <password>\n");
@@ -34,13 +35,21 @@ int main(int argc, char* argv[]) {
     if (number_threads <= 0 || number_threads > MAX_BANK_OFFICES)
         return RC_OTHER;
 
+    
+    // OPENING LOG
+    int fd = open(SERVER_LOGFILE, O_WRONLY | O_APPEND | O_CREAT, 0777);
+
+    //Variable that indicates the server is closing
     int closing_server = 0;
+
+    //Initializing the semaphores
     sem_init(&n_req, 0, 0);
     sem_init(&b_off, 0, number_threads);
 
     // CREATE DATABASE
     if (initializeDataBase(&db)) return RC_OTHER;
 
+    //Creating the threads
     pthread_t thread_array[number_threads];
     for (int i = 0; i < number_threads; i++) {
         pthread_create(&thread_array[i], NULL, box_office, NULL);
@@ -56,9 +65,6 @@ int main(int argc, char* argv[]) {
 
     tlv_request_t request;
 
-    // OPENING LOG
-    int fd = open(SERVER_LOGFILE, O_WRONLY | O_APPEND | O_CREAT, 0777);
-
     // REQUEST LOOP
     mkfifo(SERVER_FIFO_PATH, 0666);
     while (1) {
@@ -66,15 +72,22 @@ int main(int argc, char* argv[]) {
 
         if (request.length) {
             pthread_mutex_lock(&q_mutex);
-            logSyncMech(fd, getpid(), SYNC_OP_MUTEX_LOCK, SYNC_ROLE_ACCOUNT, request.value.header.account_id);
+            logSyncMech(fd, getpid(), SYNC_OP_MUTEX_LOCK, SYNC_ROLE_PRODUCER, request.value.header.account_id);
 
             sem_wait(&b_off);
+            int value = 0;
+            sem_getvalue(&b_off, &value);
+            logSyncMechSem(fd, getpid(), SYNC_OP_SEM_WAIT, SYNC_ROLE_PRODUCER, request.value.header.account_id, value);
+
             push(&queue, request);
+
             sem_post(&n_req);
+            sem_getvalue(&n_req, &value);
+            logSyncMechSem(fd, getpid(), SYNC_OP_SEM_POST, SYNC_ROLE_PRODUCER, request.value.header.account_id, value);
             
 
             pthread_mutex_unlock(&q_mutex);
-            logSyncMech(fd, getpid(), SYNC_OP_MUTEX_UNLOCK, SYNC_ROLE_ACCOUNT, request.value.header.account_id);
+            logSyncMech(fd, getpid(), SYNC_OP_MUTEX_UNLOCK, SYNC_ROLE_PRODUCER, request.value.header.account_id);
 
             request.length = 0;
         }
