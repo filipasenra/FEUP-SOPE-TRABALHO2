@@ -1,12 +1,12 @@
 #include <fcntl.h>
 #include <pthread.h>
 #include <semaphore.h>
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <signal.h>
 #include "box_office.h"
 #include "communication.h"
 #include "creatAccount.h"
@@ -46,12 +46,12 @@ int main(int argc, char* argv[]) {
     createAccount(&account, argv[2], 0, 0);
     addAccount(account, &db);
 
-    //INCIALIZING QUEUE
+    // INCIALIZING QUEUE
     queueInicialize(&queue);
 
     tlv_request_t request;
 
-    //OPENING LOG
+    // OPENING LOG
     int fd = open(SERVER_LOGFILE, O_WRONLY | O_APPEND | O_CREAT, 0777);
 
     // REQUEST LOOP
@@ -59,20 +59,25 @@ int main(int argc, char* argv[]) {
     while (1) {
         if (get_request(&request)) return RC_OTHER;
 
-        pthread_mutex_lock(&q_mutex);
-        logSyncMech(fd, getpid(), SYNC_OP_MUTEX_LOCK, SYNC_ROLE_ACCOUNT, request.value.header.account_id);
+        if (request.length) {
+            pthread_mutex_lock(&q_mutex);
+            logSyncMech(fd, getpid(), SYNC_OP_MUTEX_LOCK, SYNC_ROLE_ACCOUNT,
+                        request.value.header.account_id);
 
-        push(&queue, request);
+            push(&queue, request);
+
+            pthread_mutex_unlock(&q_mutex);
+            logSyncMech(fd, getpid(), SYNC_OP_MUTEX_UNLOCK, SYNC_ROLE_ACCOUNT,
+                        request.value.header.account_id);
+        }
         
-        pthread_mutex_unlock(&q_mutex);
-        logSyncMech(fd, getpid(), SYNC_OP_MUTEX_UNLOCK, SYNC_ROLE_ACCOUNT, request.value.header.account_id);
-
         if (closing_server) break;
     }
 
-    while (queue.first != queue.last);
+    while (queue.first != queue.last)
+        ;
 
-    for(int i = 0; i < number_threads; i++){
+    for (int i = 0; i < number_threads; i++) {
         pthread_kill(thread_array[i], SIGTERM);
     }
     unlink(SERVER_FIFO_PATH);
