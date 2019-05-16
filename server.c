@@ -23,66 +23,70 @@ queue_t queue;
 dataBase_t db;
 
 // Server Program
-int main(int argc, char *argv[])
-{
-
-    // Server <box offices> <password>
-    if (argc != 3)
-    {
+int main(int argc, char *argv[]) {
+    // ./server <box offices> <password>
+    if (argc != 3) {
         printf("./server <box offices> <password>\n");
         return RC_OTHER;
     }
 
     int number_threads = strtol(argv[1], NULL, 10);
-    if (number_threads <= 0 || number_threads > MAX_BANK_OFFICES)
-        return RC_OTHER;
+    pthread_t thread_array[number_threads];
+    bank_account_t account;
+    int fd;
 
-    // OPENING LOG
-    int fd = open(SERVER_LOGFILE, O_WRONLY | O_APPEND | O_CREAT, 0777);
+    if (number_threads <= 0 || number_threads > MAX_BANK_OFFICES) return RC_OTHER;
 
-    //Variable that indicates the server is closing
-    int closing_server = 0;
+    server_init(number_threads, thread_array, &account, &fd);
 
-    //Initializing the semaphores
+    server_main_loop();
+
+    while (isEmpty(queue))
+        ;
+
+    int value = 1;
+    while (value != number_threads) sem_getvalue(&b_off, &value);
+
+    for (int i = 0; i < number_threads; i++)
+        pthread_kill(thread_array[i], SIGTERM);
+
+    unlink(SERVER_FIFO_PATH);
+    freeDataBase(&db);
+
+    close(fd);
+
+    return 0;
+}
+
+void server_init(int number_threads, pthread_t thread_array[], bank_account_t *acc, int *fd){
+    fd = open(SERVER_LOGFILE, O_WRONLY | O_APPEND | O_CREAT, 0777);
+
     sem_init(&n_req, 0, 0);
     sem_init(&b_off, 0, number_threads);
 
-    // CREATE DATABASE
-    if (initializeDataBase(&db))
-        return RC_OTHER;
+    queueInitialize(&queue);
 
-    //Creating the threads
-    pthread_t thread_array[number_threads];
-    for (int i = 0; i < number_threads; i++)
-    {
-        pthread_create(&thread_array[i], NULL, box_office, &closing_server);
-    }
-
-    // ADMIN ACC
-    bank_account_t account;
+    if (initializeDataBase(&db)) return RC_OTHER;
     createAccount(&account, argv[2], 0, 0);
     addAccount(account, &db);
 
-    // INCIALIZING QUEUE
-    queueInitialize(&queue);
+    for (int i = 0; i < number_threads; i++)    pthread_create(&thread_array[i], NULL, box_office, NULL);
 
-    tlv_request_t request;
-
-    // REQUEST LOOP
     mkfifo(SERVER_FIFO_PATH, 0666);
+}
 
-    while (1)
-    {
-        if (get_request(&request))
-            return RC_OTHER;
+void server_main_loop() {
+    tlv_request_t request;
+    int value = 0;
 
-        if (request.length)
-        {
+    while (1) {
+        if (get_request(&request)) return RC_OTHER;
+
+        if (request.length) {
             pthread_mutex_lock(&q_mutex);
             logSyncMech(fd, getpid(), SYNC_OP_MUTEX_LOCK, SYNC_ROLE_PRODUCER, request.value.header.account_id);
 
             sem_wait(&b_off);
-            int value = 0;
             sem_getvalue(&b_off, &value);
             logSyncMechSem(fd, getpid(), SYNC_OP_SEM_WAIT, SYNC_ROLE_PRODUCER, request.value.header.account_id, value);
 
@@ -97,31 +101,10 @@ int main(int argc, char *argv[])
 
             request.length = 0;
 
-            if (request.type == OP_SHUTDOWN)
-                {
-                    fchmod(fd, 0444);
-                    break;
-                }
+            if (request.type == OP_SHUTDOWN){
+                fchmode(fd, 0444);
+                break;
+            }
         }
     }
-
-    while (isEmpty(queue));
-
-    int value = 1;
-    while (value != number_threads)
-    {
-        sem_getvalue(&b_off, &value);
-    }
-
-    for (int i = 0; i < number_threads; i++)
-    {
-        pthread_kill(thread_array[i], SIGTERM);
-    }
-
-    unlink(SERVER_FIFO_PATH);
-    freeDataBase(&db);
-
-    close(fd);
-
-    return 0;
 }
