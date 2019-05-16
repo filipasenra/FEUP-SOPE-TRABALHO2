@@ -13,38 +13,27 @@ int send_request(tlv_request_t *user_request) {
     return RC_OK;
 }
 
-int get_request(tlv_request_t *user_request) {
-
-    int fdr;
-    printf("WAITING NEW REQUEST\n");
-    if ((fdr = open(SERVER_FIFO_PATH, O_RDONLY)) < 0) 
-        return RC_OTHER;
-
-    if (read(fdr, &(user_request->type), sizeof(enum op_type)) <= 0) {
+int get_request(tlv_request_t *user_request, int* fd_log, int* fd_srv) {
+    if (read(*fd_srv, &(user_request->type), sizeof(enum op_type)) <= 0) {
         perror("get_request");
         return RC_OTHER;
     }
 
-    if (read(fdr, &(user_request->length), sizeof(uint32_t)) <= 0) {
+    if (read(*fd_srv, &(user_request->length), sizeof(uint32_t)) <= 0) {
         perror("get_request");
         return RC_OTHER;
     }
 
-    if (read(fdr, &(user_request->value), user_request->length) <= 0) {
+    if (read(*fd_srv, &(user_request->value), user_request->length) <= 0) {
         perror("get_request");
         return RC_OTHER;
     }
 
-    // Opening LogFile
-    int fd = open(SERVER_LOGFILE, O_WRONLY | O_APPEND | O_CREAT, 0777);
-    if (logRequest(fd, (int)getpid(), user_request) < 0) {
+    if (logRequest(*fd_log, (int)getpid(), user_request) < 0) {
         printf("Failed to open and write into %s\n", SERVER_LOGFILE);
         return RC_OTHER;
     }
-
-    close(fd);
-
-    if (close(fdr) != 0) return RC_OTHER;
+    
     return RC_OK;
 }
 

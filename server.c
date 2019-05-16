@@ -33,13 +33,14 @@ int main(int argc, char *argv[]) {
     int number_threads = strtol(argv[1], NULL, 10);
     pthread_t thread_array[number_threads];
     bank_account_t account;
-    int fd;
+    int fd_log;
+    int fd_srv;
 
     if (number_threads <= 0 || number_threads > MAX_BANK_OFFICES) return RC_OTHER;
 
-    server_init(number_threads, thread_array, &account, &fd);
+    server_init(argv[2], number_threads, thread_array, &account, &fd_log, &fd_srv);
 
-    server_main_loop(&fd);
+    server_main_loop(&fd_log, &fd_srv);
 
     while (isEmpty(queue))
         ;
@@ -53,13 +54,15 @@ int main(int argc, char *argv[]) {
     unlink(SERVER_FIFO_PATH);
     freeDataBase(&db);
 
-    close(fd);
+    close(fd_log);
+    close(fd_srv);
 
     return 0;
 }
 
-void server_init(int number_threads, pthread_t thread_array[], bank_account_t *acc, int *fd){
-    fd = open(SERVER_LOGFILE, O_WRONLY | O_APPEND | O_CREAT, 0777);
+void server_init(char* password, int number_threads, pthread_t thread_array[], bank_account_t *acc, int *fd_log, int *fd_srv){
+    *fd_log = open(SERVER_LOGFILE, O_WRONLY | O_APPEND | O_CREAT, 0777);
+    *fd_srv = open(SERVER_FIFO_PATH, O_RDONLY);
 
     sem_init(&n_req, 0, 0);
     sem_init(&b_off, 0, number_threads);
@@ -67,7 +70,7 @@ void server_init(int number_threads, pthread_t thread_array[], bank_account_t *a
     queueInitialize(&queue);
 
     if (initializeDataBase(&db)) return RC_OTHER;
-    createAccount(&account, argv[2], 0, 0);
+    createAccount(account, password, 0, 0);
     addAccount(account, &db);
 
     for (int i = 0; i < number_threads; i++)    pthread_create(&thread_array[i], NULL, box_office, NULL);
@@ -80,7 +83,7 @@ void server_main_loop(int *fd) {
     int value = 0;
 
     while (1) {
-        if (get_request(&request)) return RC_OTHER;
+        if (get_request(fd, &request)) return RC_OTHER;
 
         if (request.length) {
             pthread_mutex_lock(&q_mutex);
