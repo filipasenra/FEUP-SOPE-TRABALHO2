@@ -55,9 +55,6 @@ void *box_office(void *arg) {
 
             if (send_reply(&request, &reply)) return (void *)RC_OTHER;
 
-            pthread_mutex_lock(&q_mutex);
-
-            pthread_mutex_unlock(&q_mutex);
             logSyncMech(fd, getpid(), SYNC_OP_MUTEX_UNLOCK, SYNC_ROLE_CONSUMER, request.value.header.account_id);
         } else {
             pthread_mutex_unlock(&db_mutex);
