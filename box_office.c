@@ -3,7 +3,6 @@
 void *box_office(void *arg) {
     tlv_request_t request;
     tlv_reply_t reply;
-    int index;
 
     int fd = open(SERVER_LOGFILE, O_WRONLY | O_APPEND | O_CREAT, 0777);
 
@@ -16,25 +15,24 @@ void *box_office(void *arg) {
         pthread_mutex_lock(&q_mutex);
         usleep(request.value.header.op_delay_ms*1000);
 
-        // Gets the request that arrived first
-        request = queue[first];
-
         logSyncMech(fd, getpid(), SYNC_OP_MUTEX_LOCK, SYNC_ROLE_CONSUMER, request.value.header.account_id);
 
-        if (request.length == 0)
+        if (isEmpty(queue))
         {
             pthread_mutex_unlock(&q_mutex);
             logSyncMech(fd, getpid(), SYNC_OP_MUTEX_UNLOCK, SYNC_ROLE_CONSUMER, request.value.header.account_id);
         
             continue;
         }
-        index = first;
+
+        // Gets the request that arrived first
+        request = front(queue);
 
         //Updates the queue and 'frees' the space ocupided by the request picked up by this thread
-        first = (first + 1) % QUEUE_MAX;
-        //pthread_mutex_unlock(&q_mutex);
+        pop(&queue);
+        pthread_mutex_unlock(&q_mutex);
 
-        //pthread_mutex_lock(&db_mutex);
+        pthread_mutex_lock(&db_mutex);
 
         // Handles the request
         if (log_in(&db, request.value.header.account_id,
@@ -66,15 +64,14 @@ void *box_office(void *arg) {
                 break;
             default:
                 break;
-            }printf("pila\n");
+            }
 
-            //pthread_mutex_unlock(&db_mutex);
+            pthread_mutex_unlock(&db_mutex);
 
             if (send_reply(&request, &reply))
                 return (void *)RC_OTHER;
 
-            //pthread_mutex_lock(&q_mutex);
-            queue[index].length = 0;
+            pthread_mutex_lock(&q_mutex);
 
             pthread_mutex_unlock(&q_mutex);
             logSyncMech(fd, getpid(), SYNC_OP_MUTEX_UNLOCK, SYNC_ROLE_CONSUMER, request.value.header.account_id);
