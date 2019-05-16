@@ -14,6 +14,8 @@
 #include "types.h"
 #include "communication.h"
 
+#include "queue.h"
+
 typedef struct box_office {
     pthread_mutex_t *q_mutex;
     tlv_request_t* queue[QUEUE_MAX];
@@ -24,9 +26,7 @@ typedef struct box_office {
 
 extern pthread_mutex_t q_mutex;
 extern pthread_mutex_t db_mutex;
-extern tlv_request_t queue[QUEUE_MAX];
-extern int first;
-extern int last;
+extern queue_t queue;
 extern dataBase_t db;
 
 void * box_office(void *arg);
