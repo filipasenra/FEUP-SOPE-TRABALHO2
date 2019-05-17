@@ -5,9 +5,7 @@ void *box_office(void *arg)
     tlv_request_t request;
     tlv_reply_t reply;
 
-    int fd = open(SERVER_LOGFILE, O_WRONLY | O_APPEND | O_CREAT, 0777);
-
-    logBankOfficeOpen(fd, getpid(), pthread_self());
+    logBankOfficeOpen(*(int *)arg, getpid(), pthread_self());
 
     while (1)
     {
@@ -15,7 +13,7 @@ void *box_office(void *arg)
 
         // Locks the mutex
         pthread_mutex_lock(&q_mutex);
-        logSyncMech(fd, getpid(), SYNC_OP_MUTEX_LOCK, SYNC_ROLE_CONSUMER,
+        logSyncMech(*(int *)arg, getpid(), SYNC_OP_MUTEX_LOCK, SYNC_ROLE_CONSUMER,
                     request.value.header.account_id);
 
         usleep(request.value.header.op_delay_ms * 1000);
@@ -26,11 +24,11 @@ void *box_office(void *arg)
                      // request picked up by this thread
 
         pthread_mutex_unlock(&q_mutex);
-        logSyncMech(fd, getpid(), SYNC_OP_MUTEX_UNLOCK, SYNC_ROLE_CONSUMER,
+        logSyncMech(*(int *)arg, getpid(), SYNC_OP_MUTEX_UNLOCK, SYNC_ROLE_CONSUMER,
                     request.value.header.account_id);
 
         pthread_mutex_lock(&db_mutex);
-        logSyncMech(fd, getpid(), SYNC_OP_MUTEX_LOCK, SYNC_ROLE_ACCOUNT,
+        logSyncMech(*(int *)arg, getpid(), SYNC_OP_MUTEX_LOCK, SYNC_ROLE_ACCOUNT,
                     request.value.header.account_id);
 
         // Handles the request
@@ -76,7 +74,7 @@ void *box_office(void *arg)
         }
 
         pthread_mutex_unlock(&db_mutex);
-        logSyncMech(fd, getpid(), SYNC_OP_MUTEX_UNLOCK, SYNC_ROLE_ACCOUNT,
+        logSyncMech(*(int *)arg, getpid(), SYNC_OP_MUTEX_UNLOCK, SYNC_ROLE_ACCOUNT,
                     request.value.header.account_id);
 
         if (send_reply(&request, &reply))
@@ -84,10 +82,6 @@ void *box_office(void *arg)
 
         sem_post(&b_off);
     }
-
-    logBankOfficeClose(fd, getpid(), pthread_self());
-
-    close(fd);
 
     return NULL;
 }

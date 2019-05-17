@@ -49,13 +49,21 @@ int main(int argc, char *argv[])
 
     server_main_loop(fd_log, fd_srv);
 
-    while (!isEmpty(queue));
+    while (!isEmpty(queue))
+        ;
 
     int value = 1;
     while (value != number_threads)
     {
         sem_getvalue(&b_off, &value);
     }
+
+    for (int i = 0; i < number_threads; i++)
+    {
+        logBankOfficeClose(fd_log, getpid(), pthread_self());
+        pthread_cancel(thread_array[i]);
+    }
+
 
     freeDataBase(&db);
     close(fd_log);
@@ -66,11 +74,6 @@ int main(int argc, char *argv[])
     pthread_mutex_destroy(&db_mutex);
     sem_destroy(&n_req);
     sem_destroy(&b_off);
-
-    for (int i = 0; i < number_threads; i++)
-        {        
-           pthread_cancel(thread_array[i]);
-        }
 
     return 0;
 }
@@ -106,7 +109,7 @@ void server_init(char *password, int number_threads, pthread_t thread_array[], b
     addAccount(*account, &db);
 
     for (int i = 0; i < number_threads; i++)
-        pthread_create(&thread_array[i], NULL, box_office, NULL);
+        pthread_create(&thread_array[i], NULL, box_office, fd_log);
 }
 
 void server_main_loop(int fd_log, int fd_srv)
