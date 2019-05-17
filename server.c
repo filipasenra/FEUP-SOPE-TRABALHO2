@@ -68,7 +68,9 @@ int main(int argc, char *argv[])
     sem_destroy(&b_off);
 
     for (int i = 0; i < number_threads; i++)
-        pthread_kill(thread_array[i], SIGTERM);
+        {        
+           pthread_cancel(thread_array[i]);
+        }
 
     return 0;
 }

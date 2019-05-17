@@ -55,3 +55,5 @@ E - 05759 - [ 33 bytes] 05759 (0000, "ultra_top_secret")     [ 5000 ms] SHUTDOWN
 E - 05905 - [ 33 bytes] 05905 (0000, "ultra_top_secret")     [ 5000 ms] SHUTDOWN
 E - 05923 - [ 33 bytes] 05923 (0000, "ultra_top_secret")     [ 5000 ms] SHUTDOWN
 E - 06051 - [ 33 bytes] 06051 (0000, "ultra_top_secret")     [ 5000 ms] SHUTDOWN
+E - 06809 - [ 33 bytes] 06809 (0000, "ultra_top_secret")     [ 5000 ms] SHUTDOWN
+E - 06888 - [ 33 bytes] 06888 (0000, "ultra_top_secret")     [ 5000 ms] SHUTDOWN
