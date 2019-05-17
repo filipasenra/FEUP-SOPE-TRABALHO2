@@ -33,6 +33,8 @@ int getHash(char salt[SALT_LEN + 1], char password[], char hash[HASH_LEN + 1])
         write(fd1[1], result, n);
         close(fd1[1]);
 
+        free(result);
+
         n = read(fd2[0], hash, HASH_LEN);
 
         if (n == 0)

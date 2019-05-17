@@ -4,10 +4,10 @@ int send_request(tlv_request_t *user_request)
 {
     int fdr;
     if ((fdr = open(SERVER_FIFO_PATH, O_WRONLY)) < 0)
-        {
-            perror("send_request");
-            return RC_OTHER;
-        }
+    {
+        perror("send_request");
+        return RC_OTHER;
+    }
 
     if (write(fdr, user_request, sizeof(tlv_request_t)) <= 0)
     {
@@ -23,7 +23,8 @@ int send_request(tlv_request_t *user_request)
 int get_request(tlv_request_t *user_request, int fd_log, int fd_srv)
 {
     int n = 0;
-    while ((n = read(fd_srv, &(user_request->type), sizeof(enum op_type))) == 0);
+    while ((n = read(fd_srv, &(user_request->type), sizeof(enum op_type))) == 0)
+        ;
 
     if (n < 0)
     {
@@ -72,6 +73,8 @@ int send_reply(tlv_request_t *user_request, tlv_reply_t *user_reply)
     if (close(fda) != 0)
         return RC_OTHER;
 
+    free(fifo_send);
+
     return RC_OK;
 }
 
@@ -91,7 +94,7 @@ void *get_reply_thread(void *arg)
         return (void *)RC_OTHER;
     }
 
-    if (read(fda, &(thread_arg->reply.length), sizeof(uint32_t)) != sizeof(uint32_t)) 
+    if (read(fda, &(thread_arg->reply.length), sizeof(uint32_t)) != sizeof(uint32_t))
     {
         perror("get_reply_thread lenght");
         return (void *)RC_OTHER;
@@ -102,7 +105,6 @@ void *get_reply_thread(void *arg)
         perror("get_reply_thread value");
         return (void *)RC_OTHER;
     }
-    printf("%d\n", thread_arg->reply.value.balance.balance);
 
     // Closing FIFOS
     if (close(fda) != 0)

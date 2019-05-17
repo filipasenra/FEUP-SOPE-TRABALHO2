@@ -49,8 +49,7 @@ int main(int argc, char *argv[])
 
     server_main_loop(fd_log, fd_srv);
 
-    while (!isEmpty(queue))
-        ;
+    while (!isEmpty(queue));
 
     int value = 1;
     while (value != number_threads)
@@ -58,11 +57,15 @@ int main(int argc, char *argv[])
         sem_getvalue(&b_off, &value);
     }
 
-
     freeDataBase(&db);
     close(fd_log);
 
     unlink(SERVER_FIFO_PATH);
+
+    pthread_mutex_destroy(&q_mutex);
+    pthread_mutex_destroy(&db_mutex);
+    sem_destroy(&n_req);
+    sem_destroy(&b_off);
 
     for (int i = 0; i < number_threads; i++)
         pthread_kill(thread_array[i], SIGTERM);
@@ -72,20 +75,18 @@ int main(int argc, char *argv[])
 
 void server_init(char *password, int number_threads, pthread_t thread_array[], bank_account_t *account, int *fd_log, int *fd_srv)
 {
-    *fd_log = open(SERVER_LOGFILE, O_WRONLY | O_APPEND | O_CREAT, 0777);
+    if ((*fd_log = open(SERVER_LOGFILE, O_WRONLY | O_APPEND | O_CREAT, 0777)) < 0)
+    {
+        perror("server_init");
+        return;
+    }
 
     if (mkfifo(SERVER_FIFO_PATH, 0666) < 0)
     {
-
-        if (errno == EEXIST)
-            printf("FIFO '/tmp/requests' already exists\n");
-        else
-            printf("Can't create FIFO\n");
+        perror("server_init");
     }
 
-    *fd_srv = open(SERVER_FIFO_PATH, O_RDONLY);
-
-    if (*fd_srv < 0)
+    if ((*fd_srv = open(SERVER_FIFO_PATH, O_RDONLY)) < 0)
     {
         perror("server_init");
         return;
@@ -98,6 +99,7 @@ void server_init(char *password, int number_threads, pthread_t thread_array[], b
 
     if (initializeDataBase(&db))
         return;
+
     createAccount(account, password, 0, 0);
     addAccount(*account, &db);
 
