@@ -105,7 +105,10 @@ int requestMessageTLV(int argc, char *argv[], tlv_request_t *user_request)
 
     // Preparing type of operation arguments request
     if (prepareTypeOfOpArgs(argv, user_request))
+    {
+        printf("Error in type of Op Arguments!\n");
         return RC_OTHER;
+    }
 
     // Writing Log
     int fd = open(USER_LOGFILE, O_WRONLY | O_APPEND | O_CREAT, 0777);
