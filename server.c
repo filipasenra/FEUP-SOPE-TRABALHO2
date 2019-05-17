@@ -72,7 +72,7 @@ void server_init(char *password, int number_threads, pthread_t thread_array[], b
     *fd_log = open(SERVER_LOGFILE, O_WRONLY | O_APPEND | O_CREAT, 0777);
 
     *fd_srv = open(SERVER_FIFO_PATH, O_RDONLY);
-
+    
     sem_init(&n_req, 0, 0);
     sem_init(&b_off, 0, number_threads);
 

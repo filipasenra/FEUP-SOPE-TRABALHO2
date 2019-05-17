@@ -19,7 +19,6 @@ int send_request(tlv_request_t *user_request)
 
 int get_request(tlv_request_t *user_request, int fd_log, int fd_srv)
 {
-
     int n = 0;
     while ((n = read(fd_srv, &(user_request->type), sizeof(enum op_type))) == 0);
 
