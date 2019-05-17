@@ -52,15 +52,15 @@ int main(int argc, char *argv[])
     while (!isEmpty(queue))
         ;
 
-    int value = 1;
+    int value = -1;
     while (value != number_threads)
     {
         sem_getvalue(&b_off, &value);
     }
-
+    
     for (int i = 0; i < number_threads; i++)
     {
-        logBankOfficeClose(fd_log, getpid(), pthread_self());
+        logBankOfficeClose(fd_log, getpid(), thread_array[i]);
         pthread_cancel(thread_array[i]);
     }
 
