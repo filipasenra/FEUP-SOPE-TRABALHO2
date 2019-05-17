@@ -59,11 +59,11 @@ void *box_office(void *arg)
                 check_balance(&acc, &reply);
                 break;
             case 2: // TRANSFER
-                usleep(request.value.header.op_delay_ms * 1000);
+                //usleep(request.value.header.op_delay_ms * 1000);
                 transfer(request, &reply);
                 break;
             case 3: // SHUTDOWN
-                usleep(request.value.header.op_delay_ms * 1000);
+                //usleep(request.value.header.op_delay_ms * 1000);
                 shutdown(&reply);
                 break;
             default:

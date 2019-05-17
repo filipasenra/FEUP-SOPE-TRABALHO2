@@ -14,6 +14,7 @@
 #include "queue.h"
 #include "sope.h"
 #include "types.h"
+#include <errno.h>
 
 sem_t n_req;
 sem_t b_off;
@@ -48,21 +49,23 @@ int main(int argc, char *argv[])
 
     server_main_loop(fd_log, fd_srv);
 
-    while (isEmpty(queue))
+    while (!isEmpty(queue))
         ;
 
     int value = 1;
     while (value != number_threads)
+    {
         sem_getvalue(&b_off, &value);
+    }
+
+
+    freeDataBase(&db);
+    close(fd_log);
+
+    unlink(SERVER_FIFO_PATH);
 
     for (int i = 0; i < number_threads; i++)
         pthread_kill(thread_array[i], SIGTERM);
-
-    unlink(SERVER_FIFO_PATH);
-    freeDataBase(&db);
-
-    close(fd_log);
-    close(fd_srv);
 
     return 0;
 }
@@ -71,8 +74,23 @@ void server_init(char *password, int number_threads, pthread_t thread_array[], b
 {
     *fd_log = open(SERVER_LOGFILE, O_WRONLY | O_APPEND | O_CREAT, 0777);
 
+    if (mkfifo(SERVER_FIFO_PATH, 0666) < 0)
+    {
+
+        if (errno == EEXIST)
+            printf("FIFO '/tmp/requests' already exists\n");
+        else
+            printf("Can't create FIFO\n");
+    }
+
     *fd_srv = open(SERVER_FIFO_PATH, O_RDONLY);
-    
+
+    if (*fd_srv < 0)
+    {
+        perror("server_init");
+        return;
+    }
+
     sem_init(&n_req, 0, 0);
     sem_init(&b_off, 0, number_threads);
 
@@ -85,8 +103,6 @@ void server_init(char *password, int number_threads, pthread_t thread_array[], b
 
     for (int i = 0; i < number_threads; i++)
         pthread_create(&thread_array[i], NULL, box_office, NULL);
-
-    mkfifo(SERVER_FIFO_PATH, 0666);
 }
 
 void server_main_loop(int fd_log, int fd_srv)
@@ -122,7 +138,7 @@ void server_main_loop(int fd_log, int fd_srv)
             if (request.type == OP_SHUTDOWN)
             {
                 fchmod(fd_srv, 0444);
-                break;
+                return;
             }
         }
     }

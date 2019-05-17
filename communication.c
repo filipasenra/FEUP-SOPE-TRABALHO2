@@ -4,7 +4,10 @@ int send_request(tlv_request_t *user_request)
 {
     int fdr;
     if ((fdr = open(SERVER_FIFO_PATH, O_WRONLY)) < 0)
-        return RC_OTHER;
+        {
+            perror("send_request");
+            return RC_OTHER;
+        }
 
     if (write(fdr, user_request, sizeof(tlv_request_t)) <= 0)
     {
