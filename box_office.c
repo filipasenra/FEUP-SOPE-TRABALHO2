@@ -34,15 +34,15 @@ void *box_office(void *arg)
                     request.value.header.account_id);
 
         // Handles the request
+        reply.value.header.account_id = request.value.header.account_id;
+        reply.value.header.ret_code = RC_OK;
+        reply.length = sizeof(rep_header_t);
+
         if (log_in(&db, request.value.header.account_id,
-                   request.value.header.password))
+                   request.value.header.password) == 0)
         {
             int op = (int)request.type;
             bank_account_t acc;
-
-            reply.value.header.account_id = request.value.header.account_id;
-            reply.value.header.ret_code = RC_OK;
-            reply.length = sizeof(rep_header_t);
 
             switch (op)
             {
@@ -69,20 +69,18 @@ void *box_office(void *arg)
             default:
                 break;
             }
-
-            pthread_mutex_unlock(&db_mutex);
-            logSyncMech(fd, getpid(), SYNC_OP_MUTEX_UNLOCK, SYNC_ROLE_ACCOUNT,
-                        request.value.header.account_id);
-
-            if (send_reply(&request, &reply))
-                return (void *)RC_OTHER;
         }
         else
         {
-            pthread_mutex_unlock(&db_mutex);
-            logSyncMech(fd, getpid(), SYNC_OP_MUTEX_UNLOCK, SYNC_ROLE_ACCOUNT,
-                        request.value.header.account_id);
+            reply.value.header.ret_code = RC_ID_NOT_FOUND;
         }
+
+        pthread_mutex_unlock(&db_mutex);
+        logSyncMech(fd, getpid(), SYNC_OP_MUTEX_UNLOCK, SYNC_ROLE_ACCOUNT,
+                    request.value.header.account_id);
+
+        if (send_reply(&request, &reply))
+            return (void *)RC_OTHER;
 
         sem_post(&b_off);
     }
@@ -204,10 +202,13 @@ int log_in(dataBase_t *db, uint32_t account_id,
     for (int i = 0; i < db->size; i++)
     {
         acc = db->dataBaseArray[i];
+
         if (acc.account_id == account_id)
         {
             getHash(acc.salt, password, hash);
             if (acc.hash == hash)
+                return 0;
+            else
                 return 1;
         }
     }

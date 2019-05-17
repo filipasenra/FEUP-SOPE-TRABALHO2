@@ -92,3 +92,7 @@ E - 06210 - [ 62 bytes] 06210 (0000, "ultra_top_secret")     [  100 ms] CREATE  
 E - 06246 - [ 33 bytes] 06246 (0001, "top_secret")           [    0 ms] BALANCE 
 E - 06475 - [ 62 bytes] 06475 (0000, "ultra_top_secret")     [  100 ms] CREATE   0001         25€ "top_secret"
 E - 06511 - [ 33 bytes] 06511 (0001, "top_secret")           [    0 ms] BALANCE 
+E - 06649 - [ 33 bytes] 06649 (0001, "top_secret")           [    0 ms] BALANCE 
+E - 06738 - [ 33 bytes] 06738 (0001, "top_secret")           [    0 ms] BALANCE 
+E - 06848 - [ 33 bytes] 06848 (0001, "top_secret")           [    0 ms] BALANCE 
+E - 06998 - [ 33 bytes] 06998 (0001, "top_secret")           [    0 ms] BALANCE 
