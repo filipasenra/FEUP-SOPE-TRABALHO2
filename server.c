@@ -40,9 +40,9 @@ int main(int argc, char *argv[]) {
     int fd_srv;
 
     if (number_threads <= 0 || number_threads > MAX_BANK_OFFICES) return RC_OTHER;
-
+    
     server_init(argv[2], number_threads, thread_array, &account, &fd_log, &fd_srv);
-
+    
     server_main_loop(&fd_log, &fd_srv);
 
     while (isEmpty(queue))
@@ -66,7 +66,7 @@ int main(int argc, char *argv[]) {
 void server_init(char* password, int number_threads, pthread_t thread_array[], bank_account_t *account, int *fd_log, int *fd_srv){
     *fd_log = open(SERVER_LOGFILE, O_WRONLY | O_APPEND | O_CREAT, 0777);
     *fd_srv = open(SERVER_FIFO_PATH, O_RDONLY);
-
+    
     sem_init(&n_req, 0, 0);
     sem_init(&b_off, 0, number_threads);
 
@@ -81,7 +81,7 @@ void server_init(char* password, int number_threads, pthread_t thread_array[], b
     mkfifo(SERVER_FIFO_PATH, 0666);
 }
 
-void server_main_loop(int *fd_log, int* fd_srv) {
+void server_main_loop(int *fd_log, int *fd_srv) {
     tlv_request_t request;
     int value = 0;
 

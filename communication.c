@@ -13,7 +13,7 @@ int send_request(tlv_request_t *user_request) {
     return RC_OK;
 }
 
-int get_request(tlv_request_t *user_request, int* fd_log, int* fd_srv) {
+int get_request(tlv_request_t *user_request, int *fd_log, int *fd_srv) {
     if (read(*fd_srv, &(user_request->type), sizeof(enum op_type)) <= 0) {
         perror("get_request");
         return RC_OTHER;

@@ -57,3 +57,4 @@ E - 01919 - [ 62 bytes] 01919 (0000, "ultra_top_secret")     [  100 ms] CREATE  
 E - 02054 - [ 62 bytes] 02054 (0000, "ultra_top_secret")     [  100 ms] CREATE   0002         25€ "top_secret"
 E - 02160 - [ 33 bytes] 02160 (0000, "ultra_top_secret")     [    0 ms] SHUTDOWN
 E - 02204 - [ 62 bytes] 02204 (0000, "ultra_top_secret")     [  100 ms] CREATE   0002         25€ "top_secret"
+E - 02456 - [ 62 bytes] 02456 (0000, "ola")                  [    0 ms] CREATE   0001         10€ "cenas"

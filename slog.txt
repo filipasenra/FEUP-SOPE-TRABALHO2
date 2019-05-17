@@ -615,3 +615,12 @@ S - 02041 - C00000 MUTEX_LOCK
 S - 02041 - C00000 MUTEX_UNLOCK
 S - 02041 - A00000 MUTEX_LOCK
 S - 02041 - A00000 MUTEX_UNLOCK
+I - 01847 - 0000                                                              7ea ...22f7a
+I - 01847 - OPEN  140230361675520
+I - 02442 - 0000                                                              82a ...02724
+E - 02442 - [ 62 bytes] 02456 (0000, "ola")                  [    0 ms] CREATE   0001         10€ "cenas"
+I - 02442 - OPEN  139902549976832
+S - 02442 - P00000 MUTEX_LOCK
+S - 02442 - P00000 SEM_WAIT [val=0]
+S - 02442 - P00000 SEM_POST [val=1]
+S - 02442 - P00000 MUTEX_UNLOCK
