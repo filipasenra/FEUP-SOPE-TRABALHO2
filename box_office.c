@@ -206,7 +206,8 @@ int log_in(dataBase_t *db, uint32_t account_id,
         if (acc.account_id == account_id)
         {
             getHash(acc.salt, password, hash);
-            if (acc.hash == hash)
+            
+            if (strcmp(acc.hash, hash) == 0)
                 return 0;
             else
                 return 1;
