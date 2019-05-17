@@ -57,3 +57,38 @@ E - 01919 - [ 62 bytes] 01919 (0000, "ultra_top_secret")     [  100 ms] CREATE  
 E - 02054 - [ 62 bytes] 02054 (0000, "ultra_top_secret")     [  100 ms] CREATE   0002         25€ "top_secret"
 E - 02160 - [ 33 bytes] 02160 (0000, "ultra_top_secret")     [    0 ms] SHUTDOWN
 E - 02204 - [ 62 bytes] 02204 (0000, "ultra_top_secret")     [  100 ms] CREATE   0002         25€ "top_secret"
+E - 03003 - [ 62 bytes] 03003 (0000, "ultra_top_secret")     [  100 ms] CREATE   0002         25€ "top_secret"
+E - 03534 - [ 62 bytes] 03534 (0000, "ultra_top_secret")     [  100 ms] CREATE   0002         25€ "top_secret"
+E - 03651 - [ 62 bytes] 03651 (0000, "ultra_top_secret")     [  100 ms] CREATE   0002         25€ "top_secret"
+E - 03742 - [ 62 bytes] 03742 (0000, "ultra_top_secret")     [  100 ms] CREATE   0002         25€ "top_secret"
+E - 03919 - [ 62 bytes] 03919 (0000, "ultra_top_secret")     [  100 ms] CREATE   0002         25€ "top_secret"
+E - 04133 - [ 62 bytes] 04133 (0000, "ultra_top_secret")     [  100 ms] CREATE   0002         25€ "top_secret"
+E - 04176 - [ 62 bytes] 04176 (0000, "ultra_top_secret")     [  100 ms] CREATE   0002         25€ "top_secret"
+E - 04414 - [ 62 bytes] 04414 (0000, "ultra_top_secret")     [  100 ms] CREATE   0002         25€ "top_secret"
+E - 04581 - [ 33 bytes] 04581 (0001, "top_secret")           [    0 ms] BALANCE 
+E - 04607 - [ 62 bytes] 04607 (0000, "ultra_top_secret")     [  100 ms] CREATE   0001         25€ "top_secret"
+E - 04642 - [ 33 bytes] 04642 (0001, "top_secret")           [    0 ms] BALANCE 
+E - 04679 - [ 62 bytes] 04679 (0000, "ultra_top_secret")     [  100 ms] CREATE   0001         25€ "top_secret"
+E - 04715 - [ 33 bytes] 04715 (0001, "top_secret")           [    0 ms] BALANCE 
+E - 04893 - [ 62 bytes] 04893 (0000, "ultra_top_secret")     [  100 ms] CREATE   0001         25€ "top_secret"
+E - 04930 - [ 33 bytes] 04930 (0001, "top_secret")           [    0 ms] BALANCE 
+E - 05008 - [ 33 bytes] 05008 (0001, "top_secret")           [    0 ms] BALANCE 
+E - 05029 - [ 62 bytes] 05029 (0000, "ultra_top_secret")     [  100 ms] CREATE   0001         25€ "top_secret"
+E - 05064 - [ 33 bytes] 05064 (0001, "top_secret")           [    0 ms] BALANCE 
+E - 05196 - [ 62 bytes] 05196 (0000, "ultra_top_secret")     [  100 ms] CREATE   0001         25€ "top_secret"
+E - 05225 - [ 33 bytes] 05225 (0001, "top_secret")           [    0 ms] BALANCE 
+E - 05385 - [ 62 bytes] 05385 (0000, "ultra_top_secret")     [  100 ms] CREATE   0001         25€ "top_secret"
+E - 05421 - [ 33 bytes] 05421 (0001, "top_secret")           [    0 ms] BALANCE 
+E - 05713 - [ 62 bytes] 05713 (0000, "ultra_top_secret")     [  100 ms] CREATE   0001         25€ "top_secret"
+E - 05748 - [ 33 bytes] 05748 (0001, "top_secret")           [    0 ms] BALANCE 
+E - 05827 - [ 62 bytes] 05827 (0000, "ultra_top_secret")     [  100 ms] CREATE   0001         25€ "top_secret"
+E - 05863 - [ 33 bytes] 05863 (0001, "top_secret")           [    0 ms] BALANCE 
+E - 06042 - [ 33 bytes] 06042 (0001, "top_secret")           [    0 ms] BALANCE 
+E - 06053 - [ 33 bytes] 06053 (0001, "top_secret")           [    0 ms] BALANCE 
+E - 06074 - [ 62 bytes] 06074 (0000, "ultra_top_secret")     [  100 ms] CREATE   0001         25€ "top_secret"
+E - 06090 - [ 62 bytes] 06090 (0000, "ultra_top_secret")     [  100 ms] CREATE   0001         25€ "top_secret"
+E - 06127 - [ 33 bytes] 06127 (0001, "top_secret")           [    0 ms] BALANCE 
+E - 06210 - [ 62 bytes] 06210 (0000, "ultra_top_secret")     [  100 ms] CREATE   0001         25€ "top_secret"
+E - 06246 - [ 33 bytes] 06246 (0001, "top_secret")           [    0 ms] BALANCE 
+E - 06475 - [ 62 bytes] 06475 (0000, "ultra_top_secret")     [  100 ms] CREATE   0001         25€ "top_secret"
+E - 06511 - [ 33 bytes] 06511 (0001, "top_secret")           [    0 ms] BALANCE 

@@ -39,6 +39,7 @@ int main(int argc, char *argv[]) {
     // READ REPLY
     printf("account id %d\n", thread_arg.reply.value.header.account_id);
     printf("balance %d\n", thread_arg.reply.value.balance.balance);
+    printf("Return code %d\n",  thread_arg.reply.value.header.ret_code);
 
     return RC_OK;
 }
