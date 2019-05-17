@@ -63,6 +63,9 @@ void *box_office(void *arg)
             case 3: // SHUTDOWN
                 //usleep(request.value.header.op_delay_ms * 1000);
                 shutdown(&reply);
+                if (request.value.header.account_id != 0)
+                    reply.value.header.ret_code = RC_OP_NALLOW;
+
                 break;
             default:
                 break;
@@ -200,7 +203,7 @@ int log_in(dataBase_t *db, uint32_t account_id,
         if (acc.account_id == account_id)
         {
             getHash(acc.salt, password, hash);
-            
+
             if (strcmp(acc.hash, hash) == 0)
                 return 0;
             else
