@@ -73,7 +73,7 @@ void *box_office(void *arg)
         }
         else
         {
-            reply.value.header.ret_code = RC_ID_NOT_FOUND;
+            reply.value.header.ret_code = RC_LOGIN_FAIL;
         }
 
         pthread_mutex_unlock(&db_mutex);

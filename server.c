@@ -144,8 +144,11 @@ void server_main_loop(int fd_log, int fd_srv)
 
             if (request.type == OP_SHUTDOWN && request.value.header.account_id == 0)
             {
-                fchmod(fd_srv, 0444);
-                return;
+                if(log_in(&db, 0, request.value.header.password) == 0)
+                {
+                    fchmod(fd_srv, 0444);
+                    return;
+                }
             }
         }
     }
