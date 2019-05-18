@@ -30,6 +30,7 @@ extern queue_t queue;
 extern dataBase_t db;
 extern sem_t n_req;
 extern sem_t b_off;
+extern int number_threads;
 
 void * box_office(void *arg);
 int get_operation();

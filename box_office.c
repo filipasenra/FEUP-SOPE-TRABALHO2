@@ -223,9 +223,9 @@ void shutdown(tlv_reply_t *user_reply)
     int value = 1;
     sem_getvalue(&b_off, &value);
 
-    user_reply->length = 0;
     user_reply->type = OP_SHUTDOWN;
-    user_reply->value.shutdown.active_offices = value;
+    user_reply->value.shutdown.active_offices = number_threads - value;
+    user_reply->length += sizeof(rep_shutdown_t);
     user_reply->value.header.ret_code = RC_OK;
 }
 

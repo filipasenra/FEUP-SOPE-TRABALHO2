@@ -22,6 +22,7 @@ pthread_mutex_t q_mutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t db_mutex = PTHREAD_MUTEX_INITIALIZER;
 queue_t queue;
 dataBase_t db;
+int number_threads = 0;
 
 void server_init(char *password, int number_threads, pthread_t thread_array[], bank_account_t *acc, int *fd_log, int *fd_srv);
 void server_main_loop(int fd_log, int fd_srv);
@@ -36,7 +37,7 @@ int main(int argc, char *argv[])
         return RC_OTHER;
     }
 
-    int number_threads = strtol(argv[1], NULL, 10);
+    number_threads = strtol(argv[1], NULL, 10);
     pthread_t thread_array[number_threads];
     bank_account_t account;
     int fd_log;
