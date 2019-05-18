@@ -53,7 +53,7 @@ int main(int argc, char *argv[])
         ;
     
     int value = -1;
-    while (value != number_threads)
+    while (value < number_threads)
     {
         sem_getvalue(&b_off, &value);
     }

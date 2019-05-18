@@ -16,7 +16,7 @@ void *box_office(void *arg)
         logSyncMech(*(int *)arg, getpid(), SYNC_OP_MUTEX_LOCK, SYNC_ROLE_CONSUMER,
                     request.value.header.account_id);
 
-        usleep(request.value.header.op_delay_ms * 1000);
+        //usleep(request.value.header.op_delay_ms * 1000);
 
         request = front(queue); // Gets the request that arrived first
 
@@ -82,8 +82,9 @@ void *box_office(void *arg)
         logSyncMech(*(int *)arg, getpid(), SYNC_OP_MUTEX_UNLOCK, SYNC_ROLE_ACCOUNT,
                     request.value.header.account_id);
 
-        if (send_reply(&request, &reply))
+        if (send_reply(&request, &reply)) {
             return (void *)RC_OTHER;
+        }
 
         sem_post(&b_off);
     }
