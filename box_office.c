@@ -160,10 +160,6 @@ int transfer(tlv_request_t user_request, tlv_reply_t *user_reply, int fd, uint32
 }
 
 void shutdown(tlv_reply_t *user_reply, int fd, uint32_t delay) {
-    
-    logDelay(fd, getpid(), delay * 1000);
-    usleep(delay * 1000);
-    
     int value = 1;
     sem_getvalue(&b_off, &value);
 

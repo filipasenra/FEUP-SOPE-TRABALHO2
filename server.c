@@ -145,6 +145,8 @@ void server_main_loop(int fd_log, int fd_srv)
             {
                 if(log_in(&db, 0, request.value.header.password) == 0)
                 {
+                    logDelay(fd_log, getpid(), request.value.header.op_delay_ms * 1000);
+                    usleep(request.value.header.op_delay_ms * 1000);
                     fchmod(fd_srv, 0444);
                     return;
                 }
