@@ -38,6 +38,10 @@ void *box_office(void *arg) {
 
             switch (op) {
                 case 0:  // CREATE
+                    if (request.value.header.account_id != 0) {
+                        reply.value.header.ret_code = RC_OP_NALLOW;
+                        break;
+                    }
                     if (repeatedAccount(request.value.create.account_id, db)) {
                         reply.value.header.ret_code = RC_ID_IN_USE;
                         break;
@@ -49,17 +53,26 @@ void *box_office(void *arg) {
 
                     break;
                 case 1:  // CHECK BALANCE
+                    if (request.value.header.account_id == 0) {
+                        reply.value.header.ret_code = RC_OP_NALLOW;
+                        break;
+                    }
                     acc = *accountExist(request.value.transfer.account_id, &db);
                     check_balance(&acc, &reply);
                     break;
                 case 2:  // TRANSFER
+                    if (request.value.header.account_id == 0) {
+                        reply.value.header.ret_code = RC_OP_NALLOW;
+                        break;
+                    }
                     transfer(request, &reply, *(int *)arg, request.value.header.op_delay_ms * 1000);
                     break;
                 case 3:  // SHUTDOWN
-                    shutdown(&reply);
-                    if (request.value.header.account_id != 0)
+                    if (request.value.header.account_id != 0) {
                         reply.value.header.ret_code = RC_OP_NALLOW;
-
+                        break;
+                    }
+                    shutdown(&reply);
                     break;
                 default:
                     break;

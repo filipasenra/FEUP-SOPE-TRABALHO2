@@ -45,8 +45,8 @@ int prepareTypeOfOpArgs(char *argv[], tlv_request_t *user_request)
     case 0:
         user_request->type = OP_CREATE_ACCOUNT;
 
-        if (account_id != 0)
-            return RC_OP_NALLOW;
+        /*if (account_id != 0)
+            return RC_OP_NALLOW;*/
 
         if (createAccountUser(&user_request->value.create, argv[5]) != 0)
             return RC_OTHER;
@@ -57,16 +57,16 @@ int prepareTypeOfOpArgs(char *argv[], tlv_request_t *user_request)
     case 1:
         user_request->type = OP_BALANCE;
 
-        if (account_id == 0)
-            return RC_OP_NALLOW;
+        /*if (account_id == 0)
+            return RC_OP_NALLOW;*/
 
         break;
 
     case 2:
         user_request->type = OP_TRANSFER;
 
-        if (account_id == 0)
-            return RC_OP_NALLOW;
+        /*if (account_id == 0)
+            return RC_OP_NALLOW;*/
 
         int n;
         if ((n = transferOperation(
@@ -80,8 +80,8 @@ int prepareTypeOfOpArgs(char *argv[], tlv_request_t *user_request)
 
         user_request->type = OP_SHUTDOWN;
 
-        if (account_id != 0)
-            return RC_OP_NALLOW;
+        /*if (account_id != 0)
+            return RC_OP_NALLOW;*/
 
         break;
     default:
