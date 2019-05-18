@@ -45,6 +45,18 @@ int main(int argc, char *argv[])
     if (number_threads <= 0 || number_threads > MAX_BANK_OFFICES)
         return RC_OTHER;
 
+    //Verify admin passord
+    if (strlen(argv[2]) > MAX_PASSWORD_LEN + 1)
+    {
+        printf("Password too long\n");
+        return RC_OTHER;
+    }
+    else if (strlen(argv[2]) < MIN_PASSWORD_LEN)
+    {
+        printf("Password too short\n");
+        return RC_OTHER;
+    }
+
     server_init(argv[2], number_threads, thread_array, &account, &fd_log, &fd_srv);
 
     server_main_loop(fd_log, fd_srv);

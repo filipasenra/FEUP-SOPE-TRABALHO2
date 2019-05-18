@@ -10,10 +10,15 @@ int prepareMainArgs(char *argv[], tlv_request_t *user_request)
 
     delay = strtoul(argv[3], NULL, 10);
 
-    // password too long
+    //Verify passord
     if (strlen(argv[2]) > MAX_PASSWORD_LEN + 1)
     {
         printf("Password too long\n");
+        return RC_OTHER;
+    }
+    else if (strlen(argv[2]) < MIN_PASSWORD_LEN)
+    {
+        printf("Password too short\n");
         return RC_OTHER;
     }
 

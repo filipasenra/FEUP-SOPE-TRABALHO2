@@ -84,6 +84,20 @@ void *box_office(void *arg) {
 int create_account(bank_account_t *account, char password[], int accound_id, int balance, tlv_reply_t *user_reply) {
     // echo -n “<senha><sal>” | sha256sum
     // echo -n $salt | sha256sum
+
+    //Verify passord
+    if (strlen(password) > MAX_PASSWORD_LEN + 1)
+    {
+        printf("Password too long\n");
+        user_reply->value.header.ret_code = RC_OTHER;
+        return RC_OTHER;
+    }
+    else if (strlen(password) < MIN_PASSWORD_LEN)
+    {
+        printf("Password too short\n");
+        user_reply->value.header.ret_code = RC_OTHER;
+        return RC_OTHER;
+    }
     
     account->account_id = accound_id;
     account->balance = balance;
@@ -93,6 +107,11 @@ int create_account(bank_account_t *account, char password[], int accound_id, int
 
     user_reply->type = OP_CREATE_ACCOUNT;
     user_reply->value.header.ret_code = RC_OK;
+
+    int fd = open(SERVER_LOGFILE, O_WRONLY | O_APPEND | O_CREAT, 0777);
+    logAccountCreation(fd, getpid(), account);
+
+    close(fd);
 
     return 0;
 }
