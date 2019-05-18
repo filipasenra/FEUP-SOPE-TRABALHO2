@@ -1,0 +1,16 @@
+E - 09751 - [ 33 bytes] 09751 (0000, "ola")                  [   10 ms] SHUTDOWN
+E - 09801 - [ 62 bytes] 09801 (0000, "ola")                  [    0 ms] CREATE   0023         10€ "cenas"
+E - 09829 - [ 62 bytes] 09829 (0000, "ola")                  [   10 ms] CREATE   0023         10€ "cenas"
+E - 09843 - [ 33 bytes] 09843 (0000, "ola")                  [   10 ms] SHUTDOWN
+E - 09867 - [ 62 bytes] 09867 (0000, "ola")                  [10000 ms] CREATE   0023         10€ "cenas"
+E - 09907 - [ 33 bytes] 09907 (0000, "ola")                  [   10 ms] SHUTDOWN
+E - 10279 - [ 33 bytes] 10279 (0000, "ola")                  [   10 ms] SHUTDOWN
+E - 10321 - [ 62 bytes] 10321 (0000, "ola")                  [10000 ms] CREATE   0002         10€ "cenas"
+E - 10359 - [ 62 bytes] 10359 (0000, "ola")                  [20000 ms] CREATE   0003         10€ "cenas"
+E - 10385 - [ 33 bytes] 10385 (0000, "ola")                  [   10 ms] SHUTDOWN
+E - 10416 - [ 33 bytes] 10416 (0000, "ola")                  [10000 ms] SHUTDOWN
+E - 10528 - [ 33 bytes] 10528 (0000, "ola")                  [10000 ms] SHUTDOWN
+E - 10618 - [ 33 bytes] 10618 (0000, "ola")                  [10000 ms] SHUTDOWN
+E - 10666 - [ 33 bytes] 10666 (0000, "ola")                  [   10 ms] SHUTDOWN
+E - 10784 - [ 33 bytes] 10784 (0000, "ola")                  [   10 ms] SHUTDOWN
+E - 10816 - [ 33 bytes] 10816 (0000, "ola")                  [10000 ms] SHUTDOWN

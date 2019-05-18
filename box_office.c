@@ -53,10 +53,10 @@ void *box_office(void *arg) {
                     check_balance(&acc, &reply);
                     break;
                 case 2:  // TRANSFER
-                    transfer(request, &reply, , request.value.header.op_delay_ms * 1000);
+                    transfer(request, &reply, *(int *)arg, request.value.header.op_delay_ms * 1000);
                     break;
                 case 3:  // SHUTDOWN
-                    shutdown(&reply, ,request.value.header.op_delay_ms * 1000);
+                    shutdown(&reply, *(int *)arg,request.value.header.op_delay_ms * 1000);
                     if (request.value.header.account_id != 0)
                         reply.value.header.ret_code = RC_OP_NALLOW;
 
@@ -117,8 +117,8 @@ int transfer(tlv_request_t user_request, tlv_reply_t *user_reply, int fd, uint32
 
     // DOES DESTINATION ACCOUNT EXIST?
     
-    logSyncDelay(fd, getpid(), user_request.value.transfer.account_id, delay * 1000);
-    usleep(delay * 1000);
+    logSyncDelay(fd, getpid(), user_request.value.transfer.account_id, delay);
+    usleep(delay);
 
     bank_account_t *bank_account_destination = accountExist(user_request.value.transfer.account_id, &db);
 
@@ -161,8 +161,8 @@ int transfer(tlv_request_t user_request, tlv_reply_t *user_reply, int fd, uint32
 
 void shutdown(tlv_reply_t *user_reply, int fd, uint32_t delay) {
     
-    logDelay(fd, getpid(), delay * 1000);
-    usleep(delay * 1000);
+    logDelay(fd, getpid(), delay);
+    usleep(delay);
     
     int value = 1;
     sem_getvalue(&b_off, &value);
