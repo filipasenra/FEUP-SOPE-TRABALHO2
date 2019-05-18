@@ -11,7 +11,7 @@ void *box_office(void *arg) {
 
         // Locks the mutex
         pthread_mutex_lock(&q_mutex);
-        logSyncMech(*(int *)arg, getpid(), SYNC_OP_MUTEX_LOCK, SYNC_ROLE_CONSUMER, request.value.header.account_id);
+        logSyncMech(*(int *)arg, pthread_self(), SYNC_OP_MUTEX_LOCK, SYNC_ROLE_CONSUMER, request.value.header.account_id);
 
         request = front(queue);  // Gets the request that arrived first
 
@@ -19,17 +19,17 @@ void *box_office(void *arg) {
                       // request picked up by this thread
 
         pthread_mutex_unlock(&q_mutex);
-        logSyncMech(*(int *)arg, getpid(), SYNC_OP_MUTEX_UNLOCK, SYNC_ROLE_CONSUMER, request.value.header.account_id);
+        logSyncMech(*(int *)arg, pthread_self(), SYNC_OP_MUTEX_UNLOCK, SYNC_ROLE_CONSUMER, request.value.header.account_id);
 
         pthread_mutex_lock(&db_mutex);
-        logSyncMech(*(int *)arg, getpid(), SYNC_OP_MUTEX_LOCK, SYNC_ROLE_ACCOUNT, request.value.header.account_id);
+        logSyncMech(*(int *)arg, pthread_self(), SYNC_OP_MUTEX_LOCK, SYNC_ROLE_ACCOUNT, request.value.header.account_id);
 
         // Handles the request
         reply.value.header.account_id = request.value.header.account_id;
         reply.value.header.ret_code = RC_OK;
         reply.length = sizeof(rep_header_t);
 
-        logSyncDelay(*(int *)arg, getpid(), request.value.header.account_id, request.value.header.op_delay_ms * 1000);
+        logSyncDelay(*(int *)arg, pthread_self(), request.value.header.account_id, request.value.header.op_delay_ms * 1000);
         usleep(request.value.header.op_delay_ms * 1000);
 
         if (log_in(&db, request.value.header.account_id, request.value.header.password) == 0) {
@@ -82,9 +82,10 @@ void *box_office(void *arg) {
         }
 
         pthread_mutex_unlock(&db_mutex);
-        logSyncMech(*(int *)arg, getpid(), SYNC_OP_MUTEX_UNLOCK, SYNC_ROLE_ACCOUNT, request.value.header.account_id);
+        logSyncMech(*(int *)arg, pthread_self(), SYNC_OP_MUTEX_UNLOCK, SYNC_ROLE_ACCOUNT, request.value.header.account_id);
 
-        if (send_reply(&request, &reply)) {
+        if (send_reply(&request, &reply) != RC_OK) {
+            sem_post(&b_off);
             return (void *)RC_OTHER;
         }
 
@@ -122,7 +123,7 @@ int create_account(bank_account_t *account, char password[], int accound_id, int
     user_reply->value.header.ret_code = RC_OK;
 
     int fd = open(SERVER_LOGFILE, O_WRONLY | O_APPEND | O_CREAT, 0777);
-    logAccountCreation(fd, getpid(), account);
+    logAccountCreation(fd, pthread_self(), account);
 
     close(fd);
 
@@ -149,7 +150,7 @@ int transfer(tlv_request_t user_request, tlv_reply_t *user_reply, int fd, uint32
 
     // DOES DESTINATION ACCOUNT EXIST?
     
-    logSyncDelay(fd, getpid(), user_request.value.transfer.account_id, delay);
+    logSyncDelay(fd, pthread_self(), user_request.value.transfer.account_id, delay);
     usleep(delay);
 
     bank_account_t *bank_account_destination = accountExist(user_request.value.transfer.account_id, &db);
