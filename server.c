@@ -60,10 +60,10 @@ int main(int argc, char *argv[])
     server_init(argv[2], number_threads, thread_array, &account, &fd_log, &fd_srv);
 
     server_main_loop(fd_log, fd_srv);
-    
+
     while (!isEmpty(queue))
         ;
-    
+
     int value = -1;
     while (value < number_threads)
     {
@@ -155,7 +155,7 @@ void server_main_loop(int fd_log, int fd_srv)
 
             if (request.type == OP_SHUTDOWN && request.value.header.account_id == 0)
             {
-                if(log_in(&db, 0, request.value.header.password) == 0)
+                if (log_in(&db, 0, request.value.header.password) == 0)
                 {
                     logDelay(fd_log, getpid(), request.value.header.op_delay_ms * 1000);
                     usleep(request.value.header.op_delay_ms * 1000);
