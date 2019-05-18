@@ -9,7 +9,7 @@ int send_request(tlv_request_t *user_request)
         return RC_OTHER;
     }
 
-    if (write(fdr, user_request, sizeof(tlv_request_t)) <= 0)
+    if (write(fdr, user_request, sizeof(op_type_t) + sizeof(uint32_t) + user_request->length) <= 0)
     {
         perror("send_request\n");
         return RC_OTHER;
@@ -21,7 +21,7 @@ int send_request(tlv_request_t *user_request)
 }
 
 int get_request(tlv_request_t *user_request, int fd_log, int fd_srv)
-{
+{   
     int n = 0;
     while ((n = read(fd_srv, &(user_request->type), sizeof(enum op_type))) == 0)
         ;
@@ -64,7 +64,7 @@ int send_reply(tlv_request_t *user_request, tlv_reply_t *user_reply)
     if ((fda = open(fifo_send, O_WRONLY)) < 0)
         return RC_OTHER;
 
-    if (write(fda, user_reply, sizeof(tlv_reply_t)) <= 0)
+    if (write(fda, user_reply, sizeof(op_type_t) + sizeof(uint32_t) + user_request->length) <= 0)
     {
         perror("send_reply");
         return RC_OTHER;
