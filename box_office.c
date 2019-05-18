@@ -36,8 +36,7 @@ void *box_office(void *arg)
         reply.value.header.ret_code = RC_OK;
         reply.length = sizeof(rep_header_t);
 
-        if (log_in(&db, request.value.header.account_id,
-                   request.value.header.password) == 0)
+        if (log_in(&db, request.value.header.account_id, request.value.header.password) == 0)
         {
             int op = (int)request.type;
             bank_account_t acc;
@@ -45,12 +44,15 @@ void *box_office(void *arg)
             switch (op)
             {
             case 0: // CREATE
+                if (repeatedAccount(request.value.create.account_id, db)) {
+                    reply.value.header.ret_code = RC_ID_IN_USE;
+                    break;
+                }
                 create_account(&acc, request.value.create.password,
                                request.value.create.account_id,
                                request.value.create.balance, &reply);
                 if (addAccount(acc, &db))
                     return (void *)RC_OTHER;
-
                 break;
             case 1: // CHECK BALANCE
                 acc = *accountExist(request.value.transfer.account_id, &db);

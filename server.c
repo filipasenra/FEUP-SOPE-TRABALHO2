@@ -48,22 +48,21 @@ int main(int argc, char *argv[])
     server_init(argv[2], number_threads, thread_array, &account, &fd_log, &fd_srv);
 
     server_main_loop(fd_log, fd_srv);
-
+    
     while (!isEmpty(queue))
         ;
-
+    
     int value = -1;
     while (value != number_threads)
     {
         sem_getvalue(&b_off, &value);
     }
-    
+
     for (int i = 0; i < number_threads; i++)
     {
         logBankOfficeClose(fd_log, getpid(), thread_array[i]);
         pthread_cancel(thread_array[i]);
     }
-
 
     freeDataBase(&db);
     close(fd_log);

@@ -42,10 +42,18 @@ bank_account_t * accountExist(int account_id, dataBase_t *dataBase)
     return NULL;
 }
 
-
 int freeDataBase(dataBase_t *dataBase){
 
     free(dataBase->dataBaseArray);
 
     return 0;
+}
+
+int repeatedAccount(uint32_t account_id, dataBase_t dataBase) {
+    for (int i = 0; i < dataBase.size; i++) {
+        if (account_id == dataBase.dataBaseArray[i].account_id)
+            return RC_ID_IN_USE;
+    }
+
+    return RC_OK;
 }

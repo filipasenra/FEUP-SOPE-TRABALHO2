@@ -1,90 +1,53 @@
-E - 08021 - [ 62 bytes] 08021 (0000, "ultra_top_secret")     [  100 ms] CREATE   0001         25€ "top_secret"
-E - 08039 - [ 33 bytes] 08039 (0001, "top_secret")           [    0 ms] BALANCE 
-E - 08075 - [ 33 bytes] 08075 (0000, "ultra_top_secret")     [ 5000 ms] SHUTDOWN
-E - 08266 - [ 33 bytes] 08266 (0000, "ultra_top_secret")     [    0 ms] SHUTDOWN
-E - 08277 - [ 33 bytes] 08277 (0000, "ultra_top_secret")     [ 5000 ms] SHUTDOWN
-E - 02074 - [ 33 bytes] 02074 (0000, "ultra_top_secret")     [ 5000 ms] SHUTDOWN
-E - 02091 - [ 33 bytes] 02091 (0000, "ultra_top_secret")     [ 5000 ms] SHUTDOWN
-E - 02099 - [ 33 bytes] 02099 (0000, "ultra_top_secret")     [ 5000 ms] SHUTDOWN
-E - 02100 - [ 33 bytes] 02100 (0000, "ultra_top_secret")     [ 5000 ms] SHUTDOWN
-E - 02342 - [ 33 bytes] 02342 (0000, "ultra_top_secret")     [ 5000 ms] SHUTDOWN
-E - 02360 - [ 33 bytes] 02360 (0000, "ultra_top_secret")     [ 5000 ms] SHUTDOWN
-E - 02443 - [ 33 bytes] 02443 (0000, "ultra_top_secret")     [ 5000 ms] SHUTDOWN
-E - 02558 - [ 33 bytes] 02558 (0000, "ultra_top_secret")     [ 5000 ms] SHUTDOWN
-E - 02578 - [ 33 bytes] 02578 (0000, "ultra_top_secret")     [ 5000 ms] SHUTDOWN
-E - 02728 - [ 33 bytes] 02728 (0000, "ultra_top_secret")     [ 5000 ms] SHUTDOWN
-E - 02751 - [ 33 bytes] 02751 (0000, "ultra_top_secret")     [ 5000 ms] SHUTDOWN
-E - 02760 - [ 33 bytes] 02760 (0000, "ultra_top_secret")     [ 5000 ms] SHUTDOWN
-E - 02905 - [ 33 bytes] 02905 (0000, "ultra_top_secret")     [ 5000 ms] SHUTDOWN
-E - 02906 - [ 33 bytes] 02906 (0000, "ultra_top_secret")     [ 5000 ms] SHUTDOWN
-E - 02921 - [ 62 bytes] 02921 (0000, "ultra_top_secret")     [  100 ms] CREATE   0001         25€ "top_secret"
-E - 02995 - [ 62 bytes] 02995 (0000, "ultra_top_secret")     [  100 ms] CREATE   0001         25€ "top_secret"
-E - 03111 - [ 62 bytes] 03111 (0000, "ultra_top_secret")     [  100 ms] CREATE   0001         25€ "top_secret"
-E - 03484 - [ 62 bytes] 03484 (0000, "ultra_top_secret")     [  100 ms] CREATE   0001         25€ "top_secret"
-E - 03500 - [ 33 bytes] 03500 (0000, "ultra_top_secret")     [ 5000 ms] SHUTDOWN
-E - 03512 - [ 33 bytes] 03512 (0000, "ultra_top_secret")     [ 5000 ms] SHUTDOWN
-E - 03573 - [ 62 bytes] 03573 (0000, "ultra_top_secret")     [  100 ms] CREATE   0001         25€ "top_secret"
-E - 03589 - [ 33 bytes] 03589 (0000, "ultra_top_secret")     [ 5000 ms] SHUTDOWN
-E - 03603 - [ 33 bytes] 03603 (0000, "ultra_top_secret")     [ 5000 ms] SHUTDOWN
-E - 03604 - [ 62 bytes] 03604 (0000, "ultra_top_secret")     [  100 ms] CREATE   0001         25€ "top_secret"
-E - 03887 - [ 62 bytes] 03887 (0000, "ultra_top_secret")     [  100 ms] CREATE   0001         25€ "top_secret"
-E - 03903 - [ 33 bytes] 03903 (0000, "ultra_top_secret")     [ 5000 ms] SHUTDOWN
-E - 03916 - [ 62 bytes] 03916 (0000, "ultra_top_secret")     [  100 ms] CREATE   0001         25€ "top_secret"
-E - 04107 - [ 62 bytes] 04107 (0000, "ultra_top_secret")     [  100 ms] CREATE   0001         25€ "top_secret"
-E - 04109 - [ 62 bytes] 04109 (0000, "ultra_top_secret")     [  100 ms] CREATE   0001         25€ "top_secret"
-E - 04227 - [ 62 bytes] 04227 (0000, "ultra_top_secret")     [  100 ms] CREATE   0001         25€ "top_secret"
-E - 04243 - [ 33 bytes] 04243 (0000, "ultra_top_secret")     [ 5000 ms] SHUTDOWN
-E - 04259 - [ 62 bytes] 04259 (0000, "ultra_top_secret")     [  100 ms] CREATE   0001         25€ "top_secret"
-E - 04493 - [ 62 bytes] 04493 (0000, "ultra_top_secret")     [  100 ms] CREATE   0001         25€ "top_secret"
-E - 04510 - [ 33 bytes] 04510 (0000, "ultra_top_secret")     [ 5000 ms] SHUTDOWN
-E - 04525 - [ 62 bytes] 04525 (0000, "ultra_top_secret")     [  100 ms] CREATE   0001         25€ "top_secret"
-E - 04733 - [ 62 bytes] 04733 (0000, "ultra_top_secret")     [  100 ms] CREATE   0001         25€ "top_secret"
-E - 04741 - [ 33 bytes] 04741 (0000, "ultra_top_secret")     [ 5000 ms] SHUTDOWN
-E - 04763 - [ 62 bytes] 04763 (0000, "ultra_top_secret")     [  100 ms] CREATE   0001         25€ "top_secret"
-E - 04861 - [ 62 bytes] 04861 (0000, "ultra_top_secret")     [  100 ms] CREATE   0001         25€ "top_secret"
-E - 04877 - [ 33 bytes] 04877 (0000, "ultra_top_secret")     [ 5000 ms] SHUTDOWN
-E - 04892 - [ 62 bytes] 04892 (0000, "ultra_top_secret")     [  100 ms] CREATE   0001         25€ "top_secret"
-E - 05071 - [ 62 bytes] 05071 (0000, "ultra_top_secret")     [  100 ms] CREATE   0001         25€ "top_secret"
-E - 05090 - [ 33 bytes] 05090 (0000, "ultra_top_secret")     [ 5000 ms] SHUTDOWN
-E - 05144 - [ 33 bytes] 05144 (0000, "ultra_top_secret")     [ 5000 ms] SHUTDOWN
-E - 05163 - [ 33 bytes] 05163 (0000, "ultra_top_secret")     [ 5000 ms] SHUTDOWN
-E - 05280 - [ 33 bytes] 05280 (0000, "ultra_top_secret")     [ 5000 ms] SHUTDOWN
-E - 05297 - [ 33 bytes] 05297 (0000, "ultra_top_secret")     [ 5000 ms] SHUTDOWN
-E - 05568 - [ 33 bytes] 05568 (0000, "ultra_top_secret")     [ 5000 ms] SHUTDOWN
-E - 05759 - [ 33 bytes] 05759 (0000, "ultra_top_secret")     [ 5000 ms] SHUTDOWN
-E - 05905 - [ 33 bytes] 05905 (0000, "ultra_top_secret")     [ 5000 ms] SHUTDOWN
-E - 05923 - [ 33 bytes] 05923 (0000, "ultra_top_secret")     [ 5000 ms] SHUTDOWN
-E - 06051 - [ 33 bytes] 06051 (0000, "ultra_top_secret")     [ 5000 ms] SHUTDOWN
-E - 06809 - [ 33 bytes] 06809 (0000, "ultra_top_secret")     [ 5000 ms] SHUTDOWN
-E - 06888 - [ 33 bytes] 06888 (0000, "ultra_top_secret")     [ 5000 ms] SHUTDOWN
-E - 07193 - [ 33 bytes] 07193 (0000, "ultra_top_secret")     [ 5000 ms] SHUTDOWN
-E - 07242 - [ 33 bytes] 07242 (0000, "ultra_top_secret")     [ 5000 ms] SHUTDOWN
-E - 07260 - [ 33 bytes] 07260 (0000, "ultra_top_secret")     [ 5000 ms] SHUTDOWN
-E - 08050 - [ 33 bytes] 08050 (0000, "ultra_top_secret")     [ 5000 ms] SHUTDOWN
-E - 08159 - [ 33 bytes] 08159 (0000, "ultra_top_secret")     [ 5000 ms] SHUTDOWN
-E - 08277 - [ 33 bytes] 08277 (0000, "ultra_top_secret")     [ 5000 ms] SHUTDOWN
-E - 08294 - [ 33 bytes] 08294 (0000, "ultra_top_secret1")    [ 5000 ms] SHUTDOWN
-E - 08313 - [ 33 bytes] 08313 (0000, "ultra_top_secret")     [ 5000 ms] SHUTDOWN
-E - 08379 - [ 33 bytes] 08379 (0000, "ultra_top_secret")     [ 5000 ms] SHUTDOWN
-E - 08380 - [ 33 bytes] 08380 (0000, "ultra_top_secret")     [ 5000 ms] SHUTDOWN
-E - 08406 - [ 33 bytes] 08406 (0000, "ultra_top_secret1")    [ 5000 ms] SHUTDOWN
-E - 08425 - [ 33 bytes] 08425 (0000, "ultra_top_secret")     [ 5000 ms] SHUTDOWN
-E - 08450 - [ 33 bytes] 08450 (0000, "ultra_top_secret")     [ 5000 ms] SHUTDOWN
-E - 08502 - [ 33 bytes] 08502 (0000, "ultra_top_secret")     [ 5000 ms] SHUTDOWN
-E - 08567 - [ 33 bytes] 08567 (0000, "ultra_top_secret")     [ 5000 ms] SHUTDOWN
-E - 01867 - [ 33 bytes] 01867 (0000, "ultra_top_secret")     [ 5000 ms] SHUTDOWN
-E - 02006 - [ 33 bytes] 02006 (0000, "ultra_top_secret")     [ 5000 ms] SHUTDOWN
-E - 09558 - [ 33 bytes] 09558 (0000, "ola")                  [    0 ms] SHUTDOWN
-E - 10089 - [ 33 bytes] 10089 (0000, "ola")                  [    0 ms] SHUTDOWN
-E - 10194 - [ 33 bytes] 10194 (0000, "ola")                  [    0 ms] SHUTDOWN
-E - 10470 - [ 33 bytes] 10470 (0000, "ola")                  [    0 ms] SHUTDOWN
-E - 10512 - [ 33 bytes] 10512 (0000, "ola")                  [    0 ms] SHUTDOWN
-E - 10564 - [ 33 bytes] 10564 (0000, "ola")                  [    0 ms] SHUTDOWN
-E - 10648 - [ 33 bytes] 10648 (0000, "ola")                  [    0 ms] SHUTDOWN
-E - 10673 - [ 33 bytes] 10673 (0000, "ola")                  [    0 ms] SHUTDOWN
-E - 11074 - [ 33 bytes] 11074 (0000, "ola")                  [    0 ms] SHUTDOWN
-E - 11099 - [ 33 bytes] 11099 (0000, "ola")                  [    0 ms] SHUTDOWN
-E - 11226 - [ 33 bytes] 11226 (0000, "ola")                  [    0 ms] SHUTDOWN
-E - 11252 - [ 33 bytes] 11252 (0000, "ola")                  [    0 ms] SHUTDOWN
-E - 11280 - [ 33 bytes] 11280 (0000, "ola")                  [    0 ms] SHUTDOWN
-E - 11303 - [ 33 bytes] 11303 (0000, "ola")                  [    0 ms] SHUTDOWN
+E - 03928 - [ 62 bytes] 03928 (0000, "ola")                  [    0 ms] CREATE   0001         10€ "cenas"
+E - 03955 - [ 62 bytes] 03955 (0000, "ola")                  [    0 ms] CREATE   0001         10€ "cenas"
+E - 03966 - [ 62 bytes] 03966 (0000, "ola")                  [    0 ms] CREATE   0001         10€ "cenas"
+E - 03969 - [ 62 bytes] 03969 (0000, "ola")                  [    0 ms] CREATE   0001         10€ "cenas"
+E - 03984 - [ 62 bytes] 03984 (0000, "ola")                  [    0 ms] CREATE   0002         10€ "cenas"
+E - 03988 - [ 62 bytes] 03988 (0000, "ola")                  [    0 ms] CREATE   0001         10€ "cenas"
+E - 03995 - [ 62 bytes] 03995 (0000, "ola")                  [    0 ms] CREATE   0002         10€ "cenas"
+E - 04025 - [ 62 bytes] 04025 (0000, "ola")                  [    0 ms] CREATE   0023         10€ "cenas"
+E - 04041 - [ 33 bytes] 04041 (0000, "ola")                  [    0 ms] SHUTDOWN
+E - 04234 - [ 62 bytes] 04234 (0000, "ola")                  [    0 ms] CREATE   0023         10€ "cenas"
+E - 04265 - [ 33 bytes] 04265 (0023, "ola")                  [    0 ms] BALANCE 
+E - 04280 - [ 33 bytes] 04280 (0023, "cenas")                [    0 ms] BALANCE 
+E - 04299 - [ 33 bytes] 04299 (0000, "ola")                  [    0 ms] SHUTDOWN
+E - 04380 - [ 33 bytes] 04380 (0000, "ola")                  [    0 ms] SHUTDOWN
+E - 04414 - [ 62 bytes] 04414 (0000, "ola")                  [    0 ms] CREATE   0023         10€ "cenas"
+E - 04441 - [ 33 bytes] 04441 (0023, "cenas")                [    0 ms] BALANCE 
+E - 04456 - [ 33 bytes] 04456 (0000, "ola")                  [    0 ms] SHUTDOWN
+E - 04478 - [ 33 bytes] 04478 (0000, "ola")                  [    0 ms] SHUTDOWN
+E - 04595 - [ 62 bytes] 04595 (0000, "ola")                  [    0 ms] CREATE   0023         10€ "cenas"
+E - 04622 - [ 33 bytes] 04622 (0023, "cenas")                [    0 ms] BALANCE 
+E - 04637 - [ 33 bytes] 04637 (0000, "ola")                  [    0 ms] SHUTDOWN
+E - 04662 - [ 62 bytes] 04662 (0000, "ola")                  [    0 ms] CREATE   0023         10€ "cenas"
+E - 04691 - [ 33 bytes] 04691 (0023, "cenas")                [    0 ms] BALANCE 
+E - 04707 - [ 33 bytes] 04707 (0000, "ola")                  [    0 ms] SHUTDOWN
+E - 04734 - [ 33 bytes] 04734 (0000, "ola")                  [    0 ms] SHUTDOWN
+E - 04788 - [ 62 bytes] 04788 (0000, "ola")                  [    0 ms] CREATE   0023         10€ "cenas"
+E - 04815 - [ 33 bytes] 04815 (0000, "ola")                  [    0 ms] SHUTDOWN
+E - 04840 - [ 33 bytes] 04840 (0000, "ola")                  [    0 ms] SHUTDOWN
+E - 04929 - [ 33 bytes] 04929 (0000, "ola")                  [    0 ms] SHUTDOWN
+E - 04961 - [ 62 bytes] 04961 (0000, "ola")                  [    0 ms] CREATE   0023         10€ "cenas"
+E - 04989 - [ 33 bytes] 04989 (0023, "cenas")                [    0 ms] BALANCE 
+E - 05004 - [ 33 bytes] 05004 (0000, "ola")                  [    0 ms] SHUTDOWN
+E - 05132 - [ 33 bytes] 05132 (0000, "ola")                  [    0 ms] SHUTDOWN
+E - 05164 - [ 62 bytes] 05164 (0000, "ola")                  [    0 ms] CREATE   0023         10€ "cenas"
+E - 05189 - [ 33 bytes] 05189 (0023, "cenas")                [    0 ms] BALANCE 
+E - 05215 - [ 33 bytes] 05215 (0000, "ola")                  [    0 ms] SHUTDOWN
+E - 05313 - [ 62 bytes] 05313 (0000, "ola")                  [    0 ms] CREATE   0023         10€ "cenas"
+E - 05335 - [ 33 bytes] 05335 (0023, "cenas")                [    0 ms] BALANCE 
+E - 05338 - [ 33 bytes] 05338 (0000, "ola")                  [    0 ms] SHUTDOWN
+E - 05417 - [ 62 bytes] 05417 (0000, "ola")                  [    0 ms] CREATE   0023         10€ "cenas"
+E - 05440 - [ 33 bytes] 05440 (0023, "cenas")                [    0 ms] BALANCE 
+E - 05443 - [ 33 bytes] 05443 (0000, "ola")                  [    0 ms] SHUTDOWN
+E - 05541 - [ 62 bytes] 05541 (0000, "ola")                  [    0 ms] CREATE   0023         10€ "cenas"
+E - 05564 - [ 33 bytes] 05564 (0023, "cenas")                [    0 ms] BALANCE 
+E - 05567 - [ 33 bytes] 05567 (0000, "ola")                  [    0 ms] SHUTDOWN
+E - 05964 - [ 33 bytes] 05964 (0000, "ola")                  [    0 ms] SHUTDOWN
+E - 05998 - [ 62 bytes] 05998 (0000, "ola")                  [    0 ms] CREATE   0023         10€ "cenas"
+E - 06026 - [ 33 bytes] 06026 (0023, "cenas")                [    0 ms] BALANCE 
+E - 06041 - [ 33 bytes] 06041 (0000, "ola")                  [    0 ms] SHUTDOWN
+E - 06128 - [ 33 bytes] 06128 (0000, "ola")                  [    0 ms] SHUTDOWN
+E - 06161 - [ 62 bytes] 06161 (0000, "ola")                  [    0 ms] CREATE   0023         10€ "cenas"
+E - 06188 - [ 33 bytes] 06188 (0023, "cenas")                [    0 ms] BALANCE 
+E - 06195 - [ 33 bytes] 06195 (0000, "ola")                  [    0 ms] SHUTDOWN
