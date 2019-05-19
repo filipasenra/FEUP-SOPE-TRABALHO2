@@ -53,18 +53,18 @@ int get_request(tlv_request_t *user_request, int fd_log, int fd_srv)
     return RC_OK;
 }
 
-int send_reply(tlv_request_t *user_request, tlv_reply_t *user_reply)
+int send_reply(pid_t pid, tlv_reply_t *user_reply)
 {
     int fda;
     char *fifo_send = malloc(sizeof(USER_FIFO_PATH_PREFIX) +
-                             sizeof(user_request->value.header.pid));
+                             sizeof(pid));
     sprintf(fifo_send, "%s%d", USER_FIFO_PATH_PREFIX,
-            user_request->value.header.pid);
+            pid);
 
     if ((fda = open(fifo_send, O_WRONLY | O_NONBLOCK)) < 0)
         return RC_OTHER;
 
-    if (write(fda, user_reply, sizeof(op_type_t) + sizeof(uint32_t) + user_request->length) <= 0)
+    if (write(fda, user_reply, sizeof(op_type_t) + sizeof(uint32_t) + user_reply->length) <= 0)
     {
         perror("send_reply");
         return RC_OTHER;

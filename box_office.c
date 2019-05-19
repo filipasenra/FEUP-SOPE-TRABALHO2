@@ -103,7 +103,7 @@ void *box_office(void *arg)
             reply.value.header.ret_code = RC_LOGIN_FAIL;
         }
 
-        if (send_reply(&request, &reply) != RC_OK)
+        if (send_reply(request.value.header.pid, &reply) != RC_OK)
         {
             reply.value.header.ret_code = RC_USR_DOWN;
             logReply(STDOUT_FILENO, pthread_self(), &reply);
@@ -119,11 +119,6 @@ void *box_office(void *arg)
 int create_account(bank_account_t *account, char password[], int accound_id,
                    int balance, tlv_reply_t *user_reply)
 {
-    // echo -n “<senha><sal>” | sha256sum
-    // echo -n $salt | sha256sum
-
-    //verificação do tamanho já é feita no user!
-
     account->account_id = accound_id;
     account->balance = balance;
 
@@ -183,9 +178,12 @@ int transfer(tlv_request_t user_request, tlv_reply_t *user_reply, int fd, int de
 
     int amount = user_request.value.transfer.amount;
 
+
+    user_reply->value.transfer.balance = bank_acc_orig->balance;
+    user_reply->length += sizeof(rep_transfer_t);
+
     if ((bank_acc_orig->balance - amount) < MIN_BALANCE)
     {
-
         pthread_mutex_unlock(&db_mutex[index]);
         user_reply->value.header.ret_code = RC_NO_FUNDS;
         return RC_NO_FUNDS;
@@ -206,7 +204,6 @@ int transfer(tlv_request_t user_request, tlv_reply_t *user_reply, int fd, int de
     logSyncMech(fd, pthread_self(), SYNC_OP_MUTEX_UNLOCK, SYNC_ROLE_ACCOUNT, user_request.value.transfer.account_id);
 
     user_reply->value.transfer.balance = bank_acc_orig->balance;
-    user_reply->length += sizeof(rep_transfer_t);
     user_reply->value.header.ret_code = RC_OK;
 
     return 0;

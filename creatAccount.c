@@ -71,8 +71,6 @@ int getHash(char salt[SALT_LEN + 1], char password[], char hash[HASH_LEN + 1])
 
 int createAccount(bank_account_t *account, char password[], int accound_id, int balance)
 {
-    //echo -n “<senha><sal>” | sha256sum
-    //echo -n $salt | sha256sum
     account->account_id = accound_id;
     account->balance = balance;
     creatSalt(account->salt);

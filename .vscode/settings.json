@@ -4,6 +4,7 @@
         "types.h": "c",
         "box_office.h": "c",
         "creataccount.h": "c",
-        "usermessage.h": "c"
+        "usermessage.h": "c",
+        "communication.h": "c"
     }
 }

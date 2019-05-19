@@ -46,6 +46,18 @@ int transferOperation(uint32_t idOrigin, req_transfer_t *transfer, char argv[]);
  */
 int requestMessageTLV(int argc, char *argv[], tlv_request_t *user_request);
 
+/**
+ * @brief Prepares the main Arguments of a request
+ * 
+ * @param argv Arguments given by the user
+ * @param user_request Pointer to the request to be sent to the server
+*/
 int prepareMainArgs(char *argv[], tlv_request_t *user_request);
 
+/**
+ * @brief Prepares the specific Arguments of a request
+ * 
+ * @param argv Arguments given by the user
+ * @param user_request Pointer to the request to be sent to the server
+*/
 int prepareTypeOfOpArgs(char *argv[], tlv_request_t *user_request);
