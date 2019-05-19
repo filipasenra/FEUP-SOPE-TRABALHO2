@@ -38,9 +38,9 @@ int main(int argc, char *argv[])
     {
         if (((clock() - initial) / CLOCKS_PER_SEC) == FIFO_TIMEOUT_SECS)
         {
-            printf("Action took too long...\n");
-            pthread_kill(t, SIGTERM);
-            return RC_SRV_TIMEOUT;
+            pthread_cancel(t);
+            thread_arg.reply.value.header.ret_code = RC_SRV_TIMEOUT;
+            break;
         }
         if (thread_arg.completed)
             break;
