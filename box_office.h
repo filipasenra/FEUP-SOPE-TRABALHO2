@@ -16,7 +16,7 @@
 #include "types.h"
 
 extern pthread_mutex_t q_mutex;
-extern pthread_mutex_t db_mutex;
+extern pthread_mutex_t db_mutex[MAX_BANK_ACCOUNTS];
 extern queue_t queue;
 extern dataBase_t db;
 extern sem_t n_req;

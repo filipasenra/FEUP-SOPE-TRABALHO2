@@ -71,13 +71,13 @@ int main(int argc, char *argv[]) {
         pthread_cancel(thread_array[i]);
     }
 
-    freeDataBase(&db);
     close(fd_log);
 
     unlink(SERVER_FIFO_PATH);
 
     pthread_mutex_destroy(&q_mutex);
     pthread_mutex_destroy(&db_mutex);
+    for (int i = 0; i < MAX_BANK_ACCOUNTS; i++) pthread_mutex_destroy(&db_mutex[i]);
     sem_destroy(&n_req);
     sem_destroy(&b_off);
 
@@ -104,7 +104,7 @@ int server_init(char *password, int number_threads, pthread_t thread_array[], ba
     sem_init(&b_off, 0, number_threads);
 
     queueInitialize(&queue);
-    init_database(&db)
+    init_database(&db);
 
     createAccount(account, password, 0, 0);
     if(add_account(*account, &db))  return 2;
@@ -114,20 +114,19 @@ int server_init(char *password, int number_threads, pthread_t thread_array[], ba
         
     for (int i = 0; i < MAX_BANK_ACCOUNTS; i++)
         db_mutex[i] = PTHREAD_MUTEX_INITIALIZER;
+
+    return 0;
 }
 
-void server_main_loop(int fd_log, int fd_srv)
-{
+void server_main_loop(int fd_log, int fd_srv) {
     tlv_request_t request;
     int value = 0;
 
-    while (1)
-    {
+    while (1) {
         if (get_request(&request, fd_log, fd_srv))
             return;
 
-        if (request.length)
-        {
+        if (request.length) {
             pthread_mutex_lock(&q_mutex);
             logSyncMech(fd_log, getpid(), SYNC_OP_MUTEX_LOCK, SYNC_ROLE_PRODUCER, request.value.header.account_id);
 
@@ -146,10 +145,8 @@ void server_main_loop(int fd_log, int fd_srv)
 
             request.length = 0;
 
-            if (request.type == OP_SHUTDOWN && request.value.header.account_id == 0)
-            {
-                if (log_in(&db, 0, request.value.header.password) == 0)
-                {
+            if (request.type == OP_SHUTDOWN && request.value.header.account_id == 0) {
+                if (log_in(&db, 0, request.value.header.password) == 0) {
                     logDelay(fd_log, getpid(), request.value.header.op_delay_ms * 1000);
                     usleep(request.value.header.op_delay_ms * 1000);
                     fchmod(fd_srv, 0444);

@@ -30,10 +30,11 @@ void *box_office(void *arg) {
         int index;
 
         if ((index = log_in(&db, request.value.header.account_id, request.value.header.password))) {
-            pthread_mutex_lock(db_mutex[index]);
+            pthread_mutex_lock(&db_mutex[index]);
             logSyncMech(*(int *)arg, pthread_self(), SYNC_OP_MUTEX_LOCK, SYNC_ROLE_ACCOUNT, request.value.header.account_id);
 
             int op = (int)request.type;
+            bank_account_t *acc;
 
             switch (op) {
                 case 0:  // CREATE
@@ -41,14 +42,13 @@ void *box_office(void *arg) {
                         reply.value.header.ret_code = RC_OP_NALLOW;
                         break;
                     }
-                    if (get_account(request.value.create.account_id, db) != -1) {
+                    if (get_account(request.value.create.account_id, &db) != -1) {
                         reply.value.header.ret_code = RC_ID_IN_USE;
                         break;
                     }
 
-                    bank_account_t acc;
-                    create_account(&acc, request.value.create.password, request.value.create.account_id, request.value.create.balance, &reply);
-                    if (add_account(acc, &db)) {
+                    create_account(acc, request.value.create.password, request.value.create.account_id, request.value.create.balance, &reply);
+                    if (add_account(*acc, &db)) {
                         reply.value.header.ret_code = RC_OTHER;
                         break;
                     }
@@ -60,7 +60,7 @@ void *box_office(void *arg) {
                         break;
                     }
 
-                    bank_account_t *acc = &(db.dataBaseArray[index]);
+                    acc = &(db.dataBaseArray[index]);
                     check_balance(acc, &reply);
                     break;
                 case 2:  // TRANSFER
@@ -81,7 +81,7 @@ void *box_office(void *arg) {
                     break;
             }
 
-            pthread_mutex_unlock(db_mutex[index]);
+            pthread_mutex_unlock(&db_mutex[index]);
             logSyncMech(*(int *)arg, pthread_self(), SYNC_OP_MUTEX_UNLOCK, SYNC_ROLE_ACCOUNT, request.value.header.account_id);
         } else {
             reply.value.header.ret_code = RC_LOGIN_FAIL;
@@ -161,8 +161,8 @@ int transfer(tlv_request_t user_request, tlv_reply_t *user_reply, int fd, uint32
         return RC_ID_NOT_FOUND;
     }
 
-    pthread_mutex_lock(db_mutex[index]);
-    logSyncMech(*(int *)arg, pthread_self(), SYNC_OP_MUTEX_LOCK, SYNC_ROLE_ACCOUNT, user_request.value.transfer.account_id);
+    pthread_mutex_lock(&db_mutex[index]);
+    logSyncMech(fd, pthread_self(), SYNC_OP_MUTEX_LOCK, SYNC_ROLE_ACCOUNT, user_request.value.transfer.account_id);
 
     bank_account_t *bank_acc_dest = &(db.dataBaseArray[index]);
 
@@ -184,8 +184,8 @@ int transfer(tlv_request_t user_request, tlv_reply_t *user_reply, int fd, uint32
     bank_acc_orig->balance -= amount;
     bank_acc_dest->balance += amount;
 
-    pthread_mutex_unlock(db_mutex[index]);
-    logSyncMech(*(int *)arg, pthread_self(), SYNC_OP_MUTEX_UNLOCK, SYNC_ROLE_ACCOUNT, user_request.value.transfer.account_id);
+    pthread_mutex_unlock(&db_mutex[index]);
+    logSyncMech(fd, pthread_self(), SYNC_OP_MUTEX_UNLOCK, SYNC_ROLE_ACCOUNT, user_request.value.transfer.account_id);
 
     user_reply->value.transfer.balance = bank_acc_orig->balance;
     user_reply->length += sizeof(rep_transfer_t);
