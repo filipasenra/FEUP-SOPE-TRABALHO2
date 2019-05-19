@@ -105,10 +105,8 @@ void *box_office(void *arg)
 
         if (send_reply(&request, &reply) != RC_OK)
         {
-            /* sem_post(&b_off);
-             return (void *)RC_OTHER;*/
-
-            // needs message of error to slog
+            reply.value.header.ret_code = RC_USR_DOWN; 
+            logReply(STDOUT_FILENO, getpid(), &reply);
         }
         sem_post(&b_off);
     }
