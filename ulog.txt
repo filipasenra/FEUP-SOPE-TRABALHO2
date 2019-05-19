@@ -25,3 +25,21 @@ E - 23191 - [ 62 bytes] 23191 (0000, "password")             [10000 ms] CREATE  
 E - 23215 - [ 33 bytes] 23215 (0000, "password")             [    0 ms] SHUTDOWN
 E - 23364 - [ 62 bytes] 23364 (0000, "password")             [10000 ms] CREATE   0001          5€ "password"
 E - 23388 - [ 33 bytes] 23388 (0000, "password")             [    0 ms] SHUTDOWN
+E - 03180 - [ 62 bytes] 03180 (0000, "password")             [25000 ms] CREATE   0002         35€ "top_secret"
+E - 03269 - [ 62 bytes] 03269 (0000, "password")             [25000 ms] CREATE   0002         35€ "top_secret"
+E - 03413 - [ 62 bytes] 03413 (0000, "password")             [    0 ms] CREATE   0002         35€ "top_secret"
+E - 03488 - [ 62 bytes] 03488 (0000, "password")             [    0 ms] CREATE   0002         35€ "top_secret"
+E - 03654 - [ 62 bytes] 03654 (0000, "password")             [    0 ms] CREATE   0002         35€ "top_secret"
+E - 03690 - [ 62 bytes] 03690 (0000, "password")             [    0 ms] CREATE   0002         35€ "top_secret"
+E - 03772 - [ 62 bytes] 03772 (0000, "password")             [    0 ms] CREATE   0002         35€ "top_secret"
+E - 03846 - [ 62 bytes] 03846 (0000, "password")             [    0 ms] CREATE   0002         35€ "top_secret"
+E - 04046 - [ 62 bytes] 04046 (0000, "password")             [    0 ms] CREATE   0002         35€ "top_secret"
+E - 04126 - [ 62 bytes] 04126 (0000, "password")             [    0 ms] CREATE   0002         35€ "top_secret"
+E - 04203 - [ 62 bytes] 04203 (0000, "password")             [    0 ms] CREATE   0002         35€ "top_secret"
+E - 04278 - [ 62 bytes] 04278 (0000, "password")             [    0 ms] CREATE   0002         35€ "top_secret"
+E - 04348 - [ 62 bytes] 04348 (0000, "password")             [    0 ms] CREATE   0002         35€ "top_secret"
+E - 04476 - [ 62 bytes] 04476 (0000, "password")             [    0 ms] CREATE   0002         35€ "top_secret"
+E - 04555 - [ 62 bytes] 04555 (0000, "password")             [    0 ms] CREATE   0002         35€ "top_secret"
+E - 04631 - [ 62 bytes] 04631 (0000, "password")             [    0 ms] CREATE   0002         35€ "top_secret"
+E - 04750 - [ 62 bytes] 04750 (0000, "password")             [    0 ms] CREATE   0002         35€ "top_secret"
+E - 04773 - [ 33 bytes] 04773 (0000, "password")             [    0 ms] SHUTDOWN

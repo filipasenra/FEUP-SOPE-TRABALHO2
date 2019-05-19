@@ -29,12 +29,13 @@ void *box_office(void *arg) {
 
         int index;
 
-        if ((index = log_in(&db, request.value.header.account_id, request.value.header.password))) {
+        if ((index = log_in(&db, request.value.header.account_id, request.value.header.password)) != -1) {
+
             pthread_mutex_lock(&db_mutex[index]);
             logSyncMech(*(int *)arg, pthread_self(), SYNC_OP_MUTEX_LOCK, SYNC_ROLE_ACCOUNT, request.value.header.account_id);
 
             int op = (int)request.type;
-            bank_account_t *acc;
+            bank_account_t acc;
 
             switch (op) {
                 case 0:  // CREATE
@@ -47,8 +48,9 @@ void *box_office(void *arg) {
                         break;
                     }
 
-                    create_account(acc, request.value.create.password, request.value.create.account_id, request.value.create.balance, &reply);
-                    if (add_account(*acc, &db)) {
+                    create_account(&acc, request.value.create.password, request.value.create.account_id, request.value.create.balance, &reply);
+
+                    if (add_account(acc, &db)) {
                         reply.value.header.ret_code = RC_OTHER;
                         break;
                     }
@@ -60,8 +62,8 @@ void *box_office(void *arg) {
                         break;
                     }
 
-                    acc = &(db.dataBaseArray[index]);
-                    check_balance(acc, &reply);
+                    acc = db.dataBaseArray[index];
+                    check_balance(&acc, &reply);
                     break;
                 case 2:  // TRANSFER
                     if (request.value.header.account_id == 0) {
@@ -105,16 +107,7 @@ int create_account(bank_account_t *account, char password[], int accound_id,
     // echo -n “<senha><sal>” | sha256sum
     // echo -n $salt | sha256sum
 
-    // Verify passord
-    if (strlen(password) > MAX_PASSWORD_LEN + 1) {
-        printf("Password too long\n");
-        user_reply->value.header.ret_code = RC_OTHER;
-        return RC_OTHER;
-    } else if (strlen(password) < MIN_PASSWORD_LEN) {
-        printf("Password too short\n");
-        user_reply->value.header.ret_code = RC_OTHER;
-        return RC_OTHER;
-    }
+    //verificação do tamanho já é feita no user!
 
     account->account_id = accound_id;
     account->balance = balance;
