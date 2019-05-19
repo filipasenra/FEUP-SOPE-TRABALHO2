@@ -1,30 +1,23 @@
 #include "box_office.h"
 
-void *box_office(void *arg)
-{
+void *box_office(void *arg) {
     tlv_request_t request;
     tlv_reply_t reply;
 
     logBankOfficeOpen(*(int *)arg, getpid(), pthread_self());
 
-    while (1)
-    {
+    while (1) {
         sem_wait(&n_req);
 
-        // Locks the mutex
         pthread_mutex_lock(&q_mutex);
         logSyncMech(*(int *)arg, pthread_self(), SYNC_OP_MUTEX_LOCK, SYNC_ROLE_CONSUMER, request.value.header.account_id);
 
-        request = front(queue); // Gets the request that arrived first
+        request = front(queue);  // Gets the request that arrived first
 
-        pop(&queue); // Updates the queue and 'frees' the space ocupided by the
-                     // request picked up by this thread
+        pop(&queue);  // Updates the queue and 'frees' the space ocupided by the request picked up by this thread
 
         pthread_mutex_unlock(&q_mutex);
         logSyncMech(*(int *)arg, pthread_self(), SYNC_OP_MUTEX_UNLOCK, SYNC_ROLE_CONSUMER, request.value.header.account_id);
-
-        pthread_mutex_lock(&db_mutex);
-        logSyncMech(*(int *)arg, pthread_self(), SYNC_OP_MUTEX_LOCK, SYNC_ROLE_ACCOUNT, request.value.header.account_id);
 
         // Handles the request
         reply.value.header.account_id = request.value.header.account_id;
@@ -34,78 +27,71 @@ void *box_office(void *arg)
         logSyncDelay(*(int *)arg, pthread_self(), request.value.header.account_id, request.value.header.op_delay_ms * 1000);
         usleep(request.value.header.op_delay_ms * 1000);
 
-        if (log_in(&db, request.value.header.account_id, request.value.header.password) == 0)
-        {
+        int index;
+
+        if ((index = log_in(&db, request.value.header.account_id, request.value.header.password))) {
+            pthread_mutex_lock(db_mutex[index]);
+            logSyncMech(*(int *)arg, pthread_self(), SYNC_OP_MUTEX_LOCK, SYNC_ROLE_ACCOUNT, request.value.header.account_id);
+
             int op = (int)request.type;
-            bank_account_t acc;
 
-            switch (op)
-            {
-            case 0: // CREATE
-                if (request.value.header.account_id != 0)
-                {
-                    reply.value.header.ret_code = RC_OP_NALLOW;
-                    break;
-                }
-                if (repeatedAccount(request.value.create.account_id, db))
-                {
-                    reply.value.header.ret_code = RC_ID_IN_USE;
-                    break;
-                }
-                create_account(&acc, request.value.create.password,
-                               request.value.create.account_id,
-                               request.value.create.balance, &reply);
-                if (addAccount(acc, &db))
-                {
-                    //message of error
-                    sem_post(&b_off);
-                    continue;
-                }
+            switch (op) {
+                case 0:  // CREATE
+                    if (request.value.header.account_id != 0) {
+                        reply.value.header.ret_code = RC_OP_NALLOW;
+                        break;
+                    }
+                    if (get_account(request.value.create.account_id, db) != -1) {
+                        reply.value.header.ret_code = RC_ID_IN_USE;
+                        break;
+                    }
 
-                break;
-            case 1: // CHECK BALANCE
-                if (request.value.header.account_id == 0)
-                {
-                    reply.value.header.ret_code = RC_OP_NALLOW;
+                    bank_account_t acc;
+                    create_account(&acc, request.value.create.password, request.value.create.account_id, request.value.create.balance, &reply);
+                    if (add_account(acc, &db)) {
+                        reply.value.header.ret_code = RC_OTHER;
+                        break;
+                    }
+
                     break;
-                }
-                acc = *accountExist(request.value.transfer.account_id, &db);
-                check_balance(&acc, &reply);
-                break;
-            case 2: // TRANSFER
-                if (request.value.header.account_id == 0)
-                {
-                    reply.value.header.ret_code = RC_OP_NALLOW;
+                case 1:  // CHECK BALANCE
+                    if (request.value.header.account_id == 0) {
+                        reply.value.header.ret_code = RC_OP_NALLOW;
+                        break;
+                    }
+
+                    bank_account_t *acc = &(db.dataBaseArray[index]);
+                    check_balance(acc, &reply);
                     break;
-                }
-                transfer(request, &reply, *(int *)arg, request.value.header.op_delay_ms * 1000);
-                break;
-            case 3: // SHUTDOWN
-                if (request.value.header.account_id != 0)
-                {
-                    reply.value.header.ret_code = RC_OP_NALLOW;
+                case 2:  // TRANSFER
+                    if (request.value.header.account_id == 0) {
+                        reply.value.header.ret_code = RC_OP_NALLOW;
+                        break;
+                    }
+                    transfer(request, &reply, *(int *)arg, request.value.header.op_delay_ms * 1000);
                     break;
-                }
-                shutdown(&reply);
-                break;
-            default:
-                break;
+                case 3:  // SHUTDOWN
+                    if (request.value.header.account_id != 0) {
+                        reply.value.header.ret_code = RC_OP_NALLOW;
+                        break;
+                    }
+                    shutdown(&reply);
+                    break;
+                default:
+                    break;
             }
-        }
-        else
-        {
+
+            pthread_mutex_unlock(db_mutex[index]);
+            logSyncMech(*(int *)arg, pthread_self(), SYNC_OP_MUTEX_UNLOCK, SYNC_ROLE_ACCOUNT, request.value.header.account_id);
+        } else {
             reply.value.header.ret_code = RC_LOGIN_FAIL;
         }
 
-        pthread_mutex_unlock(&db_mutex);
-        logSyncMech(*(int *)arg, pthread_self(), SYNC_OP_MUTEX_UNLOCK, SYNC_ROLE_ACCOUNT, request.value.header.account_id);
+        if (send_reply(&request, &reply) != RC_OK) {
+            /* sem_post(&b_off);
+             return (void *)RC_OTHER;*/
 
-        if (send_reply(&request, &reply) != RC_OK)
-        {
-           /* sem_post(&b_off);
-            return (void *)RC_OTHER;*/
-
-            //needs message of error to slog
+            // needs message of error to slog
         }
 
         sem_post(&b_off);
@@ -114,20 +100,17 @@ void *box_office(void *arg)
     return NULL;
 }
 
-int create_account(bank_account_t *account, char password[], int accound_id, int balance, tlv_reply_t *user_reply)
-{
+int create_account(bank_account_t *account, char password[], int accound_id,
+                   int balance, tlv_reply_t *user_reply) {
     // echo -n “<senha><sal>” | sha256sum
     // echo -n $salt | sha256sum
 
-    //Verify passord
-    if (strlen(password) > MAX_PASSWORD_LEN + 1)
-    {
+    // Verify passord
+    if (strlen(password) > MAX_PASSWORD_LEN + 1) {
         printf("Password too long\n");
         user_reply->value.header.ret_code = RC_OTHER;
         return RC_OTHER;
-    }
-    else if (strlen(password) < MIN_PASSWORD_LEN)
-    {
+    } else if (strlen(password) < MIN_PASSWORD_LEN) {
         printf("Password too short\n");
         user_reply->value.header.ret_code = RC_OTHER;
         return RC_OTHER;
@@ -150,12 +133,10 @@ int create_account(bank_account_t *account, char password[], int accound_id, int
     return 0;
 }
 
-int check_balance(bank_account_t *bank_account, tlv_reply_t *user_reply)
-{
+int check_balance(bank_account_t *bank_account, tlv_reply_t *user_reply) {
     user_reply->type = OP_BALANCE;
 
-    if (bank_account == NULL)
-    {
+    if (bank_account == NULL) {
         user_reply->value.header.ret_code = RC_ID_NOT_FOUND;
         return RC_ID_NOT_FOUND;
     }
@@ -167,59 +148,53 @@ int check_balance(bank_account_t *bank_account, tlv_reply_t *user_reply)
     return 0;
 }
 
-int transfer(tlv_request_t user_request, tlv_reply_t *user_reply, int fd, uint32_t delay)
-{
+int transfer(tlv_request_t user_request, tlv_reply_t *user_reply, int fd, uint32_t delay) {
     user_reply->type = OP_TRANSFER;
-
-    // DOES DESTINATION ACCOUNT EXIST?
 
     logSyncDelay(fd, pthread_self(), user_request.value.transfer.account_id, delay);
     usleep(delay);
 
-    bank_account_t *bank_account_destination = accountExist(user_request.value.transfer.account_id, &db);
 
-    if (bank_account_destination == NULL)
-    {
+    int index = get_account(user_request.value.transfer.account_id, &db);
+    if (index == -1) {
         user_reply->value.header.ret_code = RC_ID_NOT_FOUND;
-
         return RC_ID_NOT_FOUND;
     }
 
-    //====================================
+    pthread_mutex_lock(db_mutex[index]);
+    logSyncMech(*(int *)arg, pthread_self(), SYNC_OP_MUTEX_LOCK, SYNC_ROLE_ACCOUNT, user_request.value.transfer.account_id);
 
-    bank_account_t *bank_account_origin = accountExist(user_request.value.header.account_id, &db);
+    bank_account_t *bank_acc_dest = &(db.dataBaseArray[index]);
+
+    index = get_account(user_request.value.header.account_id, &db);
+    bank_account_t *bank_acc_orig = &(db.dataBaseArray[index]);
 
     int amount = user_request.value.transfer.amount;
 
-    // ARE THE FINAL BALANCES WITHIN THE LIMITES?
-    if ((bank_account_origin->balance - amount) < MIN_BALANCE)
-    {
+    if ((bank_acc_orig->balance - amount) < MIN_BALANCE) {
         user_reply->value.header.ret_code = RC_NO_FUNDS;
-
         return RC_NO_FUNDS;
     }
 
-    if ((bank_account_destination->balance + amount) > MAX_BALANCE)
-    {
+    if ((bank_acc_dest->balance + amount) > MAX_BALANCE) {
         user_reply->value.header.ret_code = RC_TOO_HIGH;
-
         return RC_TOO_HIGH;
     }
 
-    //========================================
+    bank_acc_orig->balance -= amount;
+    bank_acc_dest->balance += amount;
 
-    bank_account_origin->balance -= amount;
-    bank_account_destination->balance += amount;
+    pthread_mutex_unlock(db_mutex[index]);
+    logSyncMech(*(int *)arg, pthread_self(), SYNC_OP_MUTEX_UNLOCK, SYNC_ROLE_ACCOUNT, user_request.value.transfer.account_id);
 
-    user_reply->value.transfer.balance = bank_account_origin->balance;
+    user_reply->value.transfer.balance = bank_acc_orig->balance;
     user_reply->length += sizeof(rep_transfer_t);
     user_reply->value.header.ret_code = RC_OK;
 
     return 0;
 }
 
-void shutdown(tlv_reply_t *user_reply)
-{
+void shutdown(tlv_reply_t *user_reply) {
     int value = 1;
     sem_getvalue(&b_off, &value);
 
@@ -227,27 +202,4 @@ void shutdown(tlv_reply_t *user_reply)
     user_reply->value.shutdown.active_offices = number_threads - value;
     user_reply->length += sizeof(rep_shutdown_t);
     user_reply->value.header.ret_code = RC_OK;
-}
-
-int log_in(dataBase_t *db, uint32_t account_id, char password[MAX_PASSWORD_LEN + 1])
-{
-    bank_account_t acc;
-    char hash[HASH_LEN + 1];
-
-    for (int i = 0; i < db->size; i++)
-    {
-        acc = db->dataBaseArray[i];
-
-        if (acc.account_id == account_id)
-        {
-            getHash(acc.salt, password, hash);
-
-            if (strcmp(acc.hash, hash) == 0)
-                return 0;
-            else
-                return 1;
-        }
-    }
-
-    return 0;
 }

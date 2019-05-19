@@ -19,22 +19,20 @@
 sem_t n_req;
 sem_t b_off;
 pthread_mutex_t q_mutex = PTHREAD_MUTEX_INITIALIZER;
-pthread_mutex_t db_mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t db_mutex[MAX_BANK_ACCOUNTS];
 queue_t queue;
 dataBase_t db;
 int number_threads = 0;
 
-void server_init(char *password, int number_threads, pthread_t thread_array[], bank_account_t *acc, int *fd_log, int *fd_srv);
+int server_init(char *password, int number_threads, pthread_t thread_array[], bank_account_t *acc, int *fd_log, int *fd_srv);
 void server_main_loop(int fd_log, int fd_srv);
 
 // Server Program
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
     // ./server <box offices> <password>
-    if (argc != 3)
-    {
+    if (argc != 3) {
         printf("./server <box offices> <password>\n");
-        return RC_OTHER;
+        return 1;
     }
 
     number_threads = strtol(argv[1], NULL, 10);
@@ -43,22 +41,18 @@ int main(int argc, char *argv[])
     int fd_log;
     int fd_srv;
 
-    if (number_threads <= 0 || number_threads > MAX_BANK_OFFICES)
-        return RC_OTHER;
+    if (number_threads <= 0 || number_threads > MAX_BANK_OFFICES) return 1;
 
-    //Verify admin passord
-    if (strlen(argv[2]) > MAX_PASSWORD_LEN + 1)
-    {
+    if (strlen(argv[2]) > MAX_PASSWORD_LEN + 1) {
         printf("Password too long\n");
-        return RC_OTHER;
+        return 1;
     }
-    else if (strlen(argv[2]) < MIN_PASSWORD_LEN)
-    {
+    else if (strlen(argv[2]) < MIN_PASSWORD_LEN) {
         printf("Password too short\n");
-        return RC_OTHER;
+        return 1;
     }
 
-    server_init(argv[2], number_threads, thread_array, &account, &fd_log, &fd_srv);
+    if(server_init(argv[2], number_threads, thread_array, &account, &fd_log, &fd_srv))  return 2;
 
     server_main_loop(fd_log, fd_srv);
 
@@ -90,38 +84,36 @@ int main(int argc, char *argv[])
     return 0;
 }
 
-void server_init(char *password, int number_threads, pthread_t thread_array[], bank_account_t *account, int *fd_log, int *fd_srv)
-{
-    if ((*fd_log = open(SERVER_LOGFILE, O_WRONLY | O_APPEND | O_CREAT, 0777)) < 0)
-    {
+int server_init(char *password, int number_threads, pthread_t thread_array[], bank_account_t *account, int *fd_log, int *fd_srv) {
+    if ((*fd_log = open(SERVER_LOGFILE, O_WRONLY | O_APPEND | O_CREAT, 0777)) < 0) {
         perror("server_init");
-        return;
+        return 1;
     }
 
-    if (mkfifo(SERVER_FIFO_PATH, 0666) < 0)
-    {
+    if (mkfifo(SERVER_FIFO_PATH, 0666) < 0) {
         perror("server_init");
+        return 1;
     }
 
-    if ((*fd_srv = open(SERVER_FIFO_PATH, O_RDONLY)) < 0)
-    {
+    if ((*fd_srv = open(SERVER_FIFO_PATH, O_RDONLY)) < 0) {
         perror("server_init");
-        return;
+        return 1;
     }
 
     sem_init(&n_req, 0, 0);
     sem_init(&b_off, 0, number_threads);
 
     queueInitialize(&queue);
-
-    if (initializeDataBase(&db))
-        return;
+    init_database(&db)
 
     createAccount(account, password, 0, 0);
-    addAccount(*account, &db);
+    if(add_account(*account, &db))  return 2;
 
     for (int i = 0; i < number_threads; i++)
         pthread_create(&thread_array[i], NULL, box_office, fd_log);
+        
+    for (int i = 0; i < MAX_BANK_ACCOUNTS; i++)
+        db_mutex[i] = PTHREAD_MUTEX_INITIALIZER;
 }
 
 void server_main_loop(int fd_log, int fd_srv)

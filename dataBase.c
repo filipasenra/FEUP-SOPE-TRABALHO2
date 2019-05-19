@@ -1,59 +1,37 @@
 #include "dataBase.h"
 
-int initializeDataBase(dataBase_t *dataBase)
-{
-    dataBase->size = 20;
+void init_database(dataBase_t *dataBase) { dataBase->last_element = -1; }
 
-    if ((dataBase->dataBaseArray =
-             calloc(sizeof(bank_account_t), dataBase->size)) == NULL)
-        return RC_OTHER;
+int add_account(bank_account_t bank_account, dataBase_t *dataBase) {
+    if (dataBase->last_element == MAX_BANK_ACCOUNTS) return 1;
 
-    dataBase->last_element = -1;
-
-    return RC_OK;
-}
-
-int addAccount(bank_account_t bank_account, dataBase_t *dataBase)
-{
     dataBase->last_element++;
-
-    if (dataBase->size <= dataBase->last_element)
-    {
-        if ((dataBase->dataBaseArray = realloc(dataBase->dataBaseArray, dataBase->size + 20)) == NULL)
-            return RC_OTHER;
-    }
-
     dataBase->dataBaseArray[dataBase->last_element] = bank_account;
-
-    return RC_OK;
-}
-
-bank_account_t * accountExist(int account_id, dataBase_t *dataBase)
-{
-    for (int i = 0; i < dataBase->size; i++)
-    {
-        bank_account_t acc = dataBase->dataBaseArray[i];
-        if (acc.account_id == account_id)
-        {
-            return &dataBase->dataBaseArray[i];
-        }
-    }
-
-    return NULL;
-}
-
-int freeDataBase(dataBase_t *dataBase){
-
-    free(dataBase->dataBaseArray);
 
     return 0;
 }
 
-int repeatedAccount(uint32_t account_id, dataBase_t dataBase) {
-    for (int i = 0; i < dataBase.size; i++) {
-        if (account_id == dataBase.dataBaseArray[i].account_id)
-            return RC_ID_IN_USE;
+int get_account(int account_id, dataBase_t *dataBase) {
+    for (int i = 0; i <= dataBase->last_element; i++) {
+        bank_account_t acc = dataBase->dataBaseArray[i];
+        if (acc.account_id == account_id) {
+            return i;
+        }
     }
 
-    return RC_OK;
+    return -1;
+}
+
+int log_in(dataBase_t *db, uint32_t account_id, char password[MAX_PASSWORD_LEN + 1]) {
+    int index;
+    if ((index = get_account(account_id, db)) == -1) return -1;
+
+    bank_account_t acc = db->dataBaseArray[index];
+    char hash[HASH_LEN + 1];
+    getHash(acc.salt, password, hash);
+
+    if (strcmp(acc.hash, hash) == 0) return index;
+    else return -1;
+
+    return -1;
 }
