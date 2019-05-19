@@ -1,0 +1,6 @@
+E - 06536 - [ 62 bytes] 06536 (0000, "password")             [    0 ms] CREATE   0001          5€ "password"
+E - 06558 - [ 62 bytes] 06558 (0000, "password")             [    0 ms] CREATE   0002         10€ "password"
+E - 06575 - [ 41 bytes] 06575 (0002, "password")             [    0 ms] TRANSFER 0001          5€
+E - 06595 - [ 33 bytes] 06595 (0001, "password")             [    0 ms] BALANCE 
+E - 06610 - [ 33 bytes] 06610 (0002, "password")             [    0 ms] BALANCE 
+E - 06626 - [ 33 bytes] 06626 (0000, "password")             [    0 ms] SHUTDOWN

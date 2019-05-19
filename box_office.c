@@ -203,7 +203,6 @@ int transfer(tlv_request_t user_request, tlv_reply_t *user_reply, int fd, int de
     bank_acc_dest->balance += amount;
 
     pthread_mutex_unlock(&(db_mutex[index]));
-    printf("Mutex unlock %d\n", index);
     logSyncMech(fd, pthread_self(), SYNC_OP_MUTEX_UNLOCK, SYNC_ROLE_ACCOUNT, user_request.value.transfer.account_id);
 
     user_reply->value.transfer.balance = bank_acc_orig->balance;
