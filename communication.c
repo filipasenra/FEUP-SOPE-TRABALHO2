@@ -1,7 +1,7 @@
 #include "communication.h"
 
 int send_request(tlv_request_t *user_request)
-{
+{       
     int fdr;
     if ((fdr = open(SERVER_FIFO_PATH, O_WRONLY)) < 0)
     {
