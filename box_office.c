@@ -105,10 +105,11 @@ void *box_office(void *arg)
 
         if (send_reply(&request, &reply) != RC_OK)
         {
-            reply.value.header.ret_code = RC_USR_DOWN; 
+            reply.value.header.ret_code = RC_USR_DOWN;
             logReply(STDOUT_FILENO, pthread_self(), &reply);
-            logReply(*(int *)arg, pthread_self(), &reply);
         }
+
+        logReply(*(int *)arg, pthread_self(), &reply);
         sem_post(&b_off);
     }
 
