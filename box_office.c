@@ -170,7 +170,6 @@ int transfer(tlv_request_t user_request, tlv_reply_t *user_reply, int fd, int de
 
     if (index == -1)
     {
-        user_reply->value.header.account_id = user_request.value.header.account_id;
         user_reply->value.header.ret_code = RC_ID_NOT_FOUND;
         return RC_ID_NOT_FOUND;
     }
