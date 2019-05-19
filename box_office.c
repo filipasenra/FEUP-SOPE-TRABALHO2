@@ -10,6 +10,9 @@ void *box_office(void *arg)
     while (1)
     {
         sem_wait(&n_req);
+        int value = -1;
+        sem_getvalue(&b_off, &value);
+        logSyncMechSem(*(int*)arg, getpid(), SYNC_OP_SEM_WAIT, SYNC_ROLE_CONSUMER, request.value.header.account_id, value);
 
         pthread_mutex_lock(&q_mutex);
         logSyncMech(*(int *)arg, pthread_self(), SYNC_OP_MUTEX_LOCK, SYNC_ROLE_CONSUMER, request.value.header.account_id);
@@ -110,7 +113,10 @@ void *box_office(void *arg)
         }
 
         logReply(*(int *)arg, pthread_self(), &reply);
+
         sem_post(&b_off);
+        sem_getvalue(&b_off, &value);
+        logSyncMechSem(*(int*)arg, getpid(), SYNC_OP_SEM_POST, SYNC_ROLE_CONSUMER, request.value.header.account_id, value);
     }
 
     return NULL;
@@ -164,6 +170,7 @@ int transfer(tlv_request_t user_request, tlv_reply_t *user_reply, int fd, int de
 
     if (index == -1)
     {
+        user_reply->value.header.account_id = user_request.value.header.account_id;
         user_reply->value.header.ret_code = RC_ID_NOT_FOUND;
         return RC_ID_NOT_FOUND;
     }
@@ -177,7 +184,6 @@ int transfer(tlv_request_t user_request, tlv_reply_t *user_reply, int fd, int de
     bank_account_t *bank_acc_orig = &(db.dataBaseArray[index_header]);
 
     int amount = user_request.value.transfer.amount;
-
 
     user_reply->value.transfer.balance = bank_acc_orig->balance;
     user_reply->length += sizeof(rep_transfer_t);
