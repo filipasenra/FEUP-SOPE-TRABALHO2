@@ -22,6 +22,7 @@ extern dataBase_t db;
 extern sem_t n_req;
 extern sem_t b_off;
 extern int number_threads;
+extern pthread_t *thread_array;
 
 /**
  * @brief Processes the next request on the queue 
@@ -43,7 +44,7 @@ void *box_office(void *arg);
  * @return returns zero upon sucess, non-zero otherwise
  *  
 */
-int create_account(bank_account_t *account, char password[], int accound_id, int balance, tlv_reply_t *reply);
+int create_account(bank_account_t *account, char password[], int accound_id, int balance, tlv_reply_t *user_reply, int fd);
 
 /**
  * @brief Checks the balance of an account

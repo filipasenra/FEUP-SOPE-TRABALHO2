@@ -25,12 +25,13 @@ dataBase_t db; ///< Data Base with the accounts of the bank
 
 int number_threads = 0; ///< Number of threads
 
+pthread_t * thread_array; ///< Pointer to array with threads ids
 
 // Server Program
 int main(int argc, char *argv[])
 {
     number_threads = strtol(argv[1], NULL, 10);
-    pthread_t thread_array[number_threads];
+    thread_array = malloc(sizeof(pthread_t)*number_threads);
     bank_account_t account;
     int fd_log;
     int fd_srv;
@@ -44,6 +45,7 @@ int main(int argc, char *argv[])
     server_main_loop(fd_log, fd_srv);
 
     closingServer(fd_log, thread_array);
+    free(thread_array);
 
     return 0;
 }

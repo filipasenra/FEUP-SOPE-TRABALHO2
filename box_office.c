@@ -1,35 +1,44 @@
 #include "box_office.h"
 
+int n_array = -1;
+
 void *box_office(void *arg)
 {
     tlv_request_t request;
     tlv_reply_t reply;
 
-    logBankOfficeOpen(*(int *)arg, getpid(), pthread_self());
+    for (int n = 0; n < number_threads; n++)
+    {
+        if (thread_array[n] == pthread_self())
+        {
+            n_array = n + 1;
+            break;
+        }
+    }
 
     while (1)
     {
         sem_wait(&n_req);
         int value = -1;
         sem_getvalue(&b_off, &value);
-        logSyncMechSem(*(int*)arg, getpid(), SYNC_OP_SEM_WAIT, SYNC_ROLE_CONSUMER, request.value.header.account_id, value);
+        logSyncMechSem(*(int *)arg, n_array, SYNC_OP_SEM_WAIT, SYNC_ROLE_CONSUMER, request.value.header.account_id, value);
 
         pthread_mutex_lock(&q_mutex);
-        logSyncMech(*(int *)arg, pthread_self(), SYNC_OP_MUTEX_LOCK, SYNC_ROLE_CONSUMER, request.value.header.account_id);
+        logSyncMech(*(int *)arg, n_array, SYNC_OP_MUTEX_LOCK, SYNC_ROLE_CONSUMER, request.value.header.account_id);
 
         request = front(queue); // Gets the request that arrived first
 
         pop(&queue); // Updates the queue and 'frees' the space ocupided by the request picked up by this thread
 
         pthread_mutex_unlock(&q_mutex);
-        logSyncMech(*(int *)arg, pthread_self(), SYNC_OP_MUTEX_UNLOCK, SYNC_ROLE_CONSUMER, request.value.header.account_id);
+        logSyncMech(*(int *)arg, n_array, SYNC_OP_MUTEX_UNLOCK, SYNC_ROLE_CONSUMER, request.value.header.account_id);
 
         // Handles the request
         reply.value.header.account_id = request.value.header.account_id;
         reply.value.header.ret_code = RC_OK;
         reply.length = sizeof(rep_header_t);
 
-        logSyncDelay(*(int *)arg, pthread_self(), request.value.header.account_id, request.value.header.op_delay_ms * 1000);
+        logSyncDelay(*(int *)arg, n_array, request.value.header.account_id, request.value.header.op_delay_ms * 1000);
         usleep(request.value.header.op_delay_ms * 1000);
 
         int index;
@@ -38,7 +47,7 @@ void *box_office(void *arg)
         {
 
             pthread_mutex_lock(&db_mutex[index]);
-            logSyncMech(*(int *)arg, pthread_self(), SYNC_OP_MUTEX_LOCK, SYNC_ROLE_ACCOUNT, request.value.header.account_id);
+            logSyncMech(*(int *)arg, n_array, SYNC_OP_MUTEX_LOCK, SYNC_ROLE_ACCOUNT, request.value.header.account_id);
 
             int op = (int)request.type;
             bank_account_t acc;
@@ -57,7 +66,7 @@ void *box_office(void *arg)
                     break;
                 }
 
-                create_account(&acc, request.value.create.password, request.value.create.account_id, request.value.create.balance, &reply);
+                create_account(&acc, request.value.create.password, request.value.create.account_id, request.value.create.balance, &reply, *(int *)arg);
 
                 if (add_account(acc, &db))
                 {
@@ -99,7 +108,7 @@ void *box_office(void *arg)
             }
 
             pthread_mutex_unlock(&db_mutex[index]);
-            logSyncMech(*(int *)arg, pthread_self(), SYNC_OP_MUTEX_UNLOCK, SYNC_ROLE_ACCOUNT, request.value.header.account_id);
+            logSyncMech(*(int *)arg, n_array, SYNC_OP_MUTEX_UNLOCK, SYNC_ROLE_ACCOUNT, request.value.header.account_id);
         }
         else
         {
@@ -109,21 +118,21 @@ void *box_office(void *arg)
         if (send_reply(request.value.header.pid, &reply) != RC_OK)
         {
             reply.value.header.ret_code = RC_USR_DOWN;
-            logReply(STDOUT_FILENO, pthread_self(), &reply);
+            logReply(STDOUT_FILENO, n_array, &reply);
         }
 
-        logReply(*(int *)arg, pthread_self(), &reply);
+        logReply(*(int *)arg, n_array, &reply);
 
         sem_post(&b_off);
         sem_getvalue(&b_off, &value);
-        logSyncMechSem(*(int*)arg, getpid(), SYNC_OP_SEM_POST, SYNC_ROLE_CONSUMER, request.value.header.account_id, value);
+        logSyncMechSem(*(int *)arg, n_array, SYNC_OP_SEM_POST, SYNC_ROLE_CONSUMER, request.value.header.account_id, value);
     }
 
     return NULL;
 }
 
 int create_account(bank_account_t *account, char password[], int accound_id,
-                   int balance, tlv_reply_t *user_reply)
+                   int balance, tlv_reply_t *user_reply, int fd)
 {
     account->account_id = accound_id;
     account->balance = balance;
@@ -134,8 +143,7 @@ int create_account(bank_account_t *account, char password[], int accound_id,
     user_reply->type = OP_CREATE_ACCOUNT;
     user_reply->value.header.ret_code = RC_OK;
 
-    int fd = open(SERVER_LOGFILE, O_WRONLY | O_APPEND | O_CREAT, 0777);
-    logAccountCreation(fd, pthread_self(), account);
+    logAccountCreation(fd, n_array, account);
 
     close(fd);
 
@@ -163,7 +171,7 @@ int transfer(tlv_request_t user_request, tlv_reply_t *user_reply, int fd, int de
 {
     user_reply->type = OP_TRANSFER;
 
-    logSyncDelay(fd, pthread_self(), user_request.value.transfer.account_id, delay);
+    logSyncDelay(fd, n_array, user_request.value.transfer.account_id, delay);
     usleep(delay);
 
     int index = get_account(user_request.value.transfer.account_id, &db);
@@ -175,7 +183,7 @@ int transfer(tlv_request_t user_request, tlv_reply_t *user_reply, int fd, int de
     }
 
     pthread_mutex_lock(&(db_mutex[index]));
-    logSyncMech(fd, pthread_self(), SYNC_OP_MUTEX_LOCK, SYNC_ROLE_ACCOUNT, user_request.value.transfer.account_id);
+    logSyncMech(fd, n_array, SYNC_OP_MUTEX_LOCK, SYNC_ROLE_ACCOUNT, user_request.value.transfer.account_id);
 
     bank_account_t *bank_acc_dest = &(db.dataBaseArray[index]);
 
@@ -206,7 +214,7 @@ int transfer(tlv_request_t user_request, tlv_reply_t *user_reply, int fd, int de
     bank_acc_dest->balance += amount;
 
     pthread_mutex_unlock(&(db_mutex[index]));
-    logSyncMech(fd, pthread_self(), SYNC_OP_MUTEX_UNLOCK, SYNC_ROLE_ACCOUNT, user_request.value.transfer.account_id);
+    logSyncMech(fd, n_array, SYNC_OP_MUTEX_UNLOCK, SYNC_ROLE_ACCOUNT, user_request.value.transfer.account_id);
 
     user_reply->value.transfer.balance = bank_acc_orig->balance;
     user_reply->value.header.ret_code = RC_OK;

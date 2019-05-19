@@ -77,9 +77,6 @@ int createAccount(bank_account_t *account, char password[], int accound_id, int 
 
     getHash(account->salt, password, account->hash);
 
-    int fd = open(SERVER_LOGFILE, O_WRONLY | O_APPEND | O_CREAT, 0777);
-    logAccountCreation(fd, getpid(), account);
-
     close(fd);
 
     return 0;

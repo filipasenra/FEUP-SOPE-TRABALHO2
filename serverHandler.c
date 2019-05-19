@@ -48,7 +48,10 @@ int server_init(char *password, int number_threads, pthread_t thread_array[], ba
     }
 
     sem_init(&n_req, 0, 0);
+    logSyncMechSem(*fd_log, 0, SYNC_OP_SEM_INIT, SYNC_ROLE_PRODUCER, 0, number_threads);
+
     sem_init(&b_off, 0, number_threads);
+    logSyncMechSem(*fd_log, 0, SYNC_OP_SEM_INIT, SYNC_ROLE_PRODUCER, 0, number_threads);
 
     queueInitialize(&queue);
     init_database(&db);
@@ -57,13 +60,20 @@ int server_init(char *password, int number_threads, pthread_t thread_array[], ba
     if (add_account(*account, &db))
         return 2;
 
+    logAccountCreation(*fd_log, 0, account);
+
     for (int i = 0; i < MAX_BANK_ACCOUNTS; i++)
     {
         pthread_mutex_init(&db_mutex[i], NULL);
     }
 
     for (int i = 0; i < number_threads; i++)
+    {
         pthread_create(&thread_array[i], NULL, box_office, fd_log);
+        logBankOfficeOpen(*fd_log, 0, thread_array[i]);
+    }
+
+    fsync(*fd_log);
 
     return 0;
 }
@@ -81,20 +91,20 @@ void server_main_loop(int fd_log, int fd_srv)
         if (request.length)
         {
             pthread_mutex_lock(&q_mutex);
-            logSyncMech(fd_log, getpid(), SYNC_OP_MUTEX_LOCK, SYNC_ROLE_PRODUCER, request.value.header.account_id);
+            logSyncMech(fd_log, 0, SYNC_OP_MUTEX_LOCK, SYNC_ROLE_PRODUCER, request.value.header.account_id);
 
             sem_wait(&b_off);
             sem_getvalue(&b_off, &value);
-            logSyncMechSem(fd_log, getpid(), SYNC_OP_SEM_WAIT, SYNC_ROLE_PRODUCER, request.value.header.account_id, value);
+            logSyncMechSem(fd_log, 0, SYNC_OP_SEM_WAIT, SYNC_ROLE_PRODUCER, request.value.header.account_id, value);
 
             push(&queue, request);
 
             sem_post(&n_req);
             sem_getvalue(&n_req, &value);
-            logSyncMechSem(fd_log, getpid(), SYNC_OP_SEM_POST, SYNC_ROLE_PRODUCER, request.value.header.account_id, value);
+            logSyncMechSem(fd_log, 0, SYNC_OP_SEM_POST, SYNC_ROLE_PRODUCER, request.value.header.account_id, value);
 
             pthread_mutex_unlock(&q_mutex);
-            logSyncMech(fd_log, getpid(), SYNC_OP_MUTEX_UNLOCK, SYNC_ROLE_PRODUCER, request.value.header.account_id);
+            logSyncMech(fd_log, 0, SYNC_OP_MUTEX_UNLOCK, SYNC_ROLE_PRODUCER, request.value.header.account_id);
 
             request.length = 0;
 
@@ -102,7 +112,7 @@ void server_main_loop(int fd_log, int fd_srv)
             {
                 if (log_in(&db, 0, request.value.header.password) == 0)
                 {
-                    logDelay(fd_log, getpid(), request.value.header.op_delay_ms * 1000);
+                    logDelay(fd_log, 0, request.value.header.op_delay_ms * 1000);
                     usleep(request.value.header.op_delay_ms * 1000);
                     fchmod(fd_srv, 0444);
                     return;
@@ -126,7 +136,7 @@ void closingServer(int fd_log, pthread_t thread_array[number_threads])
 
     for (int i = 0; i < number_threads; i++)
     {
-        logBankOfficeClose(fd_log, getpid(), thread_array[i]);
+        logBankOfficeClose(fd_log, 0, thread_array[i]);
         pthread_cancel(thread_array[i]);
     }
 
@@ -140,4 +150,3 @@ void closingServer(int fd_log, pthread_t thread_array[number_threads])
     sem_destroy(&n_req);
     sem_destroy(&b_off);
 }
-
