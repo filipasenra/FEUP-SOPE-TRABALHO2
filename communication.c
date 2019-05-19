@@ -43,8 +43,8 @@ int get_request(tlv_request_t *user_request, int fd_log, int fd_srv)
         perror("get_request");
         return RC_OTHER;
     }
-    
-    if (logRequest(fd_log, (int)getpid(), user_request) < 0)
+
+    if (logRequest(fd_log, pthread_self(), user_request) < 0)
     {
         printf("Failed to open and write into %s\n", SERVER_LOGFILE);
         return RC_OTHER;
