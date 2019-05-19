@@ -43,3 +43,87 @@ E - 04555 - [ 62 bytes] 04555 (0000, "password")             [    0 ms] CREATE  
 E - 04631 - [ 62 bytes] 04631 (0000, "password")             [    0 ms] CREATE   0002         35€ "top_secret"
 E - 04750 - [ 62 bytes] 04750 (0000, "password")             [    0 ms] CREATE   0002         35€ "top_secret"
 E - 04773 - [ 33 bytes] 04773 (0000, "password")             [    0 ms] SHUTDOWN
+E - 04818 - [ 62 bytes] 04818 (0000, "password")             [    0 ms] CREATE   0002         35€ "top_secret"
+E - 04834 - [ 62 bytes] 04834 (0000, "password")             [    0 ms] CREATE   0003         35€ "top_secret"
+E - 04899 - [ 33 bytes] 04899 (0003, "top_secret")           [25000 ms] BALANCE 
+E - 04922 - [ 33 bytes] 04922 (0002, "top_secret")           [    0 ms] BALANCE 
+E - 05015 - [ 41 bytes] 05015 (0002, "top_secret")           [10000 ms] TRANSFER 0003         10€
+E - 05028 - [ 41 bytes] 05028 (0003, "top_secret")           [    0 ms] TRANSFER 0002         10€
+E - 05057 - [ 41 bytes] 05057 (0002, "top_secret")           [    0 ms] TRANSFER 0003         10€
+E - 05079 - [ 62 bytes] 05079 (0000, "password")             [    0 ms] CREATE   0004         35€ "top_secret"
+E - 05141 - [ 62 bytes] 05141 (0000, "password")             [    0 ms] CREATE   0004         35€ "top_secret"
+E - 05157 - [ 62 bytes] 05157 (0000, "password")             [    0 ms] CREATE   0002         35€ "top_secret"
+E - 05171 - [ 62 bytes] 05171 (0000, "password")             [    0 ms] CREATE   0003         35€ "top_secret"
+E - 05184 - [ 41 bytes] 05184 (0003, "top_secret")           [    0 ms] TRANSFER 0002         10€
+E - 05199 - [ 41 bytes] 05199 (0002, "top_secret")           [ 1000 ms] TRANSFER 0003         10€
+E - 05295 - [ 62 bytes] 05295 (0000, "password")             [    0 ms] CREATE   0002         35€ "top_secret"
+E - 05311 - [ 62 bytes] 05311 (0000, "password")             [    0 ms] CREATE   0003         35€ "top_secret"
+E - 05326 - [ 41 bytes] 05326 (0002, "top_secret")           [ 1000 ms] TRANSFER 0003         10€
+E - 05410 - [ 62 bytes] 05410 (0000, "password")             [    0 ms] CREATE   0002         35€ "top_secret"
+E - 05426 - [ 62 bytes] 05426 (0000, "password")             [    0 ms] CREATE   0003         35€ "top_secret"
+E - 05440 - [ 41 bytes] 05440 (0002, "top_secret")           [    0 ms] TRANSFER 0003         10€
+E - 05453 - [ 41 bytes] 05453 (0002, "top_secret")           [ 1000 ms] TRANSFER 0003         10€
+E - 05469 - [ 41 bytes] 05469 (0003, "top_secret")           [    0 ms] TRANSFER 0002         10€
+E - 05614 - [ 33 bytes] 05614 (0000, "password")             [    0 ms] SHUTDOWN
+E - 05641 - [ 62 bytes] 05641 (0000, "password")             [    0 ms] CREATE   0002         35€ "top_secret"
+E - 05657 - [ 62 bytes] 05657 (0000, "password")             [    0 ms] CREATE   0003         35€ "top_secret"
+E - 05672 - [ 41 bytes] 05672 (0002, "top_secret")           [ 1000 ms] TRANSFER 0003         10€
+E - 05694 - [ 41 bytes] 05694 (0003, "top_secret")           [    0 ms] TRANSFER 0002         10€
+E - 05715 - [ 33 bytes] 05715 (0000, "password")             [    0 ms] SHUTDOWN
+E - 06041 - [ 62 bytes] 06041 (0000, "password")             [    0 ms] CREATE   0003         35€ "top_secret"
+E - 06057 - [ 62 bytes] 06057 (0000, "password")             [    0 ms] CREATE   0002         35€ "top_secret"
+E - 06069 - [ 41 bytes] 06069 (0003, "top_secret")           [    0 ms] TRANSFER 0002         10€
+E - 06072 - [ 41 bytes] 06072 (0002, "top_secret")           [ 1000 ms] TRANSFER 0003         10€
+E - 06176 - [ 62 bytes] 06176 (0000, "password")             [    0 ms] CREATE   0003         35€ "top_secret"
+E - 06192 - [ 62 bytes] 06192 (0000, "password")             [    0 ms] CREATE   0002         35€ "top_secret"
+E - 06196 - [ 41 bytes] 06196 (0002, "top_secret")           [ 1000 ms] TRANSFER 0003         10€
+E - 06260 - [ 41 bytes] 06260 (0002, "top_secret")           [10000 ms] TRANSFER 0003         10€
+E - 06395 - [ 62 bytes] 06395 (0000, "password")             [    0 ms] CREATE   0003         35€ "top_secret"
+E - 06414 - [ 62 bytes] 06414 (0000, "password")             [    0 ms] CREATE   0002         35€ "top_secret"
+E - 06418 - [ 41 bytes] 06418 (0002, "top_secret")           [ 1000 ms] TRANSFER 0003         10€
+E - 06447 - [ 41 bytes] 06447 (0002, "top_secret")           [ 5000 ms] TRANSFER 0003         10€
+E - 06524 - [ 62 bytes] 06524 (0000, "password")             [    0 ms] CREATE   0003         35€ "top_secret"
+E - 06541 - [ 62 bytes] 06541 (0000, "password")             [    0 ms] CREATE   0002         35€ "top_secret"
+E - 06548 - [ 41 bytes] 06548 (0002, "top_secret")           [ 1000 ms] TRANSFER 0003         10€
+E - 06558 - [ 41 bytes] 06558 (0002, "top_secret")           [ 5000 ms] TRANSFER 0003         10€
+E - 06637 - [ 62 bytes] 06637 (0000, "password")             [    0 ms] CREATE   0003         35€ "top_secret"
+E - 06653 - [ 62 bytes] 06653 (0000, "password")             [    0 ms] CREATE   0002         35€ "top_secret"
+E - 06660 - [ 41 bytes] 06660 (0002, "top_secret")           [ 1000 ms] TRANSFER 0003         10€
+E - 06671 - [ 41 bytes] 06671 (0002, "top_secret")           [ 1050 ms] TRANSFER 0003         10€
+E - 06743 - [ 62 bytes] 06743 (0000, "password")             [ 1000 ms] CREATE   0002         35€ "top_secret"
+E - 06759 - [ 62 bytes] 06759 (0000, "password")             [ 2000 ms] CREATE   0002         35€ "top_secret"
+E - 06828 - [ 62 bytes] 06828 (0000, "password")             [ 1000 ms] CREATE   0002         35€ "top_secret"
+E - 06839 - [ 62 bytes] 06839 (0000, "password")             [ 2000 ms] CREATE   0002         35€ "top_secret"
+E - 06867 - [ 41 bytes] 06867 (0002, "top_secret")           [ 1050 ms] TRANSFER 0003         10€
+E - 06880 - [ 62 bytes] 06880 (0000, "password")             [ 2000 ms] CREATE   0003         35€ "top_secret"
+E - 06903 - [ 41 bytes] 06903 (0002, "top_secret")           [ 1050 ms] TRANSFER 0003         10€
+E - 06915 - [ 41 bytes] 06915 (0002, "top_secret")           [ 3050 ms] TRANSFER 0003         10€
+E - 07011 - [ 62 bytes] 07011 (0000, "password")             [ 2000 ms] CREATE   0002         35€ "top_secret"
+E - 07030 - [ 62 bytes] 07030 (0000, "password")             [ 2000 ms] CREATE   0003         35€ "top_secret"
+E - 07043 - [ 41 bytes] 07043 (0002, "top_secret")           [ 3050 ms] TRANSFER 0003         10€
+E - 07075 - [ 41 bytes] 07075 (0002, "top_secret")           [    0 ms] TRANSFER 0003         10€
+E - 07166 - [ 62 bytes] 07166 (0000, "password")             [ 2000 ms] CREATE   0003         35€ "top_secret"
+E - 07182 - [ 62 bytes] 07182 (0000, "password")             [ 2000 ms] CREATE   0002         35€ "top_secret"
+E - 07195 - [ 41 bytes] 07195 (0002, "top_secret")           [ 3050 ms] TRANSFER 0003         10€
+E - 07207 - [ 41 bytes] 07207 (0002, "top_secret")           [    0 ms] TRANSFER 0003         10€
+E - 07353 - [ 62 bytes] 07353 (0000, "password")             [ 2000 ms] CREATE   0002         35€ "top_secret"
+E - 07371 - [ 62 bytes] 07371 (0000, "password")             [ 2000 ms] CREATE   0003         35€ "top_secret"
+E - 07384 - [ 41 bytes] 07384 (0002, "top_secret")           [ 3050 ms] TRANSFER 0003         10€
+E - 07409 - [ 41 bytes] 07409 (0002, "top_secret")           [    0 ms] TRANSFER 0003         10€
+E - 07473 - [ 62 bytes] 07473 (0000, "password")             [ 2000 ms] CREATE   0003         35€ "top_secret"
+E - 07490 - [ 62 bytes] 07490 (0000, "password")             [ 2000 ms] CREATE   0002         35€ "top_secret"
+E - 07506 - [ 41 bytes] 07506 (0002, "top_secret")           [    0 ms] TRANSFER 0003         10€
+E - 07542 - [ 33 bytes] 07542 (0000, "password")             [    0 ms] SHUTDOWN
+E - 07603 - [ 62 bytes] 07603 (0000, "password")             [ 2000 ms] CREATE   0002         35€ "top_secret"
+E - 07620 - [ 62 bytes] 07620 (0000, "password")             [ 2000 ms] CREATE   0003         35€ "top_secret"
+E - 07640 - [ 41 bytes] 07640 (0002, "top_secret")           [    0 ms] TRANSFER 0003         10€
+E - 07644 - [ 41 bytes] 07644 (0002, "top_secret")           [ 3050 ms] TRANSFER 0003         10€
+E - 02077 - [ 41 bytes] 02077 (0002, "top_secret")           [ 3050 ms] TRANSFER 0003         10€
+E - 02093 - [ 62 bytes] 02093 (0000, "password")             [ 2000 ms] CREATE   0003         35€ "top_secret"
+E - 02113 - [ 62 bytes] 02113 (0000, "password")             [ 2000 ms] CREATE   0002         35€ "top_secret"
+E - 02126 - [ 41 bytes] 02126 (0002, "top_secret")           [ 3050 ms] TRANSFER 0003         10€
+E - 02169 - [ 41 bytes] 02169 (0002, "top_secret")           [    0 ms] TRANSFER 0003         10€
+E - 02628 - [ 62 bytes] 02628 (0000, "password")             [ 2000 ms] CREATE   0002         35€ "top_secret"
+E - 02644 - [ 62 bytes] 02644 (0000, "password")             [ 2000 ms] CREATE   0003         35€ "top_secret"
+E - 02661 - [ 41 bytes] 02661 (0002, "top_secret")           [    0 ms] TRANSFER 0003         10€
+E - 02673 - [ 41 bytes] 02673 (0002, "top_secret")           [    0 ms] TRANSFER 0003         10€
