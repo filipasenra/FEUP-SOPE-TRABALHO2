@@ -104,11 +104,6 @@ int requestMessageTLV(int argc, char *argv[], tlv_request_t *user_request)
 
     // Writing Log
     int fd = open(USER_LOGFILE, O_WRONLY | O_APPEND | O_CREAT, 0777);
-    if (logRequest(fd, (int)getpid(), user_request) < 0)
-    {
-        printf("Failed to open and write into %s\n", USER_LOGFILE);
-        return RC_OTHER;
-    }
 
     close(fd);
 
