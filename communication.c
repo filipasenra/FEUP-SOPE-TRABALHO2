@@ -64,7 +64,7 @@ int send_reply(tlv_request_t *user_request, tlv_reply_t *user_reply)
     if ((fda = open(fifo_send, O_WRONLY | O_NONBLOCK)) < 0)
         return RC_OTHER;
 
-    if (write(fda, user_reply, sizeof(op_type_t) + sizeof(uint32_t) + user_request->length) <= 0)
+    if (write(fda, user_reply, sizeof(op_type_t) + sizeof(uint32_t) + user_reply->length) <= 0)
     {
         perror("send_reply");
         return RC_OTHER;
