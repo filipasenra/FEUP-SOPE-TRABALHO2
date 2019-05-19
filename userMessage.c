@@ -109,9 +109,7 @@ int requestMessageTLV(int argc, char *argv[], tlv_request_t *user_request)
         printf("Failed to open and write into %s\n", USER_LOGFILE);
         return RC_OTHER;
     }
-
-    close(fd);
-
+    
     return RC_OK;
 }
 

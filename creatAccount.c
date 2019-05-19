@@ -77,7 +77,5 @@ int createAccount(bank_account_t *account, char password[], int accound_id, int 
 
     getHash(account->salt, password, account->hash);
 
-    close(fd);
-
     return 0;
 }

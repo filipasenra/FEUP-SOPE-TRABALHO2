@@ -145,8 +145,6 @@ int create_account(bank_account_t *account, char password[], int accound_id,
 
     logAccountCreation(fd, n_array, account);
 
-    close(fd);
-
     return 0;
 }
 
