@@ -5,17 +5,16 @@ int send_request(tlv_request_t *user_request)
     int fdr;
     if ((fdr = open(SERVER_FIFO_PATH, O_WRONLY)) < 0)
     {
-        perror("send_request");
-        return RC_OTHER;
+        return RC_SRV_DOWN;
     }
 
     if (write(fdr, user_request, sizeof(op_type_t) + sizeof(uint32_t) + user_request->length) <= 0)
     {
-        perror("send_request\n");
-        return RC_OTHER;
+        return RC_SRV_DOWN;
     }
+
     if (close(fdr) != 0)
-        return RC_OTHER;
+        return RC_SRV_DOWN;
 
     return RC_OK;
 }

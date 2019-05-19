@@ -20,9 +20,22 @@ int main(int argc, char *argv[])
     if (requestMessageTLV(argc, argv, &user_request))
         return RC_OTHER;
 
+    int fd = open(USER_LOGFILE, O_WRONLY | O_APPEND | O_CREAT, 0777);
+
     // SEND REQUEST
-    if (send_request(&user_request))
+    if (send_request(&user_request) != RC_OK)
+    {
+        tlv_reply_t reply;
+        reply.type = user_request.type;
+        reply.value.header.ret_code = RC_SRV_DOWN;
+        reply.value.header.account_id = user_request.value.header.account_id;
+        reply.length = sizeof(reply.value.header);
+        
+        logReply(STDOUT_FILENO, getpid(), &reply);
+        logReply(fd, getpid(), &reply);
+
         return RC_OTHER;
+    }
 
     // START TIME
     clock_t initial = clock();
@@ -39,7 +52,10 @@ int main(int argc, char *argv[])
         if (((clock() - initial) / CLOCKS_PER_SEC) == FIFO_TIMEOUT_SECS)
         {
             pthread_cancel(t);
+            thread_arg.reply.type = user_request.type;
+            thread_arg.reply.value.header.account_id = user_request.value.header.account_id;
             thread_arg.reply.value.header.ret_code = RC_SRV_TIMEOUT;
+            thread_arg.reply.length = sizeof(thread_arg.reply.value.header);
             break;
         }
         if (thread_arg.completed)
@@ -47,7 +63,6 @@ int main(int argc, char *argv[])
     }
 
     // READ REPLY
-    int fd = open(USER_LOGFILE, O_WRONLY | O_APPEND | O_CREAT, 0777);
     logReply(STDOUT_FILENO, getpid(), &thread_arg.reply);
     logReply(fd, getpid(), &thread_arg.reply);
 
