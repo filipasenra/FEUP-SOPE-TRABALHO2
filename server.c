@@ -7,6 +7,8 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <errno.h>
+
 #include "box_office.h"
 #include "communication.h"
 #include "creatAccount.h"
@@ -14,7 +16,6 @@
 #include "queue.h"
 #include "sope.h"
 #include "types.h"
-#include <errno.h>
 
 sem_t n_req;
 sem_t b_off;
@@ -76,7 +77,6 @@ int main(int argc, char *argv[]) {
     unlink(SERVER_FIFO_PATH);
 
     pthread_mutex_destroy(&q_mutex);
-    pthread_mutex_destroy(&db_mutex);
     for (int i = 0; i < MAX_BANK_ACCOUNTS; i++) pthread_mutex_destroy(&db_mutex[i]);
     sem_destroy(&n_req);
     sem_destroy(&b_off);
@@ -109,11 +109,9 @@ int server_init(char *password, int number_threads, pthread_t thread_array[], ba
     createAccount(account, password, 0, 0);
     if(add_account(*account, &db))  return 2;
 
-    for (int i = 0; i < number_threads; i++)
-        pthread_create(&thread_array[i], NULL, box_office, fd_log);
+    for (int i = 0; i < number_threads; i++) pthread_create(&thread_array[i], NULL, box_office, fd_log);
         
-    for (int i = 0; i < MAX_BANK_ACCOUNTS; i++)
-        db_mutex[i] = PTHREAD_MUTEX_INITIALIZER;
+    for (int i = 0; i < MAX_BANK_ACCOUNTS; i++) db_mutex[i] = PTHREAD_MUTEX_INITIALIZER;
 
     return 0;
 }

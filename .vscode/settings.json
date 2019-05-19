@@ -2,6 +2,7 @@
     "files.associations": {
         "servermessage.h": "c",
         "types.h": "c",
-        "box_office.h": "c"
+        "box_office.h": "c",
+        "creataccount.h": "c"
     }
 }
