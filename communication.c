@@ -14,13 +14,6 @@ int send_request(tlv_request_t *user_request)
         perror("send_request\n");
         return RC_OTHER;
     }
-    
-    if (logRequest(fd, (int)getpid(), user_request) < 0)
-    {
-        printf("Failed to open and write into %s\n", USER_LOGFILE);
-        return RC_OTHER;
-    }
-
     if (close(fdr) != 0)
         return RC_OTHER;
 
@@ -77,12 +70,6 @@ int send_reply(tlv_request_t *user_request, tlv_reply_t *user_reply)
         return RC_OTHER;
     }
 
-    if (logReply(fd, pthread_self(), user_reply) < 0)
-    {
-        printf("Failed to open and write into %s\n", USER_LOGFILE);
-        return RC_OTHER;
-    }
-
     if (close(fda) != 0)
         return RC_OTHER;
 
@@ -117,12 +104,6 @@ void *get_reply_thread(void *arg)
     {
         perror("get_reply_thread value");
         return (void *)RC_OTHER;
-    }
-
-    if (logReply(fd, (int)getpid(), user_reply) < 0)
-    {
-        printf("Failed to open and write into %s\n", USER_LOGFILE);
-        return RC_OTHER;
     }
 
     // Closing FIFOS
