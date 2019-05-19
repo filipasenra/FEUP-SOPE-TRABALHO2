@@ -47,7 +47,11 @@ int main(int argc, char *argv[])
     }
 
     // READ REPLY
+    int fd = open(USER_LOGFILE, O_WRONLY | O_APPEND | O_CREAT, 0777);
     logReply(STDOUT_FILENO, getpid(), &thread_arg.reply);
+    logReply(fd, getpid(), &thread_arg.reply);
+
+    close(fd);
 
     return RC_OK;
 }

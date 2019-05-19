@@ -107,6 +107,7 @@ void *box_office(void *arg)
         {
             reply.value.header.ret_code = RC_USR_DOWN; 
             logReply(STDOUT_FILENO, getpid(), &reply);
+            logReply(*(int *)arg, getpid(), &reply);
         }
         sem_post(&b_off);
     }
