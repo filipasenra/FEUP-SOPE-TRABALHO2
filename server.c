@@ -60,7 +60,7 @@ int main(int argc, char *argv[])
 
     if (server_init(argv[2], number_threads, thread_array, &account, &fd_log, &fd_srv))
         return 2;
-
+        
     server_main_loop(fd_log, fd_srv);
 
     while (!isEmpty(queue))
