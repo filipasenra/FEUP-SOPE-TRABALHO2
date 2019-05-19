@@ -109,9 +109,11 @@ int server_init(char *password, int number_threads, pthread_t thread_array[], ba
     createAccount(account, password, 0, 0);
     if(add_account(*account, &db))  return 2;
 
-    for (int i = 0; i < number_threads; i++) pthread_create(&thread_array[i], NULL, box_office, fd_log);
+    for (int i = 0; i < number_threads; i++) 
+        pthread_create(&thread_array[i], NULL, box_office, fd_log);
         
-    for (int i = 0; i < MAX_BANK_ACCOUNTS; i++) db_mutex[i] = PTHREAD_MUTEX_INITIALIZER;
+    for (int i = 0; i < MAX_BANK_ACCOUNTS; i++) 
+        db_mutex[i] = PTHREAD_MUTEX_INITIALIZER;
 
     return 0;
 }

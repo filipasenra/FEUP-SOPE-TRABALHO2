@@ -2,6 +2,8 @@
 
 #include <stdlib.h>
 #include "types.h"
+#include <string.h>
+#include "creatAccount.h"
 
 typedef struct dataBase {
     bank_account_t dataBaseArray[MAX_BANK_ACCOUNTS];
