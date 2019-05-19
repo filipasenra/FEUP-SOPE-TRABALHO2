@@ -27,5 +27,5 @@ void *box_office(void *arg);
 
 int create_account(bank_account_t *account, char password[], int accound_id, int balance, tlv_reply_t *reply);
 int check_balance(bank_account_t *bank_account, tlv_reply_t *user_reply);
-int transfer(tlv_request_t user_request, tlv_reply_t *user_reply, int fd, uint32_t delay);
+int transfer(tlv_request_t user_request, tlv_reply_t *user_reply, int fd, int delay);
 void shutdown(tlv_reply_t *user_reply);
