@@ -5,6 +5,8 @@
 #include <string.h>
 #include "creatAccount.h"
 
+extern pthread_mutex_t db_mutex[MAX_BANK_ACCOUNTS];
+
 /**
  * Represents a dataBase
 */
@@ -24,14 +26,20 @@ void init_database(dataBase_t *dataBase);
  * 
  * @return Returns zero upon sucess, non-zero otherwise
 */
-int add_account(bank_account_t bank_account, dataBase_t *dataBase);
+int add_account(bank_account_t bank_account, dataBase_t *dataBase, int fd, int n_array, tlv_request_t user_request);
 
 /**
  * @brief Gets the index of the account with the account_id given
  * 
  * @return Returns index upon sucess, -1 otherwise
 */
-int get_account(int account_id, dataBase_t *dataBase);
+int get_account(int account_id, dataBase_t *dataBase, int fd, int n_array, tlv_request_t user_request);
+
+/**
+ * @brief Unlocks mutex of given account
+ * @return Returns index
+*/
+int unlock_account(int index, int fd, int n_array, tlv_request_t user_request){
 
 
 /**
