@@ -73,3 +73,6 @@ int transfer(tlv_request_t user_request, tlv_reply_t *user_reply, int fd, int de
  * 
 */
 void shutdown(tlv_reply_t *user_reply);
+
+void lock_account(int index, int fd, tlv_request_t user_request);
+void unlock_account(int index, int fd, tlv_request_t user_request);
