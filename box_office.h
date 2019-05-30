@@ -64,7 +64,7 @@ int check_balance(bank_account_t *bank_account, tlv_reply_t *user_reply);
  * 
  *  @return returns zero upon sucess, non-zero otherwise
  */
-int transfer(tlv_request_t user_request, tlv_reply_t *user_reply, int fd, int delay);
+int transfer(int index_header,tlv_request_t user_request, tlv_reply_t *user_reply, int fd, int delay);
 
 /**
  * @brief Handles a shutdown

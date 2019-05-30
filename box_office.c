@@ -43,14 +43,14 @@ void *box_office(void *arg) {
         int index;
 
         if ((index = log_in(&db, request.value.header.account_id, request.value.header.password)) != -1) {
-            lock_account(index, fd_log, request)
-
-            int op = (int)request.type;
+            lock_account(index, fd_log, request);
+            int op;
+            op = (int)request.type;
             bank_account_t acc;
+            int new_index;
 
             switch (op) {
                 case 0:  // CREATE
-                    int new_index;
                     if (request.value.header.account_id != 0) { reply.value.header.ret_code = RC_OP_NALLOW; break; }
                     if ((new_index = get_account(request.value.create.account_id, &db)) != -1) { reply.value.header.ret_code = RC_ID_IN_USE; break; }
                     lock_account(new_index, fd_log, request);
@@ -65,7 +65,7 @@ void *box_office(void *arg) {
                     break;
                 case 2:  // TRANSFER
                     if (request.value.header.account_id == 0) { reply.value.header.ret_code = RC_OP_NALLOW; break; }
-                    transfer(request, &reply, fd_log, request.value.header.op_delay_ms * 1000);
+                    transfer(index, request, &reply, fd_log, request.value.header.op_delay_ms * 1000);
                     break;
                 case 3:  // SHUTDOWN
                     if (request.value.header.account_id != 0) { reply.value.header.ret_code = RC_OP_NALLOW; break; }
@@ -73,7 +73,7 @@ void *box_office(void *arg) {
                     break;
             }
 
-            unlock_account(index, fd, request);
+            unlock_account(index, fd_log, request);
         } else { reply.value.header.ret_code = RC_LOGIN_FAIL; }
 
         if (send_reply(request.value.header.pid, &reply) != RC_OK) { reply.value.header.ret_code = RC_USR_DOWN; logReply(STDOUT_FILENO, n_array, &reply); }
