@@ -37,6 +37,7 @@ void *box_office(void *arg)
         reply.value.header.account_id = request.value.header.account_id;
         reply.value.header.ret_code = RC_OK;
         reply.length = sizeof(rep_header_t);
+        reply.type = request.type;
 
         logSyncDelay(*(int *)arg, n_array, request.value.header.account_id, request.value.header.op_delay_ms * 1000);
         usleep(request.value.header.op_delay_ms * 1000);
