@@ -10,5 +10,5 @@ user 0 "ultra_top_secret" 1000 0 "2 3 a_secret" &	# admin creates acc2
 user 1 "top_secret" 5670 2 "2 10" &	# acc1 transfers to acc2
 user 2 "a_secret" 8900 1 "" &	# account 2 gets balance
 user 1 "top_secret" 5000 3 "" &	# acc1 fails bank shutdown
-#user 0 "ultra_top_secret" 5000 3 "" &	# admin shuts bank down
+user 0 "ultra_top_secret" 5000 3 "" &	# admin shuts bank down
 user 1 "top_secret" 5000 1 ""	# too late a customer!

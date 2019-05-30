@@ -170,9 +170,6 @@ int transfer(tlv_request_t user_request, tlv_reply_t *user_reply, int fd, int de
 {
     user_reply->type = OP_TRANSFER;
 
-    logSyncDelay(fd, n_array, user_request.value.transfer.account_id, delay);
-    usleep(delay);
-
     int index = get_account(user_request.value.transfer.account_id, &db);
 
     if (index == -1)
@@ -183,6 +180,8 @@ int transfer(tlv_request_t user_request, tlv_reply_t *user_reply, int fd, int de
 
     pthread_mutex_lock(&(db_mutex[index]));
     logSyncMech(fd, n_array, SYNC_OP_MUTEX_LOCK, SYNC_ROLE_ACCOUNT, user_request.value.transfer.account_id);
+    logSyncDelay(fd, n_array, user_request.value.transfer.account_id, delay);
+    usleep(delay);
 
     bank_account_t *bank_acc_dest = &(db.dataBaseArray[index]);
 
