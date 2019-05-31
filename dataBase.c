@@ -17,13 +17,9 @@ int add_account(bank_account_t bank_account, dataBase_t *dataBase)
 
 int get_account(int account_id, dataBase_t *dataBase)
 {
-    for (int i = 0; i <= dataBase->last_element; i++)
-    {
+    for (int i = 0; i <= dataBase->last_element; i++) {
         bank_account_t acc = dataBase->dataBaseArray[i];
-        if (acc.account_id == account_id)
-        {
-            return i;
-        }
+        if (acc.account_id == account_id) return i;
     }
 
     return -1;

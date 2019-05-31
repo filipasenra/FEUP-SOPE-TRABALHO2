@@ -3,6 +3,7 @@
 #include "box_office.h"
 
 int server_fifo;
+int server_stdw;
 
 int checkArg(int argc, char *argv[])
 {
@@ -60,18 +61,15 @@ int server_init(char *password, int number_threads, pthread_t thread_array[], ba
     init_database(&db);
 
     createAccount(account, password, 0, 0);
-    if (add_account(*account, &db))
-        return 2;
+    if (add_account(*account, &db)) return 2;
 
     logAccountCreation(*fd_log, 0, account);
 
-    for (int i = 0; i < MAX_BANK_ACCOUNTS; i++)
-    {
+    for (int i = 0; i < MAX_BANK_ACCOUNTS; i++) { 
         pthread_mutex_init(&db_mutex[i], NULL);
     }
 
-    for (int i = 0; i < number_threads; i++)
-    {
+    for (int i = 0; i < number_threads; i++) {
         pthread_create(&thread_array[i], NULL, box_office, fd_log);
         logBankOfficeOpen(*fd_log, 0, thread_array[i]);
     }
@@ -86,13 +84,10 @@ void server_main_loop(int fd_log, int fd_srv)
     tlv_request_t request;
     int value = 0;
 
-    while (1)
-    {
-        if (get_request(&request, fd_log, fd_srv))
-            return;
+    while (1){
+        if (get_request(&request, fd_log, fd_srv)) return;
 
-        if (request.length)
-        {
+        if (request.length) {
         	printf("OLA\n");
             sem_wait(&b_off);
         	printf("OLA\n");
@@ -112,6 +107,8 @@ void server_main_loop(int fd_log, int fd_srv)
             logSyncMechSem(fd_log, 0, SYNC_OP_SEM_POST, SYNC_ROLE_PRODUCER, request.value.header.account_id, value);
 
             request.length = 0;
+        } else if(server_stdw && isEmpty(&queue)){
+            return NULL;
         }
     }
 }
@@ -119,8 +116,7 @@ void server_main_loop(int fd_log, int fd_srv)
 void closingServer(int fd_log, pthread_t thread_array[number_threads])
 {
 
-    while (!isEmpty(queue))
-        ;
+    while (!isEmpty(queue));
 
     int value = -1;
     while (value < number_threads)
