@@ -37,13 +37,13 @@ void *box_office(void *arg) {
         reply.length = sizeof(rep_header_t);
         reply.type = request.type;
 
-        logSyncDelay(fd_log, n_array, request.value.header.account_id, request.value.header.op_delay_ms * 1000);
-        usleep(request.value.header.op_delay_ms * 1000);
-
         int index;
+        printf("REQUEST");
 
         if ((index = log_in(&db, request.value.header.account_id, request.value.header.password)) != -1) {
             lock_account(index, fd_log, request);
+            logSyncDelay(fd_log, n_array, request.value.header.account_id, request.value.header.op_delay_ms * 1000);
+            usleep(request.value.header.op_delay_ms * 1000);
             int op;
             op = (int)request.type;
             bank_account_t acc;
@@ -53,6 +53,7 @@ void *box_office(void *arg) {
                 case 0:  // CREATE
                     if (request.value.header.account_id != 0) { reply.value.header.ret_code = RC_OP_NALLOW; break; }
                     if ((new_index = get_account(request.value.create.account_id, &db)) != -1) { reply.value.header.ret_code = RC_ID_IN_USE; break; }
+                    printf("CREATE");
                     lock_account(new_index, fd_log, request);
                     create_account(&acc, request.value.create.password, request.value.create.account_id, request.value.create.balance, &reply, fd_log);
                     if (add_account(acc, &db)) { reply.value.header.ret_code = RC_OTHER; break; }
@@ -60,15 +61,18 @@ void *box_office(void *arg) {
                     break;
                 case 1:  // CHECK BALANCE
                     if (request.value.header.account_id == 0) { reply.value.header.ret_code = RC_OP_NALLOW; break; }
+                    printf("BALANCE");
                     acc = db.dataBaseArray[index];
                     check_balance(&acc, &reply);
                     break;
                 case 2:  // TRANSFER
                     if (request.value.header.account_id == 0) { reply.value.header.ret_code = RC_OP_NALLOW; break; }
+                    printf("TRANSFER");
                     transfer(index, request, &reply, fd_log, request.value.header.op_delay_ms * 1000);
                     break;
                 case 3:  // SHUTDOWN
                     if (request.value.header.account_id != 0) { reply.value.header.ret_code = RC_OP_NALLOW; break; }
+                    printf("SHUTDOWN");
                     shutdown(&reply);
                     break;
             }

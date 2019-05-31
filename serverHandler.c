@@ -31,19 +31,19 @@ int server_init(char *password, int number_threads, pthread_t thread_array[], ba
 {
     if ((*fd_log = open(SERVER_LOGFILE, O_WRONLY | O_APPEND | O_CREAT, 0777)) < 0)
     {
-        perror("server_init");
+        perror("LOGFILE");
         return 1;
     }
-
+	unlink(SERVER_FIFO_PATH);
     if (mkfifo(SERVER_FIFO_PATH, 0666) < 0)
     {
-        perror("server_init");
+        perror("MKFIFO");
         return 1;
     }
 
     if ((*fd_srv = open(SERVER_FIFO_PATH, O_RDONLY)) < 0)
     {
-        perror("server_init");
+        perror("SERVERFIFO");
         return 1;
     }
 
