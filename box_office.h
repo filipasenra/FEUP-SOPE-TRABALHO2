@@ -23,6 +23,7 @@ extern sem_t n_req;
 extern sem_t b_off;
 extern int number_threads;
 extern pthread_t *thread_array;
+extern int server_fifo;
 
 /**
  * @brief Processes the next request on the queue 

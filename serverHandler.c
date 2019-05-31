@@ -2,6 +2,8 @@
 #include "sope.h"
 #include "box_office.h"
 
+int server_fifo;
+
 int checkArg(int argc, char *argv[])
 {
     if (argc != 3)
@@ -46,6 +48,7 @@ int server_init(char *password, int number_threads, pthread_t thread_array[], ba
         perror("SERVERFIFO");
         return 1;
     }
+    server_fifo = *fd_srv;
 
     sem_init(&n_req, 0, 0);
     logSyncMechSem(*fd_log, 0, SYNC_OP_SEM_INIT, SYNC_ROLE_PRODUCER, 0, number_threads);
@@ -90,34 +93,25 @@ void server_main_loop(int fd_log, int fd_srv)
 
         if (request.length)
         {
-            pthread_mutex_lock(&q_mutex);
-            logSyncMech(fd_log, 0, SYNC_OP_MUTEX_LOCK, SYNC_ROLE_PRODUCER, request.value.header.account_id);
-
+        	printf("OLA\n");
             sem_wait(&b_off);
+        	printf("OLA\n");
             sem_getvalue(&b_off, &value);
             logSyncMechSem(fd_log, 0, SYNC_OP_SEM_WAIT, SYNC_ROLE_PRODUCER, request.value.header.account_id, value);
 
+            pthread_mutex_lock(&q_mutex);
+            logSyncMech(fd_log, 0, SYNC_OP_MUTEX_LOCK, SYNC_ROLE_PRODUCER, request.value.header.account_id);
+            
             push(&queue, request);
+            
+            pthread_mutex_unlock(&q_mutex);
+            logSyncMech(fd_log, 0, SYNC_OP_MUTEX_UNLOCK, SYNC_ROLE_PRODUCER, request.value.header.account_id);
 
             sem_post(&n_req);
             sem_getvalue(&n_req, &value);
             logSyncMechSem(fd_log, 0, SYNC_OP_SEM_POST, SYNC_ROLE_PRODUCER, request.value.header.account_id, value);
 
-            pthread_mutex_unlock(&q_mutex);
-            logSyncMech(fd_log, 0, SYNC_OP_MUTEX_UNLOCK, SYNC_ROLE_PRODUCER, request.value.header.account_id);
-
             request.length = 0;
-
-            if (request.type == OP_SHUTDOWN && request.value.header.account_id == 0)
-            {
-                if (log_in(&db, 0, request.value.header.password) == 0)
-                {
-                    logDelay(fd_log, 0, request.value.header.op_delay_ms * 1000);
-                    usleep(request.value.header.op_delay_ms * 1000);
-                    fchmod(fd_srv, 0444);
-                    return;
-                }
-            }
         }
     }
 }

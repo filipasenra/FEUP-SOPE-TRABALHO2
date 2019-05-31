@@ -20,16 +20,21 @@ void *box_office(void *arg) {
         sem_getvalue(&b_off, &value);
         logSyncMechSem(fd_log, n_array, SYNC_OP_SEM_WAIT, SYNC_ROLE_CONSUMER, request.value.header.account_id, value);
 
-        pthread_mutex_lock(&q_mutex);
         logSyncMech(fd_log, n_array, SYNC_OP_MUTEX_LOCK, SYNC_ROLE_CONSUMER, request.value.header.account_id);
+        pthread_mutex_lock(&q_mutex);
 
+		if(!isEmpty(queue))
         request = front(queue);  // Gets the request that arrived first
 
         pop(&queue);  // Updates the queue and 'frees' the space ocupided by the
                       // request picked up by this thread
 
-        pthread_mutex_unlock(&q_mutex);
         logSyncMech(fd_log, n_array, SYNC_OP_MUTEX_UNLOCK, SYNC_ROLE_CONSUMER, request.value.header.account_id);
+        pthread_mutex_unlock(&q_mutex);
+        
+        sem_post(&b_off);
+        sem_getvalue(&b_off, &value);
+        logSyncMechSem(fd_log, n_array, SYNC_OP_SEM_POST, SYNC_ROLE_CONSUMER, request.value.header.account_id, value);
 
         // Handles the request
         reply.value.header.account_id = request.value.header.account_id;
@@ -38,7 +43,7 @@ void *box_office(void *arg) {
         reply.type = request.type;
 
         int index;
-
+		write(STDERR_FILENO, "REQ\n", 4);
         if ((index = log_in(&db, request.value.header.account_id, request.value.header.password)) != -1) {
             lock_account(index, fd_log, request);
             logSyncDelay(fd_log, n_array, request.value.header.account_id, request.value.header.op_delay_ms * 1000);
@@ -80,9 +85,7 @@ void *box_office(void *arg) {
 
         if (send_reply(request.value.header.pid, &reply) != RC_OK) { reply.value.header.ret_code = RC_USR_DOWN; }
         logReply(fd_log, n_array, &reply);
-        sem_post(&b_off);
-        sem_getvalue(&b_off, &value);
-        logSyncMechSem(fd_log, n_array, SYNC_OP_SEM_POST, SYNC_ROLE_CONSUMER, request.value.header.account_id, value);
+        
     }
 
     return NULL;
@@ -158,6 +161,7 @@ int transfer(int index_header, tlv_request_t user_request, tlv_reply_t *user_rep
 void shutdown(tlv_reply_t *user_reply) {
     int value = 1;
     sem_getvalue(&b_off, &value);
+    fchmod(server_fifo, 0444);
 
     user_reply->type = OP_SHUTDOWN;
     user_reply->value.shutdown.active_offices = number_threads - value;
