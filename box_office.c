@@ -15,11 +15,11 @@ void *box_office(void *arg) {
     }
 
     while (1) {
-        if(server_stdw && isEmpty(&queue)){
+        if(server_stdw && isEmpty(queue)){
             return NULL;
         }
 
-        sem_post(&n_req);
+        sem_wait(&n_req);
         int value = -1;
         sem_getvalue(&b_off, &value);
         logSyncMechSem(fd_log, n_array, SYNC_OP_SEM_WAIT, SYNC_ROLE_CONSUMER, request.value.header.account_id, value);
@@ -42,24 +42,23 @@ void *box_office(void *arg) {
         reply.type = request.type;
 
         int index;
-		write(STDERR_FILENO, "REQ\n", 4);
         if ((index = log_in(&db, request.value.header.account_id, request.value.header.password)) != -1) {
             lock_account(index, fd_log, request);
-            logSyncDelay(fd_log, n_array, request.value.header.account_id, request.value.header.op_delay_ms * 1000);
+            logSyncDelay(fd_log, n_array, request.value.header.account_id, request.value.header.op_delay_ms);
             usleep(request.value.header.op_delay_ms * 1000);
             int op = (int)request.type;
             bank_account_t acc;
-            int new_index;
+            //int new_index;
 
             switch (op) {
                 case 0:  // CREATE
                     if (request.value.header.account_id != 0) { reply.value.header.ret_code = RC_OP_NALLOW; break; }
                     if (get_account(request.value.create.account_id, &db) != -1) { reply.value.header.ret_code = RC_ID_IN_USE; break; }
-                    new_index = db.last_element;
-                    lock_account(new_index, fd_log, request);
+                    //new_index = db.last_element;
+                    //lock_account(new_index, fd_log, request);
                     create_account(&acc, request.value.create.password, request.value.create.account_id, request.value.create.balance, &reply, fd_log);
-                    if (add_account(acc, &db)) { reply.value.header.ret_code = RC_OTHER; unlock_account(new_index, fd_log, request); break; }
-                    unlock_account(new_index, fd_log, request);
+                    if (add_account(acc, &db)) { reply.value.header.ret_code = RC_OTHER; /*unlock_account(new_index, fd_log, request);*/ break; }
+                    //unlock_account(new_index, fd_log, request);
                     break;
                 case 1:  // CHECK BALANCE
                     if (request.value.header.account_id == 0) { reply.value.header.ret_code = RC_OP_NALLOW; break; }
@@ -68,14 +67,13 @@ void *box_office(void *arg) {
                     break;
                 case 2:  // TRANSFER
                     if (request.value.header.account_id == 0) { reply.value.header.ret_code = RC_OP_NALLOW; break; }
-                    transfer(index, request, &reply, fd_log, request.value.header.op_delay_ms * 1000);
+                    transfer(index, request, &reply, fd_log, request.value.header.op_delay_ms);
                     break;
                 case 3:  // SHUTDOWN
                     if (request.value.header.account_id != 0) { reply.value.header.ret_code = RC_OP_NALLOW; break; }
                     shutdown(&reply);
                     break;
             }
-                                                                                                                                                            write(STDERR_FILENO, "FINISH\n", 7);
 
             unlock_account(index, fd_log, request);
         } else { reply.value.header.ret_code = RC_LOGIN_FAIL; }
@@ -84,7 +82,7 @@ void *box_office(void *arg) {
         logReply(fd_log, n_array, &reply);
         
         logSyncMechSem(fd_log, n_array, SYNC_OP_SEM_POST, SYNC_ROLE_CONSUMER, request.value.header.account_id, value);
-        sem_wait(&b_off);
+        sem_post(&b_off);
         sem_getvalue(&b_off, &value);
     }
 
@@ -128,7 +126,7 @@ int transfer(int index_header, tlv_request_t user_request, tlv_reply_t *user_rep
     if (index == -1) { user_reply->value.header.ret_code = RC_ID_NOT_FOUND; return RC_ID_NOT_FOUND; }
     lock_account(index, fd, user_request);
     logSyncDelay(fd, n_array, user_request.value.transfer.account_id, delay);
-    usleep(delay);
+    usleep(delay * 1000);
     bank_account_t *bank_acc_dest = &(db.dataBaseArray[index]);
     bank_account_t *bank_acc_orig = &(db.dataBaseArray[index_header]);
 
@@ -163,6 +161,7 @@ void shutdown(tlv_reply_t *user_reply) {
     sem_getvalue(&b_off, &value);
     fchmod(server_fifo, 0444);
     server_stdw = 1;
+    write(STDOUT_FILENO, "srv_stdw\n", 9);
 
     user_reply->type = OP_SHUTDOWN;
     user_reply->value.shutdown.active_offices = number_threads - value;

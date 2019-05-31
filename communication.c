@@ -22,17 +22,11 @@ int send_reply(pid_t pid, tlv_reply_t *user_reply) {
     int fda;
     char *fifo_send = malloc(sizeof(USER_FIFO_PATH_PREFIX) + sizeof(pid));
     sprintf(fifo_send, "%s%d", USER_FIFO_PATH_PREFIX, pid);
-    printf("%s\n",fifo_send);
-    if ((fda = open(fifo_send, O_WRONLY)) < 0){ 
-    	write(STDOUT_FILENO, "FIFOOOPS\n", 9);
+    if ((fda = open(fifo_send, O_WRONLY)) < 0){
     	return RC_OTHER;
     }
-                                                                                                                                                            write(STDOUT_FILENO, "OPENED\n", 7);
     if (write(fda, user_reply, sizeof(op_type_t) + sizeof(uint32_t) + user_reply->length) <= 0) { perror("send_reply"); return RC_OTHER; }
-                                                                                                                                                            write(STDOUT_FILENO, " WROTE\n", 7);
     if (close(fda) != 0) return RC_OTHER;
-                                        
-    printf("%s\n",fifo_send);                                                                                                                    write(STDOUT_FILENO, "CLOSED\n", 7);
     free(fifo_send);
     return RC_OK;
 }

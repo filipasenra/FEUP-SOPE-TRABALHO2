@@ -52,7 +52,7 @@ int server_init(char *password, int number_threads, pthread_t thread_array[], ba
     server_fifo = *fd_srv;
 
     sem_init(&n_req, 0, 0);
-    logSyncMechSem(*fd_log, 0, SYNC_OP_SEM_INIT, SYNC_ROLE_PRODUCER, 0, number_threads);
+    logSyncMechSem(*fd_log, 0, SYNC_OP_SEM_INIT, SYNC_ROLE_PRODUCER, 0, 0);
 
     sem_init(&b_off, 0, number_threads);
     logSyncMechSem(*fd_log, 0, SYNC_OP_SEM_INIT, SYNC_ROLE_PRODUCER, 0, number_threads);
@@ -88,9 +88,7 @@ void server_main_loop(int fd_log, int fd_srv)
         if (get_request(&request, fd_log, fd_srv)) return;
 
         if (request.length) {
-        	printf("OLA\n");
             sem_wait(&b_off);
-        	printf("OLA\n");
             sem_getvalue(&b_off, &value);
             logSyncMechSem(fd_log, 0, SYNC_OP_SEM_WAIT, SYNC_ROLE_PRODUCER, request.value.header.account_id, value);
 
@@ -107,27 +105,19 @@ void server_main_loop(int fd_log, int fd_srv)
             logSyncMechSem(fd_log, 0, SYNC_OP_SEM_POST, SYNC_ROLE_PRODUCER, request.value.header.account_id, value);
 
             request.length = 0;
-        } else if(server_stdw && isEmpty(&queue)){
-            return NULL;
+        } else if(server_stdw && isEmpty(queue)){
+    		write(STDOUT_FILENO, "srv_stdw\n", 9);
+            return;
         }
     }
 }
 
 void closingServer(int fd_log, pthread_t thread_array[number_threads])
 {
-
-    while (!isEmpty(queue));
-
-    int value = -1;
-    while (value < number_threads)
-    {
-        sem_getvalue(&b_off, &value);
-    }
-
     for (int i = 0; i < number_threads; i++)
     {
+        pthread_join(thread_array[i], NULL);
         logBankOfficeClose(fd_log, 0, thread_array[i]);
-        pthread_cancel(thread_array[i]);
     }
 
     close(fd_log);
