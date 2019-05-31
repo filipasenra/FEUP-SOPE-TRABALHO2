@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
     // CREATE FIFO REPLY
     char *fifo_reply = malloc(sizeof(USER_FIFO_PATH_PREFIX) + sizeof(pid_t));
     sprintf(fifo_reply, "%s%d", USER_FIFO_PATH_PREFIX, getpid());
-
+    unlink(fifo_reply);
     if (mkfifo(fifo_reply, 0666))
         return RC_OTHER;
 
