@@ -3,7 +3,7 @@
 #include "box_office.h"
 
 int server_fifo;
-int server_stdw;
+int server_stdw = 0;
 
 int checkArg(int argc, char *argv[])
 {
@@ -83,9 +83,14 @@ void server_main_loop(int fd_log, int fd_srv)
 {
     tlv_request_t request;
     int value = 0;
-
+	int req_ret = 0;
+	
     while (1){
-        if (get_request(&request, fd_log, fd_srv)) return;
+        if ((req_ret = get_request(&request, fd_log, fd_srv)) > 0) return;
+        else if (req_ret == -1) {
+    		write(STDOUT_FILENO, "srv_stdw server\n", 16);
+            return;
+        }
 
         if (request.length) {
             sem_wait(&b_off);
@@ -103,10 +108,8 @@ void server_main_loop(int fd_log, int fd_srv)
             sem_post(&n_req);
             sem_getvalue(&n_req, &value);
             logSyncMechSem(fd_log, 0, SYNC_OP_SEM_POST, SYNC_ROLE_PRODUCER, request.value.header.account_id, value);
-
-            request.length = 0;
-        } else if(server_stdw && isEmpty(queue)){
-    		write(STDOUT_FILENO, "srv_stdw\n", 9);
+        } else {
+    		write(STDOUT_FILENO, "srv_stdw server\n", 16);
             return;
         }
     }

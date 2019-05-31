@@ -9,6 +9,8 @@
 #include "sope.h"
 #include "types.h"
 
+extern int server_stdw;
+
 /**
  * @brief Sends a request to the server
  * 
