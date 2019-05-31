@@ -161,7 +161,6 @@ void shutdown(tlv_reply_t *user_reply) {
     sem_getvalue(&b_off, &value);
     fchmod(server_fifo, 0444);
     server_stdw = 1;
-    write(STDOUT_FILENO, "srv_stdw\n", 9);
 
     user_reply->type = OP_SHUTDOWN;
     user_reply->value.shutdown.active_offices = number_threads - value;

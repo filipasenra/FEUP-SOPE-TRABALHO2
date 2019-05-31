@@ -12,9 +12,7 @@ int send_request(tlv_request_t *user_request) {
 
 int get_request(tlv_request_t *user_request, int fd_log, int fd_srv) {   
     int n = 0;
-    while ((n = read(fd_srv, &(user_request->type), sizeof(enum op_type))) == 0){
-    	if(server_stdw) return -1;
-    }
+    while ((n = read(fd_srv, &(user_request->type), sizeof(enum op_type))) == 0) if(server_stdw) return -1;
     if (n < 0) { perror("get_request"); return RC_OTHER; }
     if (read(fd_srv, &(user_request->length), sizeof(uint32_t)) <= 0) { perror("get_request"); return RC_OTHER; }
     if (read(fd_srv, &(user_request->value), user_request->length) <= 0) { perror("get_request"); return RC_OTHER; }
@@ -27,10 +25,7 @@ int send_reply(pid_t pid, tlv_reply_t *user_reply) {
     char *fifo_send = malloc(sizeof(USER_FIFO_PATH_PREFIX) + sizeof(pid));
     sprintf(fifo_send, "%s%d", USER_FIFO_PATH_PREFIX, pid);
     printf("%s\n",fifo_send);
-    if ((fda = open(fifo_send, O_WRONLY)) < 0){ 
-    	write(STDOUT_FILENO, "FIFOOOPS\n", 9);
-    	return RC_OTHER;
-    }
+    if ((fda = open(fifo_send, O_WRONLY)) < 0) return RC_OTHER;
     if (write(fda, user_reply, sizeof(op_type_t) + sizeof(uint32_t) + user_reply->length) <= 0) { perror("send_reply"); return RC_OTHER; }
     if (close(fda) != 0) return RC_OTHER;
     free(fifo_send);

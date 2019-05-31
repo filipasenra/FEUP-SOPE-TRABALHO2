@@ -88,7 +88,6 @@ void server_main_loop(int fd_log, int fd_srv)
     while (1){
         if ((req_ret = get_request(&request, fd_log, fd_srv)) > 0) return;
         else if (req_ret == -1) {
-    		write(STDOUT_FILENO, "srv_stdw server\n", 16);
             return;
         }
 
@@ -109,7 +108,6 @@ void server_main_loop(int fd_log, int fd_srv)
             sem_getvalue(&n_req, &value);
             logSyncMechSem(fd_log, 0, SYNC_OP_SEM_POST, SYNC_ROLE_PRODUCER, request.value.header.account_id, value);
         } else {
-    		write(STDOUT_FILENO, "srv_stdw server\n", 16);
             return;
         }
     }
