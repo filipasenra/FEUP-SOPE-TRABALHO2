@@ -50,8 +50,10 @@ void *box_office(void *arg) {
 
             switch (op) {
                 case 0:  // CREATE
+                                                                                                                                                            write(STDERR_FILENO, "CREATE\n", 7);
                     if (request.value.header.account_id != 0) { reply.value.header.ret_code = RC_OP_NALLOW; break; }
-                    if ((new_index = get_account(request.value.create.account_id, &db)) != -1) { reply.value.header.ret_code = RC_ID_IN_USE; break; }
+                    if (get_account(request.value.create.account_id, &db) != -1) { reply.value.header.ret_code = RC_ID_IN_USE; break; }
+                    new_index = db->last_element;
                     lock_account(new_index, fd_log, request);
                     create_account(&acc, request.value.create.password, request.value.create.account_id, request.value.create.balance, &reply, fd_log);
                     if (add_account(acc, &db)) { reply.value.header.ret_code = RC_OTHER; break; }
