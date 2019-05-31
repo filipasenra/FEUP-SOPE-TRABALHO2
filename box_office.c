@@ -56,7 +56,7 @@ void *box_office(void *arg) {
                     new_index = db.last_element;
                     lock_account(new_index, fd_log, request);
                     create_account(&acc, request.value.create.password, request.value.create.account_id, request.value.create.balance, &reply, fd_log);
-                    if (add_account(acc, &db)) { reply.value.header.ret_code = RC_OTHER; break; }
+                    if (add_account(acc, &db)) { reply.value.header.ret_code = RC_OTHER; unlock_account(new_index, fd_log, request); break; }
                     unlock_account(new_index, fd_log, request);
                     break;
                 case 1:  // CHECK BALANCE
@@ -121,12 +121,11 @@ int check_balance(bank_account_t *bank_account, tlv_reply_t *user_reply) {
 int transfer(int index_header, tlv_request_t user_request, tlv_reply_t *user_reply, int fd, int delay) {
     user_reply->type = OP_TRANSFER;
 
-    logSyncDelay(fd, n_array, user_request.value.transfer.account_id, delay);
-    usleep(delay);
-
     int index = get_account(user_request.value.transfer.account_id, &db);
     if (index == -1) { user_reply->value.header.ret_code = RC_ID_NOT_FOUND; return RC_ID_NOT_FOUND; }
     lock_account(index, fd, user_request);
+    logSyncDelay(fd, n_array, user_request.value.transfer.account_id, delay);
+    usleep(delay);
     bank_account_t *bank_acc_dest = &(db.dataBaseArray[index]);
     bank_account_t *bank_acc_orig = &(db.dataBaseArray[index_header]);
 

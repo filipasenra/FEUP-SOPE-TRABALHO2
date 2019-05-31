@@ -30,6 +30,7 @@ pthread_t * thread_array; ///< Pointer to array with threads ids
 // Server Program
 int main(int argc, char *argv[])
 {
+    if(argc != 3) { exit(1); }
     number_threads = strtol(argv[1], NULL, 10);
     thread_array = malloc(sizeof(pthread_t)*number_threads);
     bank_account_t account;

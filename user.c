@@ -4,6 +4,8 @@
 
 int main(int argc, char *argv[])
 {
+    if(argc != 6) { exit(1); }
+
     tlv_request_t user_request;
     pthread_t t;
 
