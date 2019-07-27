@@ -1,6 +1,8 @@
 # SOPE
 Second Project for SOPE curricular unit.
 
+**Grade**: 18.5
+
 ## Project Infos
 * Date: 2nd Year, 2st Semester, 2018/2019
 * Course: Sistemas Operativos (SOPE) | Operating Systems
